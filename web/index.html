@@ -1,0 +1,186 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light">
+<meta name="description" content="Money Mentor: a money trainer built into the bank's mobile app. A one-minute guided walkthrough on a demo account with made-up data.">
+<title>Money Mentor · Concept for S-mobiili</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2300AA46'/%3E%3Cpath d='M9.5 22V10.5l6.5 7 6.5-7V22' fill='none' stroke='%23fff' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preload" href="/assets/brand/SBonusUX-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/brand/SBonusUX-Medium.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/brand/SBonusUX-Bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/brand/SBonusDisplay-Bold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<link rel="stylesheet" href="/assets/brand/brand.css">
+<link rel="stylesheet" href="/assets/stage.css">
+<link rel="modulepreload" href="/assets/i18n/tour.js">
+<noscript><style>.phone, .customer, .cta--desk, .note { display: none !important; }</style></noscript>
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
+  <symbol id="i-play" viewBox="0 0 20 20"><path d="M7 4.6v10.8a.6.6 0 0 0 .92.5l8.3-5.4a.6.6 0 0 0 0-1L7.92 4.1A.6.6 0 0 0 7 4.6Z" fill="currentColor"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 20 20"><rect x="5" y="4" width="3.4" height="12" rx="1" fill="currentColor"/><rect x="11.6" y="4" width="3.4" height="12" rx="1" fill="currentColor"/></symbol>
+  <symbol id="i-right" viewBox="0 0 20 20"><path d="M4 10h12m-4.5-4.5L16 10l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-left" viewBox="0 0 20 20"><path d="M16 10H4m4.5-4.5L4 10l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-down" viewBox="0 0 20 20"><path d="m5 7.5 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check" viewBox="0 0 20 20"><path d="m4.5 10.5 3.5 3.5 7.5-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-again" viewBox="0 0 20 20"><path d="M4.2 10a5.8 5.8 0 1 0 1.9-4.3M4 3.6v2.6h2.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 6.4V10l2.4 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-user" viewBox="0 0 20 20"><circle cx="10" cy="7.2" r="3.1" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 16.4c.7-2.7 3.1-4.2 6-4.2s5.3 1.5 6 4.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-ask" viewBox="0 0 20 20"><path d="M4 5.6c0-.9.7-1.6 1.6-1.6h8.8c.9 0 1.6.7 1.6 1.6v6c0 .9-.7 1.6-1.6 1.6H9.2L6 16v-2.8h-.4c-.9 0-1.6-.7-1.6-1.6v-6Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="wrap top__inner">
+    <div class="brand">
+      <!-- The bank's logo, only ever from the bank's own file. Without the file: a neutral mark. -->
+      <span class="brand__slot" id="brand-slot">
+        <img class="brand__logo" id="brand-logo" src="/assets/brand/logo-wordmark.svg" alt="S-Pankki" width="93" height="40" decoding="async">
+        <span class="brand__mark" aria-hidden="true" hidden>M</span>
+      </span>
+      <span class="brand__divider" aria-hidden="true"></span>
+      <span class="brand__name">Money Mentor</span>
+      <span class="brand__demo">Demo</span>
+      <span class="brand__tag" data-t="tagline">Concept for S-mobiili · Junction 2026</span>
+    </div>
+    <div class="lang" id="lang" role="group" aria-label="Language">
+      <button type="button" class="lang__btn" data-lang="en" lang="en" aria-pressed="true" aria-label="English">EN</button>
+      <button type="button" class="lang__btn" data-lang="fi" lang="fi" aria-pressed="false" aria-label="Suomi">FI</button>
+      <button type="button" class="lang__btn" data-lang="sv" lang="sv" aria-pressed="false" aria-label="Svenska">SV</button>
+    </div>
+  </div>
+</header>
+
+<main class="stage" id="stage" data-mode="intro">
+  <div class="wrap stage__inner">
+
+    <div class="story is-first" id="story">
+
+      <!-- Before the tour -->
+      <section class="panel intro is-entering" id="panel-intro" aria-labelledby="headline">
+        <p class="m-brand m-only"><strong>Money Mentor</strong><span class="brand__demo">Demo</span><span class="m-brand__tag" data-t="tagline">Concept for S-mobiili · Junction 2026</span></p>
+        <p class="tag"><span class="tag__dot" aria-hidden="true"></span><span data-t="eyebrow">Demo account · made-up data</span></p>
+        <h1 class="headline" id="headline" data-t="headline">A money trainer built into S-mobiili</h1>
+        <p class="lede" data-t="lede">It shows what is safe to spend this week and replays your own year with one habit changed. Every number is checked against your payments before you see it.</p>
+
+        <!-- The language of the whole demo, page and phone. Always labelled in all three, so anyone finds it. -->
+        <div class="choose" id="choose" role="group" aria-label="Kieli, Language, Språk">
+          <p class="choose__label" aria-hidden="true">Kieli · Language · Språk</p>
+          <div class="choose__opts">
+            <button type="button" class="choose__btn" data-lang="fi" lang="fi" aria-pressed="false"><svg class="ico ico--s" aria-hidden="true"><use href="#i-check"/></svg>Suomi</button>
+            <button type="button" class="choose__btn" data-lang="en" lang="en" aria-pressed="true"><svg class="ico ico--s" aria-hidden="true"><use href="#i-check"/></svg>English</button>
+            <button type="button" class="choose__btn" data-lang="sv" lang="sv" aria-pressed="false"><svg class="ico ico--s" aria-hidden="true"><use href="#i-check"/></svg>Svenska</button>
+          </div>
+        </div>
+
+        <div class="cta cta--desk">
+          <button type="button" class="btn btn--primary" id="start">
+            <svg class="ico" aria-hidden="true"><use href="#i-play"/></svg><span data-t="start">Start the walkthrough</span>
+          </button>
+          <button type="button" class="btn btn--outline" id="open"><span data-t="open">Open the app</span></button>
+        </div>
+        <div class="cta cta--mobile">
+          <a class="btn btn--primary btn--big" id="m-open" href="/app?lang=en"><span data-t="open">Open the app</span></a>
+          <a class="btn btn--outline btn--big" id="m-start" href="/app?lang=en&amp;tour=1">
+            <svg class="ico" aria-hidden="true"><use href="#i-play"/></svg><span data-t="start">Start the walkthrough</span>
+          </a>
+        </div>
+        <p class="note"><svg class="ico ico--s" aria-hidden="true"><use href="#i-clock"/></svg><span class="note--desk" data-t="startNote">About 1 minute. The phone navigates by itself.</span><span class="note--mobile" data-t="mobileNote">Opens full screen on this phone.</span></p>
+      </section>
+
+      <!-- During the tour -->
+      <section class="panel tour" id="panel-tour" aria-labelledby="tour-title" hidden>
+        <div class="tour__meta">
+          <p class="tag"><span class="tag__dot" aria-hidden="true"></span><span data-t="walkthrough">Walkthrough</span></p>
+          <p class="tour__count" id="tour-count">1 of 10</p>
+        </div>
+        <div class="tour__bar" id="tour-bar" role="progressbar" aria-valuemin="1" aria-valuemax="10" aria-valuenow="1" aria-label="Walkthrough"></div>
+        <div class="tour__copy" id="tour-copy" aria-live="polite" aria-atomic="true">
+          <h2 class="tour__title" id="tour-title"></h2>
+          <p class="tour__text" id="tour-text"></p>
+        </div>
+        <div class="tour__controls">
+          <button type="button" class="btn btn--outline" id="tour-back">
+            <svg class="ico" aria-hidden="true"><use href="#i-left"/></svg><span data-t="back">Back</span>
+          </button>
+          <button type="button" class="btn btn--primary" id="tour-next">
+            <span id="tour-next-label">Next</span><svg class="ico" aria-hidden="true"><use href="#i-right"/></svg>
+          </button>
+          <button type="button" class="btn btn--round" id="tour-toggle" aria-label="Pause" title="Pause">
+            <svg class="ico ico--pause" aria-hidden="true"><use href="#i-pause"/></svg>
+            <svg class="ico ico--play" aria-hidden="true"><use href="#i-play"/></svg>
+          </button>
+        </div>
+        <div class="tour__foot">
+          <button type="button" class="link" id="tour-skip"><span data-t="skip">Skip to the app</span><svg class="ico ico--s" aria-hidden="true"><use href="#i-right"/></svg></button>
+          <p class="tour__keys" aria-hidden="true"><kbd>←</kbd><kbd>→</kbd><span data-t="keys">Arrow keys work too</span></p>
+        </div>
+      </section>
+
+      <!-- After the tour, and whenever the app is simply open -->
+      <section class="panel end" id="panel-end" aria-labelledby="end-title" hidden>
+        <p class="tag"><span class="tag__dot" aria-hidden="true"></span><span id="end-tag">Walkthrough finished</span></p>
+        <h2 class="headline headline--s" id="end-title" tabindex="-1">Open the app and try it yourself</h2>
+        <p class="lede" data-t="endText">The phone on the right is live. Tap anything in it, or start with a question.</p>
+        <p class="label" id="asks-label" data-t="tryAsking">Try asking</p>
+        <div class="asks" id="asks" role="group" aria-labelledby="asks-label"></div>
+        <div class="cta">
+          <button type="button" class="btn btn--primary" id="end-open"><span data-t="open">Open the app</span></button>
+          <button type="button" class="btn btn--outline" id="end-again">
+            <svg class="ico" aria-hidden="true"><use href="#i-again"/></svg><span id="end-again-label">Watch again</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Demo customer chooser: filled from /api/personas -->
+      <div class="customer is-loading" id="customer">
+        <p class="label" id="customer-label" data-t="customer">Demo customer</p>
+        <div class="picker" id="picker">
+          <button type="button" class="picker__btn" id="picker-btn" aria-haspopup="true" aria-expanded="false" aria-controls="picker-pop" disabled>
+            <span class="avatar" aria-hidden="true"><svg class="ico"><use href="#i-user"/></svg></span>
+            <span class="picker__text">
+              <span class="picker__line"><strong id="picker-name"></strong><span class="picker__meta" id="picker-meta"></span></span>
+              <span class="picker__blurb" id="picker-blurb"></span>
+            </span>
+            <svg class="ico picker__chev" aria-hidden="true"><use href="#i-down"/></svg>
+          </button>
+          <div class="picker__pop" id="picker-pop" role="group" aria-labelledby="customer-label" hidden></div>
+        </div>
+      </div>
+
+      <p class="disclaimer" data-t="disclaimer">This is a demo account with made-up data. Nothing here is a real customer, and nothing asks you to sign in.</p>
+    </div>
+
+    <!-- The phone. The device itself is drawn by stage.js so every curve comes from one set of numbers. -->
+    <div class="phone" id="phone">
+      <div class="device-slot" id="device-slot">
+        <div class="device" id="device" role="group" aria-label="A phone running the bank app with the money trainer. Demo data." data-tone="dark">
+          <svg class="device__shadow" id="device-shadow" aria-hidden="true" focusable="false"></svg>
+          <div class="device__screen" id="device-screen">
+            <div class="statusbar" aria-hidden="true">
+              <span class="statusbar__time" id="clock">9:41</span>
+              <span class="statusbar__right">
+                <svg class="sb-signal" viewBox="0 0 18 12" width="18" height="12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+                <svg class="sb-wifi" viewBox="0 0 17 12" width="17" height="12"><path d="M8.5 12 5.53 9.03a4.2 4.2 0 0 1 5.94 0Z"/><path d="M3.621 7.121a6.9 6.9 0 0 1 9.758 0" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M.863 4.363a10.8 10.8 0 0 1 15.274 0" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+                <svg class="sb-battery" viewBox="0 0 27.5 13" width="27.5" height="13"><rect x=".5" y=".5" width="24" height="12" rx="3.8" fill="none" stroke="currentColor" stroke-opacity=".38"/><rect x="2" y="2" width="21" height="9" rx="2.4"/><path d="M26 4.5v4c.9-.3 1.5-1.1 1.5-2s-.6-1.7-1.5-2Z" fill-opacity=".42"/></svg>
+              </span>
+            </div>
+            <div class="homebar" aria-hidden="true"></div>
+            <div class="device__sleep" id="device-sleep" aria-hidden="true"></div>
+          </div>
+          <svg class="device__shell" id="device-shell" aria-hidden="true" focusable="false"></svg>
+          <div class="device__island" aria-hidden="true"><span class="device__lens"></span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<noscript><p class="noscript">The walkthrough needs JavaScript. You can still <a href="/app">open the app</a> directly.</p></noscript>
+<script type="module" src="/assets/stage.js"></script>
+</body>
+</html>

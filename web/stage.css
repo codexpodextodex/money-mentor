@@ -1,0 +1,488 @@
+/* Money Mentor: the demo page. A white page, one phone, one minute.
+   Spacing sits on a 4px grid and colours are the bank's public palette. Type is the bank's own
+   (S Bonus UX, and S Bonus Display for the one headline) when /assets/brand has it, else Inter. */
+
+:root {
+  --ink: #1F1F1F;
+  --ink-2: #3B423E;
+  --muted: #5A645E;
+  --green: #00AA46;
+  --green-dark: #007841;
+  --green-darker: #00653A;
+  --green-deep: #004628;
+  --green-bright: #00EB5A;
+  --green-mint: #91FA9B;
+  --surface: #F7FCF7;
+  --surface-2: #EBF7EC;
+  --line: #DCE8DF;
+  --line-2: #C2DAC8;
+  --focus: #1F1F1F;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --header-h: 64px;
+  --gap: clamp(16px, 2.7vh, 28px);
+  /* S Bonus UX comes in 300, 400, 500 and 700 only: this page uses 400, 500 and 700. */
+  --font: 'S Bonus UX', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'S Bonus Display', 'Barlow Condensed', 'Inter', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { height: 100%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #FFFFFF;
+  color: var(--ink);
+  font: 400 16px/1.5 var(--font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-synthesis: none;
+  overflow-x: clip;
+}
+
+[hidden] { display: none !important; }
+
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.wrap { width: min(1120px, 100% - 96px); margin-inline: auto; }
+
+.ico { flex: none; width: 20px; height: 20px; display: block; }
+.ico--s { width: 16px; height: 16px; }
+
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ---------- Header ---------- */
+
+.top {
+  height: var(--header-h);
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--line);
+}
+.top__inner { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand__slot { flex: none; display: flex; align-items: center; }
+.brand__logo { display: block; width: 93px; height: 40px; }
+.brand__logo--mark { width: 40px; }
+.brand__mark {
+  width: 28px; height: 28px; border-radius: 8px;
+  display: grid; place-items: center;
+  background: var(--green); color: #FFFFFF;
+  font: 700 16px/1 var(--font);
+}
+.brand__divider { flex: none; width: 1px; height: 24px; margin-inline: 4px; background: var(--line-2); }
+.brand__slot.is-placeholder + .brand__divider { display: none; }
+.brand__name { flex: none; font-weight: 700; font-size: 17px; line-height: 24px; white-space: nowrap; }
+.brand__demo {
+  flex: none; height: 22px; padding: 0 8px; border: 1px solid var(--green-dark); border-radius: 999px;
+  color: var(--green-dark); font-size: 11px; font-weight: 700; line-height: 20px; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.brand__tag {
+  min-width: 0; margin-left: 4px;
+  color: var(--muted); font-size: 14px; line-height: 20px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.lang { flex: none; display: flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: #FFFFFF; }
+.lang__btn {
+  min-width: 44px; height: 32px; padding: 0 12px;
+  border: 0; border-radius: 999px; background: transparent; color: var(--muted);
+  font: 500 13px/1 var(--font); letter-spacing: 0.06em; cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.lang__btn[aria-pressed="true"] { background: var(--surface-2); color: var(--green-deep); font-weight: 700; }
+
+/* ---------- Stage: story on the left, phone on the right ---------- */
+
+.stage { height: calc(100vh - var(--header-h)); height: calc(100dvh - var(--header-h)); min-height: 560px; }
+.stage__inner {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 480px) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  column-gap: 64px;
+  align-items: center;
+}
+
+.story { display: flex; flex-direction: column; gap: var(--gap); min-width: 0; padding-block: 24px; }
+
+.panel { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+
+/* One short, staggered entrance when a panel appears. */
+.panel.is-entering > * { animation: rise 420ms var(--ease-out) backwards; }
+.panel.is-entering > :nth-child(2) { animation-delay: 40ms; }
+.panel.is-entering > :nth-child(3) { animation-delay: 80ms; }
+.panel.is-entering > :nth-child(4) { animation-delay: 120ms; }
+.panel.is-entering > :nth-child(5) { animation-delay: 160ms; }
+.panel.is-entering > :nth-child(n+6) { animation-delay: 200ms; }
+/* On first load the chooser and the small print follow the panel in. */
+.story.is-first > .customer { animation: rise 420ms var(--ease-out) 240ms backwards; }
+.story.is-first > .disclaimer { animation: rise 420ms var(--ease-out) 280ms backwards; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+
+.tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 28px; margin: 0; padding: 0 12px 0 10px;
+  border-radius: 999px; background: var(--surface-2); color: var(--green-dark);
+  font-size: 13px; font-weight: 500; line-height: 1; white-space: nowrap;
+}
+.tag__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+/* The one display headline: the bank's display face, uppercase, the way s-pankki.fi sets it. */
+.headline {
+  margin: 20px 0 0;
+  font-family: var(--font-display); font-weight: 700; font-size: clamp(2.5rem, 6.2vh, 3.5rem); line-height: 1.02; letter-spacing: -0.005em;
+  text-transform: uppercase;
+  color: var(--green-dark);
+  text-wrap: balance;
+}
+/* Every other heading stays in the text face. */
+.headline--s {
+  margin-top: 16px;
+  font-family: var(--font); font-size: clamp(1.75rem, 4.2vh, 2.125rem); line-height: 1.15; letter-spacing: -0.01em;
+  text-transform: none; color: var(--green-deep);
+}
+
+.lede { margin: 16px 0 0; max-width: 30em; font-size: 17px; line-height: 1.55; text-wrap: pretty; }
+
+.label { margin: 0 0 8px; color: var(--muted); font-size: 13px; font-weight: 500; line-height: 20px; }
+
+.note { display: flex; align-items: center; gap: 6px; margin: 12px 0 0; color: var(--muted); font-size: 13px; line-height: 20px; }
+
+.disclaimer { margin: 0; max-width: 36em; color: var(--muted); font-size: 13px; line-height: 20px; text-wrap: pretty; }
+
+/* ---------- Language of the whole demo: the first choice a visitor makes ---------- */
+
+.choose { margin-top: 20px; }
+.choose__label { margin: 0 0 8px; color: var(--muted); font-size: 13px; font-weight: 500; line-height: 20px; }
+.choose__opts { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--line-2); border-radius: 12px; background: #FFFFFF; }
+.choose__btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  height: 44px; min-width: 112px; padding: 0 18px;
+  border: 0; border-radius: 8px; background: transparent; color: var(--ink);
+  font: 500 16px/1 var(--font); cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+  transition: background-color 160ms ease, color 160ms ease, transform 140ms var(--ease-out);
+}
+.choose__btn .ico { display: none; }
+.choose__btn[aria-pressed="true"] { background: var(--green-dark); color: #FFFFFF; font-weight: 700; }
+.choose__btn[aria-pressed="true"] .ico { display: block; }
+.choose__btn:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) {
+  .choose__btn:not([aria-pressed="true"]):hover { background: var(--surface-2); color: var(--green-deep); }
+}
+.choose + .cta { margin-top: 16px; }
+
+/* ---------- Buttons ---------- */
+
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: var(--gap); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 48px; padding: 0 24px;
+  border: 1.5px solid transparent; border-radius: 999px;
+  font: 700 16px/1 var(--font); white-space: nowrap; text-decoration: none;
+  cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+  transition: transform 140ms var(--ease-out), background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+.btn:active { transform: scale(0.97); }
+.btn:has(> .ico:first-child) { padding-left: 18px; }
+.btn:has(> .ico:last-child) { padding-right: 18px; }
+
+.btn--primary { background: var(--green-dark); color: #FFFFFF; }
+.btn--outline { background: #FFFFFF; color: var(--green-dark); border-color: var(--green-dark); }
+.btn--round { width: 48px; padding: 0 !important; background: #FFFFFF; color: var(--green-deep); border-color: var(--line-2); }
+.btn[aria-disabled="true"] { color: #6B756F; border-color: var(--line); cursor: default; }
+.btn[aria-disabled="true"]:active { transform: none; }
+
+.link {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--green-dark);
+  font: 700 15px/1 var(--font); cursor: pointer;
+  text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1.5px; text-underline-offset: 5px;
+  transition: text-decoration-color 160ms ease, color 160ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .lang__btn:not([aria-pressed="true"]):hover { color: var(--ink); background: var(--surface); }
+  .btn--primary:hover { background: var(--green-darker); }
+  .btn--outline:not([aria-disabled="true"]):hover { background: var(--surface-2); }
+  .btn--round:hover { background: var(--surface-2); border-color: var(--green-dark); }
+  .link:hover { text-decoration-color: currentColor; color: var(--green-deep); }
+  .picker__btn:not(:disabled):hover { border-color: var(--line-2); background: var(--surface); }
+  .picker__opt:hover { background: var(--surface); }
+  .ask:hover { border-color: var(--line-2); background: var(--surface); }
+}
+.btn--primary:active { background: var(--green-deep); }
+
+/* ---------- Demo customer chooser ---------- */
+
+.picker { position: relative; }
+.picker__btn {
+  width: 100%;
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px;
+  padding: 12px 16px 12px 12px;
+  border: 1px solid var(--line); border-radius: 16px; background: #FFFFFF; color: var(--ink);
+  font: inherit; text-align: left; cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.picker__btn[aria-expanded="true"] { border-color: var(--green-dark); }
+.avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-2); color: var(--green-dark); }
+.picker__text { min-width: 0; }
+.picker__line { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 12px; }
+.picker__line strong { min-width: 0; font-weight: 700; font-size: 15px; line-height: 20px; }
+.picker__meta { flex: none; color: var(--muted); font-size: 12.5px; line-height: 20px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.picker__blurb { display: block; margin-top: 2px; color: var(--muted); font-size: 13px; line-height: 18px; }
+.picker__chev { color: var(--green-dark); transition: transform 200ms var(--ease-out); }
+.picker__btn[aria-expanded="true"] .picker__chev { transform: rotate(180deg); }
+
+/* Before the list of demo customers has arrived: the same box, holding its place. */
+.customer.is-loading .picker__btn { cursor: default; }
+.customer.is-loading #picker-name, .customer.is-loading #picker-blurb { display: block; border-radius: 4px; background: var(--surface-2); }
+.customer.is-loading #picker-name { width: 168px; height: 12px; margin-block: 4px; }
+.customer.is-loading #picker-blurb { width: 248px; max-width: 100%; height: 10px; margin-block: 6px 4px; }
+.customer.is-loading .picker__chev { opacity: 0.35; }
+
+.picker__pop {
+  position: absolute; left: 0; right: 0; bottom: calc(100% + 8px); z-index: 30;
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 6px; overflow-y: auto; overscroll-behavior: contain;
+  border: 1px solid var(--line-2); border-radius: 16px; background: #FFFFFF;
+  box-shadow: 0 20px 44px -16px rgba(0, 52, 30, 0.24), 0 2px 6px rgba(0, 52, 30, 0.06);
+  transform-origin: 50% 100%;
+  transition: opacity 160ms var(--ease-out), transform 160ms var(--ease-out);
+}
+.picker__pop[data-side="below"] { top: calc(100% + 8px); bottom: auto; transform-origin: 50% 0; }
+.picker__pop.is-closed { opacity: 0; transform: scale(0.97); pointer-events: none; }
+
+.picker__opt {
+  flex: none; width: 100%;
+  display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: 8px; align-items: start;
+  padding: 8px 12px 8px 8px;
+  border: 0; border-radius: 10px; background: transparent; color: var(--ink);
+  font: inherit; text-align: left; cursor: pointer;
+  transition: background-color 120ms ease;
+}
+.picker__opt .ico { margin-top: 0; color: var(--green-dark); visibility: hidden; }
+.picker__opt[aria-pressed="true"] { background: var(--surface-2); }
+.picker__opt[aria-pressed="true"] .ico { visibility: visible; }
+.picker__opt:focus-visible { outline-offset: -2px; }
+
+/* ---------- Tour ---------- */
+
+.tour { align-items: stretch; }
+.tour__meta { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.tour__count { margin: 0; color: var(--muted); font-size: 13px; font-weight: 500; line-height: 20px; font-variant-numeric: tabular-nums; }
+
+.tour__bar { display: flex; gap: 4px; margin-top: 16px; }
+.seg { flex: 1 1 0; height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.seg > i { display: block; height: 100%; border-radius: 2px; background: var(--green); transform: scaleX(0); transform-origin: 0 50%; }
+.seg.is-done > i { transform: none; }
+
+/* Fixed height, so Back and Next never move under the pointer between steps. */
+.tour__copy { margin-top: var(--gap); min-height: 160px; }
+.tour__title { margin: 0; color: var(--green-deep); font-weight: 700; font-size: 28px; line-height: 34px; letter-spacing: -0.01em; text-wrap: balance; }
+.tour__text { margin: 12px 0 0; font-size: 17px; line-height: 1.55; text-wrap: pretty; }
+
+.tour__controls { display: flex; align-items: center; gap: 12px; margin-top: var(--gap); }
+.tour__controls #tour-toggle { margin-left: auto; }
+#tour-toggle .ico--play { display: none; }
+#tour-toggle[data-auto="off"] .ico--play { display: block; }
+#tour-toggle[data-auto="off"] .ico--pause { display: none; }
+
+.tour__foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--line);
+}
+.tour__keys { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--muted); font-size: 13px; line-height: 20px; white-space: nowrap; }
+.tour__keys kbd {
+  display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 4px;
+  border: 1px solid var(--line-2); border-radius: 6px; background: #FFFFFF; color: var(--ink-2);
+  font: 500 12px/1 var(--font);
+}
+.tour__keys kbd + span { margin-left: 2px; }
+
+/* ---------- Closing panel ---------- */
+
+.end .label { margin-top: var(--gap); }
+.asks { align-self: stretch; display: flex; flex-direction: column; gap: 8px; }
+.ask {
+  width: 100%; min-height: 48px;
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--line); border-radius: 14px; background: #FFFFFF; color: var(--ink);
+  font: 500 15px/20px var(--font); text-align: left; cursor: pointer;
+  transition: transform 140ms var(--ease-out), border-color 160ms ease, background-color 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.ask:active { transform: scale(0.985); }
+.ask .ico:first-child { color: var(--green-dark); }
+.ask .ico:last-child { color: var(--muted); }
+
+/* ---------- The phone ----------
+   Geometry lives in stage.js (one set of numbers draws every curve). Here: layers and motion. */
+
+.phone { align-self: stretch; min-width: 0; min-height: 0; display: grid; place-items: center; }
+
+.device-slot { position: relative; flex: none; opacity: 0; }
+.device-slot.is-in { opacity: 1; animation: device-in 900ms var(--ease-out) backwards; }
+@keyframes device-in { from { opacity: 0; transform: translateY(24px) scale(0.985); } }
+
+.device {
+  position: absolute; left: 0; top: 0;
+  width: 428px; height: 900px;
+  zoom: var(--k, 1);
+}
+/* Where `zoom` is missing, or does not reach into the iframe, scale with a transform instead. */
+.device.is-transform { zoom: 1; transform: scale(var(--k, 1)); transform-origin: 0 0; }
+
+.device__shadow, .device__shell { position: absolute; top: 0; display: block; overflow: visible; pointer-events: none; }
+.device__shadow { left: 0; width: 428px; height: 900px; }
+.device__shell { left: -6px; width: 440px; height: 900px; z-index: 5; }
+
+.device__screen {
+  position: absolute; left: 13px; top: 13px; width: 402px; height: 874px;
+  border-radius: 58px; overflow: hidden; background: #000000;
+  isolation: isolate;
+}
+.device__app { position: absolute; inset: 0; z-index: 1; display: block; width: 402px; height: 874px; border: 0; background: transparent; }
+
+.statusbar {
+  position: absolute; inset: 0 0 auto 0; z-index: 2; height: 54px;
+  color: #000000; pointer-events: none;
+  transition: color 240ms ease;
+}
+.statusbar__time {
+  position: absolute; left: 0; top: 18px; width: 138px; height: 23px;
+  text-align: center;
+  font: 600 17px/23px -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', sans-serif;
+  letter-spacing: -0.022em;
+  font-feature-settings: 'case' 1;
+}
+.statusbar__right { position: absolute; right: 0; top: 18px; width: 138px; height: 23px; display: flex; align-items: center; justify-content: center; gap: 6.5px; }
+.statusbar svg { display: block; flex: none; fill: currentColor; }
+
+.homebar {
+  position: absolute; left: 131px; bottom: 8px; z-index: 2; width: 140px; height: 5px;
+  border-radius: 3px; background: #000000; pointer-events: none;
+  transition: background-color 240ms ease;
+}
+.device[data-tone="light"] .statusbar { color: #FFFFFF; }
+.device[data-tone="light"] .homebar { background: #FFFFFF; }
+
+/* Asleep until the app says it is ready: black glass with a faint sheen. Then one fade. */
+.device__sleep {
+  position: absolute; inset: 0; z-index: 3; background: #000000; pointer-events: none;
+  transition: opacity 500ms var(--ease-out);
+}
+.device__sleep::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(124deg, rgba(255, 255, 255, 0.085) 0%, rgba(255, 255, 255, 0.03) 22%, rgba(255, 255, 255, 0) 40%);
+}
+.device.is-awake .device__sleep { opacity: 0; }
+
+.device__island {
+  position: absolute; left: 151px; top: 24px; z-index: 6; width: 126px; height: 37px;
+  border-radius: 18.5px; background: #000000; pointer-events: none;
+}
+.device__lens {
+  position: absolute; right: 12px; top: 12.5px; width: 12px; height: 12px; border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 30%, rgba(120, 140, 190, 0.38) 0, rgba(120, 140, 190, 0) 22%),
+    radial-gradient(circle at 50% 50%, #10131c 0, #07080d 48%, #000000 72%);
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.05);
+}
+
+.noscript { margin: 0; padding: 16px 24px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+.noscript a { color: var(--green-dark); }
+
+.m-only { display: none; }
+
+/* ---------- Large screens: the phone is at full size, so the story grows to match ---------- */
+
+@media (min-width: 1680px) and (min-height: 960px) {
+  .wrap { width: min(1280px, 100% - 96px); }
+  .stage__inner { grid-template-columns: minmax(0, 544px) minmax(0, 1fr); }
+  .headline { font-size: 4rem; }
+  .headline--s { font-size: 2.5rem; }
+  .lede, .tour__text { font-size: 19px; }
+  .tour__title { font-size: 32px; line-height: 38px; }
+  .tour__copy { min-height: 176px; }
+  .note, .label, .disclaimer, .tour__count, .tour__keys { font-size: 14px; }
+  .ask { font-size: 16px; min-height: 52px; }
+}
+
+/* ---------- Short laptop screens: the same page, a little tighter ---------- */
+
+@media (max-width: 699px) {
+  .choose { align-self: stretch; }
+  .choose__opts { display: flex; }
+  .choose__btn { flex: 1 1 0; min-width: 0; padding: 0 8px; }
+}
+@media (min-width: 700px) and (max-height: 780px) {
+  :root { --gap: 16px; }
+  .choose { margin-top: 12px; }
+  .choose__label { margin-bottom: 6px; }
+  .choose__btn { height: 40px; }
+  .choose + .cta { margin-top: 12px; }
+  .lede { margin-top: 12px; font-size: 16px; }
+  .headline--s { margin-top: 12px; }
+  .asks { gap: 6px; }
+  .ask { min-height: 44px; padding-block: 8px; }
+  .picker__btn { padding-block: 10px; }
+  .picker__opt { padding-block: 6px; }
+  /* The closing panel is the tallest: there the chosen customer shows as one line. */
+  .stage[data-mode="end"] .picker__btn .picker__blurb, .stage[data-mode="free"] .picker__btn .picker__blurb { display: none; }
+  .stage[data-mode="end"] .avatar, .stage[data-mode="free"] .avatar { width: 32px; height: 32px; }
+}
+
+/* ---------- Narrower laptops and tablets ---------- */
+
+@media (max-width: 1023px) {
+  .wrap { width: calc(100% - 64px); }
+  .stage__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr); column-gap: 40px; }
+  .brand__tag { display: none; }
+}
+
+/* ---------- A real phone: no phone inside a phone ---------- */
+
+@media (min-width: 700px) {
+  .cta--mobile, .note--mobile { display: none; }
+}
+@media (max-width: 699px) {
+  :root { --header-h: 60px; --gap: 24px; }
+  .wrap { width: calc(100% - 40px); }
+  .stage { height: auto; min-height: calc(100vh - var(--header-h)); min-height: calc(100dvh - var(--header-h)); }
+  .stage__inner { display: block; padding-block: 32px 40px; }
+  .story { padding-block: 0; }
+  .phone, .customer, .cta--desk, .note--desk, .panel.tour, .panel.end { display: none !important; }
+  .headline { font-size: 2.25rem; }
+  .cta--mobile { flex-direction: column; align-self: stretch; }
+  .btn--big { width: 100%; height: 56px; font-size: 17px; }
+  .lang__btn { height: 36px; }
+  .top .brand__divider, .top .brand__name, .top .brand__demo, .top .brand__tag { display: none; }
+  .m-only { display: block; }
+  .m-brand { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 0 0 20px; font-size: 17px; line-height: 24px; }
+  .m-brand__tag { flex-basis: 100%; color: var(--muted); font-size: 14px; line-height: 20px; }
+}
+
+/* ---------- Less motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .panel.is-entering > *, .story.is-first > .customer, .story.is-first > .disclaimer { animation: fade 200ms ease backwards; animation-delay: 0ms !important; }
+  .device-slot.is-in { animation: fade 300ms ease backwards; }
+  .device__sleep { transition-duration: 300ms; }
+  .btn:active, .ask:active { transform: none; }
+  .picker__pop, .picker__chev { transition-duration: 1ms; }
+  .picker__pop.is-closed { transform: none; }
+}
+@keyframes fade { from { opacity: 0; } }
+
+/* `?still=1`: everything at rest, for screenshots and automated checks. */
+.is-still *, .is-still *::before, .is-still *::after { animation: none !important; transition: none !important; }
+.is-still .device-slot { opacity: 1; }

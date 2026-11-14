@@ -1,0 +1,3514 @@
+{
+ "meta": {
+  "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "base_url": "https://integrate.api.nvidia.com/v1",
+  "customers": [
+   "CUST00026",
+   "CUST00063",
+   "CUST00076"
+  ],
+  "as_of": "2026-09-30"
+ },
+ "summary": [
+  {
+   "system": "router",
+   "questions": 39,
+   "right_tool_pct": 69.2,
+   "right_arguments_pct": 61.5,
+   "right_number_in_answer_pct": 53.8,
+   "every_number_traceable_pct": 100.0,
+   "non_english_right_pct": 0.0,
+   "answers_rewritten": 0,
+   "fell_back_to_router": 0,
+   "median_seconds": 0.01
+  },
+  {
+   "system": "model-minimal",
+   "questions": 39,
+   "right_tool_pct": 100.0,
+   "right_arguments_pct": 100.0,
+   "right_number_in_answer_pct": 100.0,
+   "every_number_traceable_pct": 82.1,
+   "non_english_right_pct": 100.0,
+   "answers_rewritten": 0,
+   "fell_back_to_router": 0,
+   "median_seconds": 3.37
+  },
+  {
+   "system": "model-coach",
+   "questions": 39,
+   "right_tool_pct": 100.0,
+   "right_arguments_pct": 97.4,
+   "right_number_in_answer_pct": 97.4,
+   "every_number_traceable_pct": 89.7,
+   "non_english_right_pct": 100.0,
+   "answers_rewritten": 0,
+   "fell_back_to_router": 0,
+   "median_seconds": 2.79
+  },
+  {
+   "system": "model-checked",
+   "questions": 39,
+   "right_tool_pct": 100.0,
+   "right_arguments_pct": 100.0,
+   "right_number_in_answer_pct": 100.0,
+   "every_number_traceable_pct": 100.0,
+   "non_english_right_pct": 100.0,
+   "answers_rewritten": 3,
+   "fell_back_to_router": 0,
+   "median_seconds": 2.66
+  }
+ ],
+ "rows": [
+  {
+   "system": "router",
+   "customer_id": "CUST00026",
+   "case": "taxis_last_month",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spent EUR 0.00 on Taxis in August 2026, across 0 payments.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "subcategory": "taxis"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00026",
+   "case": "groceries_last_month_fi",
+   "lang": "fi",
+   "tool": false,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "In Jul 2026 to Sep 2026 you spent EUR 11,005: EUR 6,506 on regular essentials, EUR 951 on unexpected necessities and EUR 3,548 on everyday spending. 6 everyday purchases were under EUR 15, adding up to EUR 56.48.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00026",
+   "case": "restaurants_this_year_sv",
+   "lang": "sv",
+   "tool": false,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "In Jul 2026 to Sep 2026 you spent EUR 11,005: EUR 6,506 on regular essentials, EUR 951 on unexpected necessities and EUR 3,548 on everyday spending. 6 everyday purchases were under EUR 15, adding up to EUR 56.48.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00026",
+   "case": "safe_this_week",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You can safely spend EUR 140 on everyday things in the next 4 days, and EUR 490 until payday on 2026-10-15. That is EUR 34.99 a day; you usually spend EUR 39.01 a day.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00026",
+   "case": "safe_this_week_fi",
+   "lang": "fi",
+   "tool": false,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "In Jul 2026 to Sep 2026 you spent EUR 11,005: EUR 6,506 on regular essentials, EUR 951 on unexpected necessities and EUR 3,548 on everyday spending. 6 everyday purchases were under EUR 15, adding up to EUR 56.48.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00026",
+   "case": "dining_minus_20",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spend about EUR 322 a month on Restaurants. Changing that by -20% would free up EUR 64.47 a month, or EUR 774 a year.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "dining out",
+      "change_pct": -20.0
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00026",
+   "case": "entertainment_halved",
+   "lang": "en",
+   "tool": true,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "You spend about EUR 214 a month on Entertainment. Changing that by -20% would free up EUR 42.75 a month, or EUR 513 a year.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "entertainment",
+      "change_pct": -20.0
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00026",
+   "case": "spender_type",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You are a Balanced Navigator. No single habit dominates: essentials, surprises and everyday spending are in proportion. You keep 7.3% of your income, and everyday spending is 28.9% of what you spend. You have room to choose a goal. A fixed monthly saving right after payday is the easiest next step.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_spender_profile",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00026",
+   "case": "where_did_money_go",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "In Jul 2026 to Sep 2026 you spent EUR 11,005: EUR 6,506 on regular essentials, EUR 951 on unexpected necessities and EUR 3,548 on everyday spending. 6 everyday purchases were under EUR 15, adding up to EUR 56.48.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {
+      "period": "last_3_months"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00026",
+   "case": "peers_restaurants",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Compared with customers aged 35-44: Monthly spending on Restaurants: you 324.11, typical 183.25 (higher than 76% of peers).",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "compare_with_peers",
+     "arguments": {
+      "target": "restaurants"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00026",
+   "case": "mortgage_250k",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "For a home of EUR 250,000 with EUR 5,135 of your own money, 0 of 4 checks look strong. What would matter most: Bring EUR 39,208 more of your own money, or look at homes up to about EUR 210,792. This is guidance, not a credit decision.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_mortgage_readiness",
+     "arguments": {
+      "property_price": 250000.0
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00026",
+   "case": "biggest_payment",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": false,
+   "grounded": true,
+   "text": "Here are 15 of 38 matching payments in August 2026.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "list_transactions",
+     "arguments": {
+      "sort": "amount",
+      "period": "last_month"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00026",
+   "case": "more_than_earned",
+   "lang": "en",
+   "tool": false,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "You spent EUR 21,520 in Apr 2026 to Sep 2026, across 224 payments. That is EUR 911 more than the period before.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_6_months",
+      "group_by": "month"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00063",
+   "case": "taxis_last_month",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spent EUR 0.00 on Taxis in August 2026, across 0 payments.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "subcategory": "taxis"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00063",
+   "case": "groceries_last_month_fi",
+   "lang": "fi",
+   "tool": false,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "In Jul 2026 to Sep 2026 you spent EUR 4,006: EUR 3,457 on regular essentials, EUR 74.70 on unexpected necessities and EUR 474 on everyday spending. 20 everyday purchases were under EUR 15, adding up to EUR 105.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00063",
+   "case": "restaurants_this_year_sv",
+   "lang": "sv",
+   "tool": false,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "In Jul 2026 to Sep 2026 you spent EUR 4,006: EUR 3,457 on regular essentials, EUR 74.70 on unexpected necessities and EUR 474 on everyday spending. 20 everyday purchases were under EUR 15, adding up to EUR 105.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00063",
+   "case": "safe_this_week",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You can safely spend EUR 129 on everyday things in the next 4 days, and EUR 451 until payday on 2026-10-15. That is EUR 32.20 a day; you usually spend EUR 5.27 a day.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00063",
+   "case": "safe_this_week_fi",
+   "lang": "fi",
+   "tool": false,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "In Jul 2026 to Sep 2026 you spent EUR 4,006: EUR 3,457 on regular essentials, EUR 74.70 on unexpected necessities and EUR 474 on everyday spending. 20 everyday purchases were under EUR 15, adding up to EUR 105.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00063",
+   "case": "dining_minus_20",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spend about EUR 21.26 a month on Restaurants. Changing that by -20% would free up EUR 4.25 a month, or EUR 51.02 a year.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "dining out",
+      "change_pct": -20.0
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00063",
+   "case": "entertainment_halved",
+   "lang": "en",
+   "tool": true,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "You spend about EUR 5.32 a month on Entertainment. Changing that by -20% would free up EUR 1.06 a month, or EUR 12.77 a year.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "entertainment",
+      "change_pct": -20.0
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00063",
+   "case": "spender_type",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You are a Month-End Stretcher. Your money often runs out before the month does. You keep 16.1% of your income, and everyday spending is 19.9% of what you spend. Start with timing, not cutting: line your bills up right after payday and keep a small buffer for the last week.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_spender_profile",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00063",
+   "case": "where_did_money_go",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "In Jul 2026 to Sep 2026 you spent EUR 4,006: EUR 3,457 on regular essentials, EUR 74.70 on unexpected necessities and EUR 474 on everyday spending. 20 everyday purchases were under EUR 15, adding up to EUR 105.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {
+      "period": "last_3_months"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00063",
+   "case": "peers_restaurants",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Compared with customers aged 35-44: Monthly spending on Restaurants: you 38.54, typical 183.25 (higher than 7% of peers).",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "compare_with_peers",
+     "arguments": {
+      "target": "restaurants"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00063",
+   "case": "mortgage_250k",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "For a home of EUR 250,000 with EUR 6,535 of your own money, 0 of 4 checks look strong. What would matter most: Bring EUR 141,400 more of your own money, or look at homes up to about EUR 108,600. This is guidance, not a credit decision.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_mortgage_readiness",
+     "arguments": {
+      "property_price": 250000.0
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00063",
+   "case": "biggest_payment",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": false,
+   "grounded": true,
+   "text": "Here are 13 of 13 matching payments in August 2026.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "list_transactions",
+     "arguments": {
+      "sort": "amount",
+      "period": "last_month"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00063",
+   "case": "more_than_earned",
+   "lang": "en",
+   "tool": false,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "You spent EUR 9,133 in Apr 2026 to Sep 2026, across 95 payments. That is EUR 646 less than the period before.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_6_months",
+      "group_by": "month"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00076",
+   "case": "taxis_last_month",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spent EUR 0.00 on Taxis in August 2026, across 0 payments.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "subcategory": "taxis"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00076",
+   "case": "groceries_last_month_fi",
+   "lang": "fi",
+   "tool": false,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "In Jul 2026 to Sep 2026 you spent EUR 13,384: EUR 8,209 on regular essentials, EUR 1,288 on unexpected necessities and EUR 3,887 on everyday spending. 0 everyday purchases were under EUR 15, adding up to EUR 0.00.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00076",
+   "case": "restaurants_this_year_sv",
+   "lang": "sv",
+   "tool": false,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "In Jul 2026 to Sep 2026 you spent EUR 13,384: EUR 8,209 on regular essentials, EUR 1,288 on unexpected necessities and EUR 3,887 on everyday spending. 0 everyday purchases were under EUR 15, adding up to EUR 0.00.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00076",
+   "case": "safe_this_week",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You can safely spend EUR 40.24 on everyday things in the next 4 days, and EUR 141 until payday on 2026-10-15. That is EUR 10.06 a day; you usually spend EUR 42.38 a day.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00076",
+   "case": "safe_this_week_fi",
+   "lang": "fi",
+   "tool": false,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "In Jul 2026 to Sep 2026 you spent EUR 13,384: EUR 8,209 on regular essentials, EUR 1,288 on unexpected necessities and EUR 3,887 on everyday spending. 0 everyday purchases were under EUR 15, adding up to EUR 0.00.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00076",
+   "case": "dining_minus_20",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spend about EUR 348 a month on Restaurants. Changing that by -20% would free up EUR 69.59 a month, or EUR 835 a year.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "dining out",
+      "change_pct": -20.0
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00076",
+   "case": "entertainment_halved",
+   "lang": "en",
+   "tool": true,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "You spend about EUR 170 a month on Entertainment. Changing that by -20% would free up EUR 34.00 a month, or EUR 408 a year.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "entertainment",
+      "change_pct": -20.0
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00076",
+   "case": "spender_type",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You are a Big-Ticket Spender. Your everyday spending is driven by a few large purchases, not by small ones. You keep -2.7% of your income, and everyday spending is 26.7% of what you spend. Skipping coffees will not change your picture. Planning the two or three big purchases a year will.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_spender_profile",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00076",
+   "case": "where_did_money_go",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "In Jul 2026 to Sep 2026 you spent EUR 13,384: EUR 8,209 on regular essentials, EUR 1,288 on unexpected necessities and EUR 3,887 on everyday spending. 0 everyday purchases were under EUR 15, adding up to EUR 0.00.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {
+      "period": "last_3_months"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00076",
+   "case": "peers_restaurants",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Compared with customers aged 35-44: Monthly spending on Restaurants: you 362, typical 183.25 (higher than 81% of peers).",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "compare_with_peers",
+     "arguments": {
+      "target": "restaurants"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00076",
+   "case": "mortgage_250k",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "For a home of EUR 250,000 with EUR 9,424 of your own money, 0 of 4 checks look strong. What would matter most: Bring EUR 18,590 more of your own money, or look at homes up to about EUR 231,410. This is guidance, not a credit decision.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_mortgage_readiness",
+     "arguments": {
+      "property_price": 250000.0
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00076",
+   "case": "biggest_payment",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": false,
+   "grounded": true,
+   "text": "Here are 15 of 28 matching payments in August 2026.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "list_transactions",
+     "arguments": {
+      "sort": "amount",
+      "period": "last_month"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.0
+  },
+  {
+   "system": "router",
+   "customer_id": "CUST00076",
+   "case": "more_than_earned",
+   "lang": "en",
+   "tool": false,
+   "args": false,
+   "answer": false,
+   "grounded": true,
+   "text": "You spent EUR 24,727 in Apr 2026 to Sep 2026, across 214 payments. That is EUR 886 less than the period before.",
+   "mode": "offline",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_6_months",
+      "group_by": "month"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 0.01
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00026",
+   "case": "taxis_last_month",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spent **€0.00** on taxis last month (August 2026). There were no taxi transactions during that period.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "subcategory": "Taxis"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.05
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00026",
+   "case": "groceries_last_month_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Käytit ruokaostoksiin (Groceries) viime kuussa, elokuussa 2026, **350,64 euroa**.\n\nVertailuna heinäkuussa ruokaostoksiin meni 315,98 euroa, joten kulutus kasvoi 34,66 euroa (11,0 %).",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "category": "Groceries"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.32
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00026",
+   "case": "restaurants_this_year_sv",
+   "lang": "sv",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Du har lagt **3 125,02 €** på restauranger i år (2026-01-01 till 2026-09-30). Det är 80 transaktioner, med ett genomsnitt på 39,06 € per gång.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "category": "Restaurants",
+      "period": "this_year"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.49
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00026",
+   "case": "safe_this_week",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Based on your current pay period (which runs until your next payday on **15 October**), here's what's safe to spend:\n\n**This week (until Sunday 4 October):**\n- **Safe to spend:** **€139.96** (about €35 per day over the 4 days left)\n- Your usual spending this week is around €156.06, so you're slightly above your safe pace — trimming back a bit would keep you on track.\n\n**Until payday (15 October):**\n- **Safe to spend on everyday things:** **€489.86** total (about €35 per day)\n- This is after covering your housing payment, utility bills, groceries/transport at your usual pace, setting aside money for unexpected necessities, and your 10% savings goal.\n\n**Bottom line:** You're currently **on track**, but your safe weekly spending limit is **€139.96**. If you stick to that, you'll stay within your budget until payday.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.5
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00026",
+   "case": "safe_this_week_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Tällä viikolla (4 päivää jäljellä, sunnuntaihin 4.10. asti) voit turvallisesti käyttää noin **140 euroa** jokapäiväisiin menoihin.\n\nTässä tausta:\n\n- **Tämän viikon turvallinen summa:** 139,96 € (noin 35 €/päivä)\n- **Tavanomainen viikkomenosi:** noin 156 €, joten olet hieman alle tavanomaisessa tahdissa\n- **Koko palkkakauden (15.9.–15.10.) turvallinen summa:** 489,86 €, josta on jo käytetty 533,53 € jokapäiväisiin menoihin\n\nJos haluat tarkistaa, sopiiko jokin tieto hankinta tällä viikolla budjettiisi, kerro vain hinta ja mitä ostit, niin lasken sen puolestasi.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.59
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00026",
+   "case": "dining_minus_20",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "If you cut your dining out (Restaurants) spending by 20%, here’s what it would look like:\n\n- **Monthly saving:** about **€64.47**\n- **Yearly saving:** about **€773.67**\n\nThat’s based on your average restaurant spending of roughly **€322 per month** over the last 6 months (April–September 2026). After the reduction, your monthly leftover would rise from about €102 to €167, and your savings rate would go from 2.8% to 4.5%.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Restaurants",
+      "change_pct": -20,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.16
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00026",
+   "case": "entertainment_halved",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "If you halved your entertainment spending, here’s what would change:\n\n**Entertainment now:** €213.74 per month (about 4 payments/month)  \n**After halving:** €106.87 per month  \n**Monthly saving:** €106.87  \n**Saving over 12 months:** €1,282.43\n\n**Bigger picture:**\n- Your monthly money left over would rise from €102.15 to €209.02\n- Your savings rate would improve from 2.8% to 5.7%\n\nSo cutting entertainment in half would free up roughly €107 a month — about €1,282 over a year — and roughly double your current savings rate.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Entertainment",
+      "change_pct": -50,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.2
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00026",
+   "case": "spender_type",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Based on your spending over the last 12 months (Oct 2025 – Sep 2026), you’re a **Balanced Navigator**.\n\nHere’s what that means:\n\n- **No single habit dominates.** Your money is split fairly evenly across essentials, unexpected necessities, and everyday spending — you’re not overspending in any one area.\n- **Monthly averages:** income €3,786, spending €3,511, leaving about €275 left over each month (7.3% of income).\n- **Where it goes:** essentials 65.7%, unexpected necessities 5.4%, everyday spending 28.9%.\n- **Everyday spending** leans toward restaurants (€324/month), entertainment (€207/month), and home & tech (€179/month). About 36% of everyday spending happens on weekends.\n- **Compared with peers (aged 35–44):** you spend a slightly higher share on everyday things than the median, but your savings rate is about average.\n\n**Tip:** You have room to choose a goal. A fixed monthly savings transfer right after payday is the easiest next step — it would turn that €275 left-over into a habit without changing your lifestyle much.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spender_profile",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.69
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00026",
+   "case": "where_did_money_go",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": false,
+   "text": "Over the last three months (1 July – 30 September 2026), your money went like this:\n\n**Income:** €11,186.11  \n**Spending:** €11,005.28  \n**Left over:** €180.83  \n**Moved to savings:** €0.00\n\nHere’s how your spending breaks down into the three baskets:\n\n| Basket | Total | Share of spending | Monthly average | What’s inside |\n|--------|-------|-------------------|-----------------|---------------|\n| 🏠 **Regular essentials** | €6,506.30 | 59.1% | €2,152.56 | Housing payment (€3,990.74), Supermarkets (€956.88), Utility bills (€597.47), Parking (€214.97) |\n| 🔧 **Unexpected necessities** | €951.15 | 8.6% | €314.68 | Pharmacies (€365.49), Hardware stores (€334.02), Medical services (€120.92), Dentists (€58.25) |\n| ☕ **Everyday spending** | €3,547.83 | 32.2% | €1,173.77 | Family clothing (€652.48), Fast food (€481.06), Restaurants (€382.75), Travel agencies (€369.37) |\n\n### Key takeaways\n- **Essentials dominate** at nearly 60% of spending — mostly housing, groceries and utilities.\n- **Everyday spending is the biggest discretionary chunk** at about a third of everything you spent. Family clothing, fast food, restaurants and travel agencies are the top items there.\n- **Unexpected costs** added up to almost €1,000, led by pharmacies and a hardware-store purchase.\n- You **didn’t move anything to savings** in this period, and only €180.83 was left over after all spending.\n\nIf you’d like, I can dig deeper into any of these baskets (for example, list the individual everyday transactions) or show you how cutting back on one category — like restaurants or fast food — would affect your savings over the next year.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {
+      "period": "last_3_months"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 5.34
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00026",
+   "case": "peers_restaurants",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Yes — you spend more on restaurants than most people your age.\n\nHere's how you compare (monthly averages, Oct 2025 – Sep 2026):\n\n| | You | Peer median (ages 35–44) |\n|---|---|---|\n| Restaurants per month | €324.11 | €183.25 |\n\n- You spend about **€140.86 more per month** than the median person in your age group.\n- You're in the top quartile: you spend more than roughly **76% of your peers**.\n- The middle half of your peers spend between €96.88 and €316.55 per month on restaurants — you're just above that range.\n\nSo restaurant spending is one area where you're notably above average for your age group.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "compare_with_peers",
+     "arguments": {
+      "target": "Restaurants",
+      "peer_group": "age"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.76
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00026",
+   "case": "mortgage_250k",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": false,
+   "text": "Based on your current financial situation, getting a mortgage for a €250,000 home would be **challenging right now**. Here's a breakdown:\n\n## Where you stand today\n\n| Pillar | Your situation | What's typically needed |\n|--------|---------------|------------------------|\n| **Income** | €3,786/month | ~€4,508/month for this loan size |\n| **Your own money** | €5,135 (2% of price) | Typically 15% (~€36,770) |\n| **Collateral** | Home covers ~73% of loan | Typically ~85% |\n| **Money habits** | €275 left over/month, 9 days below zero last year | Steady surplus, no days below zero |\n\n## Bottom line\n\n- **Largest loan your income supports:** ~€205,657\n- **Price range with your current savings:** ~€210,792\n- **You'd need about €39,208 more of your own money** to make the €250,000 purchase work, or consider homes up to around €210,000 instead.\n\n## What would help most\n\n1. **Save more for a down payment** — reaching even 5% (€12,500) would put you ahead of nine in ten approved buyers.\n2. **Build a steadier monthly surplus** — your €275 left over is positive, but banks like to see consistent cushion with no overdraft days.\n3. **Consider a lower-priced home** — around €210,000 fits your income and savings much better.\n\nThis is guidance based on patterns from real applications, not a credit decision. Would you like to explore what a more affordable price range would look like, or see how your spending habits could free up more to save?",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_mortgage_readiness",
+     "arguments": {
+      "property_price": 250000
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 5.12
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00026",
+   "case": "biggest_payment",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Your single biggest payment last month (August 2026) was **€1,278.62** on **7 August 2026**, categorized as a **Housing payment**.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "list_transactions",
+     "arguments": {
+      "period": "last_month",
+      "sort": "amount",
+      "limit": 1
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.79
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00026",
+   "case": "more_than_earned",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Over the last six months (April–September 2026), your average monthly figures were:\n\n- **Money coming in (income):** €3,688.78  \n- **Money going out (spending):** €3,586.63  \n\nThat left an average of about **€102.15 per month** left over. You spent more than you earned in 2 of those 6 months.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_cashflow",
+     "arguments": {
+      "months": 6
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 6.82
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00063",
+   "case": "taxis_last_month",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spent **€0.00** on taxis last month (August 2026). There were no taxi transactions during that period.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "subcategory": "Taxis"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.08
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00063",
+   "case": "groceries_last_month_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Käytit ruokaostoksiin (Groceries) viime kuussa, elokuussa 2026, **71,60 euroa**. Ostoksia oli yksi, ja summa oli 20,1 % kaikista viime kuukauden menoistasi.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "category": "Groceries"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.4
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00063",
+   "case": "restaurants_this_year_sv",
+   "lang": "sv",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Du har lagt **276,55 €** på restauranger i år (2026 hittills, 1 januari–30 september). Det är 27 transaktioner, med ett genomsnitt på ungefär 10,24 € per gång.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "this_year",
+      "category": "Restaurants"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.72
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00063",
+   "case": "safe_this_week",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Based on your current situation (as of 2026-09-30):\n\n**This week (until Sunday, 4 October):**\n- **Safe to spend:** €128.82\n- Your usual spending this week: about €21.07\n\n**Until your next payday (15 October):**\n- **Safe to spend:** €450.86 total (about €32.20 per day)\n\nYou're in a **comfortable** position — your balance can cover upcoming bills and groceries, and you still have room for everyday spending. If you keep spending at your usual pace, you could also set aside about €370 toward savings.\n\nWould you like to check whether a specific purchase fits within this week's budget?",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.24
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00063",
+   "case": "safe_this_week_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Tällä viikolla (tänään 30.9. – sunnuntaihin 4.10. mennessä) voit turvallisesti käyttää noin **128,82 euroa** jokapäiväisiin menoihin.\n\nTämä lasketaan palkkapäiväsi (15.10.) asti olevasta turvallisesta kulutusbudjetista, josta on vähennetty odotetut laskut ja säästötavoite. Päiväkohtaisesti se on noin **32 euroa päivässä**.\n\nTilanteesi on mukava: sinulla on katetta ja kulutuksesi on ollut tavanomaista maltillisempaa.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.37
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00063",
+   "case": "dining_minus_20",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "If you cut your dining-out spending by 20%, you could save about **€4.25 per month**, or **€51 over the next 12 months**.\n\nHere’s the breakdown based on your spending from April to September 2026:\n\n- **Current dining-out spend:** ~€21.26 per month (about 2.8 payments/month)\n- **After a 20% reduction:** ~€17.01 per month\n- **Monthly saving:** €4.25\n- **Yearly saving:** €51.02\n\nThis would also nudge your savings rate up slightly, from 17.7% to 18.0% of income.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Restaurants",
+      "change_pct": -20,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.01
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00063",
+   "case": "entertainment_halved",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "If you halved your entertainment spending, here’s what it would look like:\n\n- **Current entertainment spend:** about €5.32 per month (roughly 0.8 payments a month)\n- **After halving:** about €2.66 per month\n- **Monthly saving:** €2.66\n- **Saving over 12 months:** €31.92\n\nYour monthly money left over would rise from €327.90 to €330.56, and your savings rate would edge up from 17.7% to 17.9%.\n\nEntertainment is a small part of your overall spending (about 0.3%), so halving it saves a modest amount each month — but it’s still an easy win if you want to free up a little extra cash.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Entertainment",
+      "change_pct": -50,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.92
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00063",
+   "case": "spender_type",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Based on your spending over the last year (Oct 2025 – Sep 2026), here's your spender profile:\n\n## 🏷️ Your spender type: **Month-End Stretcher**\n\nYour money often runs out before the month does — you've had **33 days below zero balance** in the past year, and **4 months where you spent more than you earned**.\n\n## 📊 Your monthly averages\n\n| | Amount |\n|---|---|\n| Income | €1,878.88 |\n| Spending | €1,576.06 |\n| Regular essentials | €1,204.54 |\n| Unexpected necessities | €58.37 |\n| Everyday spending | €313.15 |\n| Invested | €196.91 |\n| Left over | €302.82 |\n\nYou invest regularly and still manage to save about **16% of your income** — better than most of your peers (aged 35–44).\n\n## 🎯 Your habits\n\n- **Essentials take 64% of your income** — that's the biggest chunk.\n- **Everyday spending is 20% of your total spending**, lower than the typical peer (26%).\n- You make about **1 small everyday purchase per week** (€31.52/month total) — more frequent than most peers.\n- **23% of your everyday spending happens on weekends.**\n- **12% of everyday spending goes to restaurants.**\n- Your top everyday categories: Lifestyle (€152/month), Home & Tech (€55/month), Entertainment (€52/month).\n\n## 💡 Tip\n\nStart with **timing, not cutting**: line your bills up right after payday and keep a small buffer for the last week of the month. That should help you stretch further without needing to cut back.\n\nWould you like to see how you compare with peers in a specific area, or explore what you could save by adjusting one category?",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spender_profile",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 9.6
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00063",
+   "case": "where_did_money_go",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Over the last three months (1 July – 30 September 2026), here’s where your money really went:\n\n## The big picture\n- **Income:** €5,508.45 (about €1,822/month)\n- **Total spending:** €4,005.69 (about €1,325/month)\n- **Moved to savings:** €577.28\n- **Left over:** €925.48\n\n## The three baskets\n\n| Basket | Total | Share of spending | Share of income | Monthly average |\n|--------|-------|-------------------|-----------------|-----------------|\n| 🏠 **Regular essentials** | €3,457.01 | 86.3% | 62.8% | €1,143.73 |\n| 🔧 **Unexpected necessities** | €74.70 | 1.9% | 1.4% | €24.71 |\n| ☕ **Everyday spending** | €473.98 | 11.8% | 8.6% | €156.81 |\n\n### Regular essentials (86% of spending)\nThis is the dominant chunk — mostly fixed, predictable costs:\n- **Housing payment:** €2,170.68 (2 transactions)\n- **Fuel pumps:** €296.05 (7 transactions)\n- **Utility bills:** €288.87 (9 transactions)\n- **Service stations:** €199.54 (5 transactions)\n\n### Unexpected necessities (2% of spending)\nSmall and irregular:\n- **Pharmacies:** €60.53 (2 transactions)\n- **Medical services:** €14.17 (1 transaction)\n\n### Everyday spending (12% of spending)\nYour discretionary choices — the things that “slip through the fingers”:\n- **Family clothing:** €82.66 (2 transactions)\n- **Miscellaneous retail:** €78.77 (1 transaction)\n- **Hobby, toy and game shops:** €65.56 (1 transaction)\n- **Restaurants:** €59.86 (10 transactions)\n\n### Small everyday purchases\nYou made **20 purchases under €15**, totalling **€104.66** — about **€1.50 per week** in tiny everyday buys.\n\n## Bottom line\nMost of your money goes to predictable essentials (housing, fuel, utilities). Your everyday spending is modest at around €157/month, and unexpected costs were very low. You saved €577 over the quarter and still had €925 left over — so you’re living comfortably within your means.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {
+      "period": "last_3_months"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 5.81
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00063",
+   "case": "peers_restaurants",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": false,
+   "text": "No — you actually spend **less** on restaurants than most people your age.\n\nHere's how you compare (monthly average, Oct 2025 – Sep 2026):\n\n| | You | Peer median (ages 35–44) |\n|---|---|---|\n| Restaurants per month | €38.54 | €183.25 |\n\n- You spend about **€145 less per month** than the typical person in your age group.\n- You're in the bottom **7%** — meaning 93% of your peers spend more on restaurants than you do.\n- The middle half of your peers spend between roughly €97 and €317 per month on restaurants.\n\nSo restaurant spending isn't an area where you're overspending relative to your age group — quite the opposite.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "compare_with_peers",
+     "arguments": {
+      "target": "Restaurants",
+      "peer_group": "age"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.4
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00063",
+   "case": "mortgage_250k",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Based on your current situation, getting a mortgage for a **€250,000 home is not realistic right now**. Here's what the data shows:\n\n## Your position for a €250,000 home\n- **Loan needed:** €243,465 (you'd put in €6,535, about 3% of the price)\n- **Your monthly income:** €1,879 on average\n- **Monthly left over:** €303\n- **Balance today:** €1,855\n\n## Four key checks — none look strong yet\n\n| Pillar | Where you are | What's typically needed |\n|--------|---------------|------------------------|\n| **Income** | €1,879/month | About €4,482/month for this loan size |\n| **Your own money** | €6,535 (3% of price) | Approved buyers typically put in 15% (~€36,770) |\n| **Collateral** | Home covers ~74% of the loan | Typically needs to cover ~85% |\n| **Money habits** | €303 left over/month, 33 days below zero last year | Steady surplus, no days below zero |\n\n## What would matter most\n\n1. **Income gap:** With your income, the largest loan that fits is about **€102,065** — far short of the €243,465 needed.\n2. **Own money:** You'd need roughly **€30,235 more** to reach the typical 15% down payment.\n3. **Collateral gap:** About **€63,976** short — you'd need extra collateral, a guarantee, or more of your own money.\n4. **Savings pace:** At your current saving rate, reaching the typical down payment would take about **100 months**.\n\n## More realistic price range\nWith your current own money and income, homes up to about **€108,600** are in range.\n\n## Other costs to plan for\n- Renovation: ~€15,000\n- Transfer tax: ~€6,500\n- Valuation fee: ~€350\n- Maintenance fee: ~€330/month\n- Bank fee: ~€200\n\nThis is guidance based on 200 real applications in the data — not a credit decision. Would you like to look at a lower price point, or explore what changes would most improve your readiness?",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_mortgage_readiness",
+     "arguments": {
+      "property_price": 250000
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 5.16
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00063",
+   "case": "biggest_payment",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Your single biggest payment last month (August 2026) was **€71.60** at a supermarket (Groceries category) on 8 August 2026.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "list_transactions",
+     "arguments": {
+      "period": "last_month",
+      "sort": "amount",
+      "limit": 1
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 5.25
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00063",
+   "case": "more_than_earned",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Over the last six months (April–September 2026), your average monthly figures were:\n\n- **Income coming in:** €1,850.11  \n- **Spending going out:** €1,522.21  \n\nThat left an average of **€327.90 per month** going to savings/net.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_cashflow",
+     "arguments": {
+      "months": 6
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.51
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00076",
+   "case": "taxis_last_month",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spent **€0.00** on taxis last month (August 2026). There were no taxi transactions in that period.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "subcategory": "Taxis"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.24
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00076",
+   "case": "groceries_last_month_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Käytit ruokaostoksiin (Groceries) viime kuussa, elokuussa 2026, **480,16 euroa** (7 ostosta, keskimäärin 68,59 € ostoa kohden).\n\nVertailuksi heinäkuussa ruokaostoksiin meni 412,74 €, joten kulutus kasvoi 67,42 € (16,3 %).",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "category": "Groceries"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.57
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00076",
+   "case": "restaurants_this_year_sv",
+   "lang": "sv",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Du har lagt **3 624,70 €** på restauranger i år (2026-01-01 till 2026-09-30).\n\nDet är 70 transaktioner, med ett genomsnitt på ungefär 51,78 € per besök. Restaurangutgifterna står för cirka 10,2 % av alla dina utgifter hittills i år.\n\nJämfört med motsvarande period förra året (april–december 2025) har du ökat restaurangspenderingen med 57,7 %.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "this_year",
+      "category": "Restaurants"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.68
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00076",
+   "case": "safe_this_week",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": false,
+   "text": "Based on your current pay period (salary expected 15 Oct), here's what's safe to spend:\n\n**This week (until Sunday 4 October):** €40.24  \n**Per day this week:** about €10\n\n**Until payday (15 October):** €140.85 total, or about €10 per day.\n\nYour status is flagged as **tight** — your everyday budget for this pay period is €494.14, and you've already spent €353.29 since 15 September, leaving €140.85. Your usual everyday spending is running higher than what's left, so it's worth holding back on non-essentials this week.\n\nYour balance today is €9,423.96, but bills and groceries/transport due before payday total about €1,983, so most of that balance is already spoken for.\n\nWould you like me to check whether a specific purchase you're considering would fit within this week's safe-to-spend amount?",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.52
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00076",
+   "case": "safe_this_week_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Tällä viikolla (4 päivää jäljellä, sunnuntaihin 4.10. asti) turvallinen kulutus on noin **40,24 €**.\n\nTämä on laskettu siten, että se ei syö palkan odotettua määrää ennen seuraavaa palkkapäivää (15.10.) eikä jätä kattamatta tärkeitä laskuja ja välttämättömiä menoja.\n\n**Muuta hyödyllistä tietoa:**\n- Päiväkohtainen turvallinen kulutus tällä viikolla: noin **10 €/päivä**\n- Tavanomainen viikkokulutuksesi on ollut noin **169,51 €**, joten tällä viikolla budjetti on huomattavasti tiukempi kuin tavallisesti\n- Kokonaisuudessaan palkkakauden loppuun asti (14 päivää) turvallista kuluttaa noin **140,85 €**\n\nTilanne on tällä hetkellä **tiukka**, joten kannattaa harkita tarkasti, mihin rahat käyttää tällä viikolla.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 5.15
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00076",
+   "case": "dining_minus_20",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "If you cut your dining out (Restaurants) spending by 20%, here’s what it would look like:\n\n- **Monthly saving:** about **€69.59**\n- **Yearly saving:** about **€835.10**\n\nThat’s based on your average restaurant spending of roughly €348 per month over the last six months (April–September 2026). Reducing it by 20% would bring it down to about €278 per month.\n\nIt would also nudge your savings rate from about -1.8% to -0.1% — meaning you’d be much closer to breaking even each month.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Restaurants",
+      "change_pct": -20,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.59
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00076",
+   "case": "entertainment_halved",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": false,
+   "text": "If you halved your entertainment spending, here’s what would change:\n\n- **Monthly entertainment spend:** €170 → €85 (saving €85/month)\n- **Yearly saving:** about **€1,020**\n- **Monthly leftover:** would go from **–€73** (you’re currently spending more than you earn) to **+€12** — so you’d move from a small monthly deficit to a slight surplus.\n- **Savings rate:** from –1.8% to +0.3% of income.\n\nIn short, cutting entertainment in half would save you roughly €85 a month and just over €1,000 a year, and it would flip your monthly budget from slightly negative to slightly positive.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Entertainment",
+      "change_pct": -50,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.04
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00076",
+   "case": "spender_type",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Based on your spending over the last 12 months (Oct 2025 – Sep 2026), you’re a **Big-Ticket Spender**.\n\nHere’s what that means:\n\n- **Your everyday spending is driven by a few large purchases, not by small ones.**  \n  42% of your everyday spending comes from purchases of €300 or more. Skipping coffees won’t move the needle — planning those two or three big purchases a year will.\n\n- **Monthly picture (average):**\n  - Income: €4,086\n  - Spending: €4,195\n  - Left over: –€109 (you’re spending slightly more than you earn on average)\n  - Days below zero balance: 0\n\n- **Where your money goes (basket shares):**\n  - Regular essentials (housing, utilities, groceries, etc.): 64.7%\n  - Unexpected necessities: 8.6%\n  - Everyday spending: 26.7%\n\n- **Top everyday categories:** Restaurants (€362/month), Lifestyle (€305/month), Travel (€239/month)\n\n- **Compared with peers aged 35–44:** You spend a similar share on everyday items, but you’re saving less than the typical peer (–2.7% left over vs. +7.0% median).\n\n**Tip:** Focus on planning and timing your big-ticket purchases rather than worrying about small everyday treats.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spender_profile",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.69
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00076",
+   "case": "where_did_money_go",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": false,
+   "text": "Over the last three months (1 Jul – 30 Sep 2026), here’s where your money really went:\n\n## The big picture\n- **Income:** €12,885.35 (about €4,263/month)\n- **Spending:** €13,383.59 (about €4,428/month)\n- **Left over:** –€498.24 — you spent roughly €498 more than you earned across the quarter.\n\n## The three baskets\n\n| Basket | Total | Share of spending | Monthly avg | What it means |\n|--------|-------|-------------------|-------------|---------------|\n| 🏠 **Regular essentials** | €8,209.08 | 61.3% | €2,716 | Mandatory & predictable |\n| 🔧 **Unexpected necessities** | €1,287.64 | 9.6% | €426 | Mandatory but irregular |\n| ☕ **Everyday spending** | €3,886.87 | 29.0% | €1,286 | Your own choice |\n\n### Regular essentials (€8,209.08)\nTop items:\n- **Housing payment:** €3,966.49 (3 payments)\n- **Supermarkets:** €1,946.75 (27 payments)\n- **Utility bills:** €667.62 (9 payments)\n- **Transportation (no card):** €422.57 (9 payments)\n\n### Unexpected necessities (€1,287.64)\nTop items:\n- **Medical services:** €758.01 (2 payments)\n- **Doctors:** €468.27 (3 payments)\n- **Pharmacies:** €61.36 (1 payment)\n\nLargest unexpected costs:\n- €547.80 — Medical services (13 Sep)\n- €301.27 — Doctors (28 Sep)\n- €210.21 — Medical services (2 Sep)\n\n### Everyday spending (€3,886.87)\nTop items:\n- **Book stores:** €1,389.43 (1 payment — a big one-off)\n- **Restaurants:** €920.08 (8 payments)\n- **Travel agencies:** €418.96 (1 payment)\n- **Theatre and tickets:** €357.24 (3 payments)\n\n## What stands out\n- You’re **spending more than you earn** this quarter (–€498).\n- **Essentials** take up about two-thirds of your spending, mostly housing and groceries.\n- **Everyday spending** is nearly a third of your outgoings — restaurants and that large book-store purchase are the biggest chunks.\n- **Unexpected medical costs** added up to nearly €1,300, which is a notable irregular hit.\n\nIf you’d like, I can dig deeper into any of these categories, compare your spending with peers, or look at what you could safely spend or save going forward.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {
+      "period": "last_3_months"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 6.46
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00076",
+   "case": "peers_restaurants",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": false,
+   "text": "Yes — you spend more on restaurants than most people your age.\n\nHere's how you compare (monthly averages over the last 12 months, Oct 2025 – Sep 2026):\n\n| | You | Peer median (ages 35–44) |\n|---|---|---|\n| Restaurants per month | €362 | €183 |\n\n- You spend about **€179 more per month** than the median person your age.\n- You're in the top **19%** — you spend more than roughly **81%** of your peers.\n- The middle half of your peers spend between about €97 and €317 per month on restaurants, so you're above even the upper end of that typical range.\n\nIf you'd like, I can look at your actual restaurant transactions or show what you'd save if you cut restaurant spending by a certain percentage.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "compare_with_peers",
+     "arguments": {
+      "target": "Restaurants",
+      "peer_group": "age"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 7.47
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00076",
+   "case": "mortgage_250k",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Based on your current financial situation, getting a mortgage for a €250,000 home would be **challenging right now**. Here's what the data shows:\n\n## Your situation vs. what's typically needed\n\n| Pillar | You | Typically needed | Status |\n|--------|-----|------------------|--------|\n| **Monthly income** | €4,086 | ~€4,429 | Close |\n| **Your own money** | €9,424 (4% of price) | ~€36,770 (15%) | Not yet |\n| **Collateral** | Home covers ~75% of loan | Typically ~85% | Not yet |\n| **Money habits** | €-109 left over monthly | Steady surplus | Not yet |\n\n## Key takeaways\n\n- **Income**: Your income supports a loan of about **€221,986**, which is €18,590 short of the €240,576 you'd need for this home.\n- **Down payment**: You have €9,424 saved, but approved buyers typically put in at least 15% (€36,770 here). Nine in ten approved buyers put in at least 5%.\n- **Collateral**: The home would cover about 75% of the loan, but banks typically want collateral covering ~85%.\n- **Monthly cash flow**: You're currently spending €109 more than you earn each month, which banks view as a risk.\n\n## What would help most\n\n1. **Save more of your own money** — bringing an additional ~€18,590 would let the loan fit your income, or you could look at homes up to about **€231,410** with your current savings.\n2. **Build a monthly surplus** — turning that €-109 into a positive buffer would strengthen your application.\n3. **Consider extra collateral or a guarantee** to cover the collateral gap of about €61,087.\n\n## Other costs to plan for\n\nBeyond the purchase price, you'd also need to budget for:\n- Renovation: ~€15,000\n- Transfer tax: ~€6,500\n- Valuation fee: ~€350\n- Maintenance fee: ~€330/month\n- Bank fee: ~€200\n\nThis is guidance based on 200 real applications, not a credit decision. Would you like to explore what price range works better with your current savings, or look at how to build up your down payment?",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_mortgage_readiness",
+     "arguments": {
+      "property_price": 250000
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 6.02
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00076",
+   "case": "biggest_payment",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Your single biggest payment last month (August 2026) was **€1,275.28** on **3 August 2026**, categorized as a Housing payment (Regular essentials).",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "list_transactions",
+     "arguments": {
+      "period": "last_month",
+      "sort": "amount",
+      "limit": 1
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.39
+  },
+  {
+   "system": "model-minimal",
+   "customer_id": "CUST00076",
+   "case": "more_than_earned",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Over the last six months (April–September 2026), your monthly averages were:\n\n- **Income coming in:** €4,048.17 per month  \n- **Spending going out:** €4,121.15 per month  \n\nThat’s an average net of **–€72.98 per month** — you spent slightly more than you earned on average over this period.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_cashflow",
+     "arguments": {
+      "months": 6
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.44
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00026",
+   "case": "taxis_last_month",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": false,
+   "grounded": true,
+   "text": "You spent nothing on taxis last month (August 2026).",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "subcategory": "Taxis"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.24
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00026",
+   "case": "groceries_last_month_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Käytit ruokaostoksiin elokuussa 350,64 euroa. Se on 34,66 euroa enemmän kuin heinäkuussa.\n\nSeuraavaksi voit tarkistaa, mahtuuko ruokabudjetti turvallisesti viikon menoihin.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "category": "Groceries"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.59
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00026",
+   "case": "restaurants_this_year_sv",
+   "lang": "sv",
+   "tool": true,
+   "args": false,
+   "answer": true,
+   "grounded": true,
+   "text": "Du har lagt 3 125,02 euro på restauranger i år, i 80 köp. Det är 9,7 procent av alla dina utgifter i år. Vill du se hur det jämförs med tidigare månader?",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "2026",
+      "category": "Restaurants"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.37
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00026",
+   "case": "safe_this_week",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You can safely spend EUR 139.96 this week until 4 October. That's EUR 34.99 per day, and you're on track. Your usual weekly spending is EUR 156.06, so you're slightly above your safe amount.\n\nA concrete next step: try keeping everyday purchases under EUR 35 a day until Sunday.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.51
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00026",
+   "case": "safe_this_week_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Tällä viikolla voit turvallisesti käyttää 139,96 euroa. Se on 34,99 euroa päivässä sunnuntaihin 4.10. asti. Jos haluat säästää, voit nostaa summaa tai jättää käyttämättä — seuraava palkkapäivä on 15.10.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.79
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00026",
+   "case": "dining_minus_20",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You could save EUR 64.47 a month, EUR 773.67 over a year, by cutting dining out by 20%. Your monthly spending on restaurants would drop from EUR 322.36 to EUR 257.89, and your savings rate would rise from 2.8% to 4.5%.\n\nOne concrete next step: try eating out one fewer time each month and put the difference straight into savings.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Restaurants",
+      "change_pct": -20,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.18
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00026",
+   "case": "entertainment_halved",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Halving your entertainment spending would save you EUR 106.87 a month, or EUR 1,282.43 over the next year. Your money left over each month would rise from EUR 102.15 to EUR 209.02, and your savings rate would roughly double from 2.8% to 5.7%.\n\nA concrete next step: pick one entertainment cost you could skip or swap for a cheaper option this month.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Entertainment",
+      "change_pct": -50,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 6.71
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00026",
+   "case": "spender_type",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You're a Balanced Navigator — your essentials, surprises and everyday spending are in proportion, with no single habit dominating. You spend about EUR 3,510.70 a month and have about EUR 275.17 left over each month after spending.\n\nCompared with other customers aged 35–44, you spend a slightly larger share on everyday things and make fewer small purchases per week. You've had 9 days below zero balance in the past year.\n\nA concrete next step: set up a fixed monthly savings transfer right after payday — even a small amount builds a buffer over time.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spender_profile",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.03
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00026",
+   "case": "where_did_money_go",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Over the last three months (1 July to 30 September), you spent 11,005.28 euros against income of 11,186.11 euros, leaving 180.83 euros left over.\n\nRegular essentials took 6,506.30 euros (59.1% of spending), mostly housing at 3,990.74 euros and supermarkets at 956.88 euros. Unexpected necessities came to 951.15 euros, led by pharmacies at 365.49 euros. Everyday spending was 3,547.83 euros, with family clothing at 652.48 euros and fast food at 481.06 euros the biggest items.\n\nA concrete next step: look at your family clothing and fast food spending — those are your own choices and the easiest place to free up money.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {
+      "period": "last_3_months"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 8.98
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00026",
+   "case": "peers_restaurants",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": false,
+   "text": "Yes — you spend EUR 324.11 a month on restaurants on average, which is EUR 140.86 more than the median for people your age (EUR 183.25). You spend more than about 76% of your peers.\n\nOne concrete next step: try cutting restaurant spending by 20% and see what that would save you over a year.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "compare_with_peers",
+     "arguments": {
+      "target": "Restaurants",
+      "peer_group": "age"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.17
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00026",
+   "case": "mortgage_250k",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Based on your situation, a 250,000 euro home is not within reach right now. Your income supports a loan of about 205,657 euros, and with your 5,135 euros of savings you could look at homes up to about 210,792 euros. You would need roughly 39,208 euros more of your own money, or a lower-priced home, to make it work.\n\nThis is guidance, not a credit decision. A concrete next step: set up a regular savings transfer toward your home deposit so it grows steadily.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_mortgage_readiness",
+     "arguments": {
+      "property_price": 250000
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.1
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00026",
+   "case": "biggest_payment",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Your single biggest payment last month was EUR 1,278.62 on 7 August, a housing payment (rent or mortgage).",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "list_transactions",
+     "arguments": {
+      "period": "last_month",
+      "sort": "amount",
+      "limit": 1
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.63
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00026",
+   "case": "more_than_earned",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "On average over the last six months, EUR 3,688.78 came in and EUR 3,586.63 went out each month, leaving EUR 102.15 left over. You spent more than you earned in two of those months.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_cashflow",
+     "arguments": {
+      "months": 6
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.33
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00063",
+   "case": "taxis_last_month",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spent EUR 0.00 on taxis last month (August 2026).",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "subcategory": "Taxis"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.18
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00063",
+   "case": "groceries_last_month_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Käytit ruokaostoksiin viime kuussa 71,60 euroa. Se on 20,1 prosenttia kaikesta elokuun kulutuksestasi. Edelliseltä kuulta summa kasvoi 69,29 euroa.\n\nJos haluat, voin tarkastella, mihin ruokamenot jakautuvat, tai arvioida, miten paljon voisit säästää karsimalla niitä.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "category": "Groceries"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.88
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00063",
+   "case": "restaurants_this_year_sv",
+   "lang": "sv",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": false,
+   "text": "Du har lagt 276,55 euro på restauranger i år hittills, i 27 köp. Det är i genomsnitt 30,83 euro i månaden.\n\nOm du vill kan jag räkna ut hur mycket du skulle spara om du minskade restaurangbesöken med till exempel 20 procent under nästa år.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "category": "Restaurants",
+      "period": "this_year"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.5
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00063",
+   "case": "safe_this_week",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You can safely spend EUR 128.82 this week, until 4 October. That leaves EUR 450.86 for everyday spending until your next payday on 15 October, after housing, bills, groceries, transport, savings and a buffer for unexpected costs. Your balance today is EUR 1854.56.\n\nA concrete next step: keep everyday spending under about EUR 32 per day until payday.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.52
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00063",
+   "case": "safe_this_week_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Voit turvallisesti käyttää tällä viikolla 128,82 euroa jokapäiväisiin menoihin. Se on 32,20 euroa päivässä, ja raha riittää sunnuntaihin 4.10. asti.\n\nJos haluat tarkistaa jonkin tietoisen hankinnan, kerro hinta ja mitä ostit, niin lasken, mahtuuko se budjettiin.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.5
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00063",
+   "case": "dining_minus_20",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You could save EUR 4.25 a month, or EUR 51.02 over a year, by cutting dining out by 20%. Your monthly spending on restaurants is currently EUR 21.26, so it would drop to EUR 17.01.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Restaurants",
+      "change_pct": -20,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.48
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00063",
+   "case": "entertainment_halved",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Halving your entertainment spending would save you EUR 2.66 per month, or EUR 31.92 over a year. Your monthly money left over would rise from EUR 327.90 to EUR 330.56.\n\nEntertainment is a small part of your spending — about EUR 5.32 a month across less than one payment a month — so the effect is modest. If you want a bigger impact, we could look at another everyday category instead.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Entertainment",
+      "change_pct": -50
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.76
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00063",
+   "case": "spender_type",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You're a Month-End Stretcher: your money often runs out before the month does. You spend about EUR 1,576 a month against EUR 1,879 income, leaving about EUR 303 left over, and your balance dipped below zero on 33 days in the past year.\n\nYou keep everyday spending lower than most peers your age and save more than most, but timing is the issue — bills and spending outpace income in several months. Try lining up your bills right after payday and keeping a small buffer for the last week of the month.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spender_profile",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.9
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00063",
+   "case": "where_did_money_go",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Over the last three months (1 July to 30 September), you spent EUR 4,005.69 in total. Most of it went to regular essentials — EUR 3,457.01, mainly housing (EUR 2,170.68), fuel (EUR 296.05) and utility bills (EUR 288.87). Unexpected necessities were EUR 74.70, mostly pharmacies. Everyday spending was EUR 473.98, with restaurants (EUR 59.86 across 10 visits) and clothing (EUR 82.66) the biggest parts.\n\nYou earned EUR 5,508.45, moved EUR 577.28 to savings, and had EUR 925.48 left over.\n\nA concrete next step: look at your 20 small everyday purchases under EUR 15 — they added up to EUR 104.66 over three months.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {
+      "period": "last_3_months"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 4.12
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00063",
+   "case": "peers_restaurants",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": false,
+   "text": "No, you spend less on restaurants than other people your age. You spend EUR 38.54 a month on average, while the median for people aged 35–44 is EUR 183.25 — you spend less than about 93% of your peers.\n\nIf you'd like, I can show you where your everyday spending goes overall, or help you set a restaurant budget.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "compare_with_peers",
+     "arguments": {
+      "target": "Restaurants",
+      "peer_group": "age"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.04
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00063",
+   "case": "mortgage_250k",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Based on your situation, a 250,000 euro home is not within reach right now. Your monthly income of 1,879 euros supports a loan of about 102,065 euros, and with your own money of 6,535 euros, homes up to about 108,600 euros fit better. You'd need roughly 141,400 euros more of your own money, or a much lower-priced home, to make the numbers work. This is guidance, not a credit decision.\n\nA concrete next step: look at homes up to about 108,600 euros, or build up your own money before applying.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_mortgage_readiness",
+     "arguments": {
+      "property_price": 250000
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.34
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00063",
+   "case": "biggest_payment",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Your single biggest payment last month was EUR 71.60 at a supermarket on 8 August.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "list_transactions",
+     "arguments": {
+      "period": "last_month",
+      "sort": "amount",
+      "limit": 1
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.94
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00063",
+   "case": "more_than_earned",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "On average over the last six months, EUR 1,850.11 came in and EUR 1,522.21 went out each month. That left EUR 327.90 on average, though in three of those six months spending was higher than income.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_cashflow",
+     "arguments": {
+      "months": 6
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.34
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00076",
+   "case": "taxis_last_month",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spent EUR 0.00 on taxis last month (August 2026).",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "subcategory": "Taxis"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.08
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00076",
+   "case": "groceries_last_month_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Käytit ruokaostoksiin elokuussa 480,16 euroa. Se on 67,42 euroa enemmän kuin heinäkuussa.\n\nSeuraavaksi voit tarkistaa, mahtuuko ruokabudjetti turvallisesti viikkokuluihisi.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "category": "Groceries"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.41
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00076",
+   "case": "restaurants_this_year_sv",
+   "lang": "sv",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Du har lagt 3 624,70 euro på restauranger i år, i 70 köp. Det är ungefär 404 euro i månaden i genomsnitt, och 10 procent av alla dina utgifter i år.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "this_year",
+      "category": "Restaurants"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.56
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00076",
+   "case": "safe_this_week",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You can safely spend EUR 40.24 this week until 4 October. That's EUR 10.06 per day until payday on 15 October, after your essentials, savings goal and a buffer for unexpected costs. Your balance is EUR 9,423.96, but bills and groceries due before payday take most of it, so everyday room is tight.\n\nA concrete next step: track your everyday spending day by day this week so you stay within the EUR 40.24.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.82
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00076",
+   "case": "safe_this_week_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Voit turvallisesti käyttää tällä viikolla 40,24 euroa. Se on vähemmän kuin tavallinen viikkomenosi, noin 169,51 euroa, koska palkkasi riittää tällä jaksolla tiukasti. Päivittäinen turvallinen summa on 10,06 euroa seuraavaan palkkapäivään asti.\n\nJos haluat nähdä, miten paljon säästäisit pienentämällä esimerkiksi ravintolamenoja, voin laskea sen sinulle.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.87
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00076",
+   "case": "dining_minus_20",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You could save EUR 69.59 a month, EUR 835.10 over a year, by cutting dining out by 20%. Your monthly spending on restaurants would drop from EUR 347.96 to EUR 278.37, and your savings rate would move from -1.8% to -0.1%.\n\nA concrete next step: try cooking one more meal at home each week instead of eating out.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Restaurants",
+      "change_pct": -20,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.99
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00076",
+   "case": "entertainment_halved",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Halving entertainment spending would save you EUR 85 per month, about EUR 1,020 over a year. Your monthly balance would move from EUR -72.98 to EUR 12.02, so you'd go from spending more than you earn to a small surplus.\n\nA concrete next step: look at your entertainment payments from the last six months and pick one to cut or skip.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Entertainment",
+      "change_pct": -50
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.6
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00076",
+   "case": "spender_type",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You're a Big-Ticket Spender. Your everyday spending is driven by a few large purchases rather than small ones — 42% of your everyday spending comes from purchases of EUR 300 or more.\n\nOver the past year you spent EUR 4,194.99 a month on average against EUR 4,086.45 income, so you spent EUR 108.54 more than you earned each month. Essentials take 65% of your income, and you have no days below zero balance.\n\nSkipping coffees won't change your picture — planning the two or three big purchases a year will.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spender_profile",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.94
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00076",
+   "case": "where_did_money_go",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Over the last three months your money went mainly to regular essentials — EUR 8,209.08 (61% of spending), with housing payments the biggest part at EUR 3,966.49. Everyday spending came to EUR 3,886.87 (29%), including a single book store purchase of EUR 1,389.43. Unexpected necessities added EUR 1,287.64, mostly medical services and doctors.\n\nYou spent EUR 498.24 more than you earned in this period, so nothing went to savings.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {
+      "period": "last_3_months"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.79
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00076",
+   "case": "peers_restaurants",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": false,
+   "text": "Yes — you spend EUR 362 a month on restaurants on average, about EUR 179 more than the typical person your age. You spend more than 81% of your peers.\n\nOne concrete next step: try cutting restaurant spending by 20% and see what that would save you over a year.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "compare_with_peers",
+     "arguments": {
+      "target": "Restaurants",
+      "peer_group": "age"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.81
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00076",
+   "case": "mortgage_250k",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Based on your situation, a 250,000 euro home would be a stretch right now. Your income supports a loan of about 221,986 euros, and with your 9,424 euros of savings you could realistically look at homes up to about 231,410 euros. You'd also need more of your own money — approved buyers typically put in around 15 percent, while you're at 4 percent — and your monthly budget currently shows a small shortfall of 109 euros rather than a surplus.\n\nThis is guidance, not a credit decision. A concrete next step would be to build up your savings buffer and aim for a monthly surplus before applying.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_mortgage_readiness",
+     "arguments": {
+      "property_price": 250000
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.0
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00076",
+   "case": "biggest_payment",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Your single biggest payment last month was EUR 1,275.28 on 3 August, a housing payment (rent or mortgage).",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "list_transactions",
+     "arguments": {
+      "period": "last_month",
+      "sort": "amount",
+      "limit": 1
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.16
+  },
+  {
+   "system": "model-coach",
+   "customer_id": "CUST00076",
+   "case": "more_than_earned",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "On average over the last six months, EUR 4,048.17 came in and EUR 4,121.15 went out each month. That means spending was EUR 72.98 more than income on average, and in three of those six months you spent more than you earned.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_cashflow",
+     "arguments": {
+      "months": 6
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.56
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00026",
+   "case": "taxis_last_month",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spent €0 on taxis last month (August 2026).",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "subcategory": "Taxis"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.1
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00026",
+   "case": "groceries_last_month_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Käytit ruokaostoksiin elokuussa 350,64 euroa. Se on 34,66 euroa enemmän kuin heinäkuussa, jolloin summa oli 315,98 euroa.\n\nSeuraavaksi voit tarkistaa, mahtuuko ruokabudjetti turvallisesti viikkokuluihisi.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "category": "Groceries"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 4.34
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00026",
+   "case": "restaurants_this_year_sv",
+   "lang": "sv",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Du har lagt 3 125,02 euro på restauranger i år hittills, på 80 besök. Det är i genomsnitt 39,06 euro per besök och 348,42 euro i månaden. Nästa steg kan vara att jämföra med vad som känns rimligt för din budget.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "this_year",
+      "category": "Restaurants"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.7
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00026",
+   "case": "safe_this_week",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You can spend EUR 139.96 this week until 4 October. That's EUR 34.99 per day, and it leaves you EUR 489.86 until your next payday on 15 October. Your usual weekly spending is EUR 156.06, so you're slightly above your safe amount.\n\nA concrete next step: try keeping everyday purchases under EUR 35 a day this week.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.86
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00026",
+   "case": "safe_this_week_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Voit turvallisesti käyttää tällä viikolla 139,96 euroa jokapäiväisiin menoihin. Se on 34,99 euroa päivässä neljälle jäljellä olevalle päivälle.\n\nPalkkapäiväsi on 15. lokakuuta, ja sinulla on jäljellä 489,86 euroa turvallista käyttörahaa koko palkanmaksukaudelle. Jos haluat, voin tarkistaa, mahtuuko jokin tieto hankinta tälle viikolle.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.68
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00026",
+   "case": "dining_minus_20",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You could save EUR 64.47 a month, EUR 773.67 over a year, by cutting dining out by 20%. That would leave you EUR 166.62 left over each month instead of EUR 102.15.\n\nA concrete next step: try cooking one more meal at home each week instead of eating out.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Restaurants",
+      "change_pct": -20,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.2
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00026",
+   "case": "entertainment_halved",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Halving your entertainment spending would save you EUR 106.87 a month, or EUR 1,282.43 over the next year. Your money left over each month would rise from EUR 102.15 to EUR 209.02, and your savings rate would roughly double from 2.8% to 5.7%.\n\nA concrete next step: pick one entertainment subscription or outing to cut first, then move the saved amount straight into savings.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Entertainment",
+      "change_pct": -50,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.57
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00026",
+   "case": "spender_type",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You're a Balanced Navigator — your spending is evenly split across essentials, surprises and everyday choices, with no single habit dominating. Over the last year your income averaged EUR 3,785.87 a month and spending EUR 3,510.70, leaving EUR 275.17 left over each month. You spend a bit more on everyday things than similar customers, but your savings rate is about the same as theirs.\n\nA concrete next step: set up a fixed monthly transfer to savings right after payday.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spender_profile",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.62
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00026",
+   "case": "where_did_money_go",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Over the last three months you spent EUR 11,005.28 against income of EUR 11,186.11, leaving EUR 180.83. Regular essentials took EUR 6,506.30 (59%), everyday spending EUR 3,547.83 (32%), and unexpected necessities EUR 951.15 (9%). Housing payments were your biggest single item at EUR 3,990.74.\n\nA concrete next step: look at your everyday spending — family clothing (EUR 652.48), fast food (EUR 481.06) and restaurants (EUR 382.75) — and decide which of those you could trim first.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {
+      "period": "last_3_months"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.12
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00026",
+   "case": "peers_restaurants",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Yes — you spend EUR 324.11 a month on restaurants on average, which is EUR 140.86 more than the median for people your age (EUR 183.25). You spend more than 76% of your peers.\n\nA concrete next step: try cutting restaurant spending and see what that would save you over the next year.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "compare_with_peers",
+     "arguments": {
+      "target": "Restaurants",
+      "peer_group": "age"
+     }
+    }
+   ],
+   "rewritten": true,
+   "seconds": 3.95
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00026",
+   "case": "mortgage_250k",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Based on your situation, a 250,000 euro home is not within reach right now. Your income supports a loan of about 205,657 euros, and with your savings of 5,135 euros you could look at homes up to about 210,792 euros. You would need roughly 39,208 euros more of your own money, or a smaller loan, to make this purchase work. This is guidance, not a credit decision.\n\nA concrete next step: check what homes cost up to about 210,792 euros instead, and keep building your savings.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_mortgage_readiness",
+     "arguments": {
+      "property_price": 250000
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.93
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00026",
+   "case": "biggest_payment",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Your single biggest payment last month was EUR 1,278.62 on 7 August, a housing payment (rent or mortgage).",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "list_transactions",
+     "arguments": {
+      "period": "last_month",
+      "sort": "amount",
+      "limit": 1
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.2
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00026",
+   "case": "more_than_earned",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "On average over the last six months, EUR 3,688.78 came in and EUR 3,586.63 went out each month. That left about EUR 102.15 per month on average, though two of those months you spent more than you earned.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_cashflow",
+     "arguments": {
+      "months": 6
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.27
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00063",
+   "case": "taxis_last_month",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spent EUR 0.00 on taxis last month (August 2026).",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "subcategory": "Taxis"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.09
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00063",
+   "case": "groceries_last_month_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Käytit ruokaostoksiin viime kuussa (elokuussa) 71,60 euroa. Se on 20,1 prosenttia kaikesta kulutuksestasi. Edelliseltä kuulta summa kasvoi 69,29 euroa.\n\nSeuraavaksi voit tarkistaa, mahtuuko ruokabudjetti turvallisesti viikkokuluihisi.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "category": "Groceries"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.68
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00063",
+   "case": "restaurants_this_year_sv",
+   "lang": "sv",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Du har lagt 276,55 euro på restauranger i år hittills, i 27 köp. Det är i genomsnitt 30,83 euro i månaden.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "category": "Restaurants",
+      "period": "this_year"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.24
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00063",
+   "case": "safe_this_week",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You can safely spend EUR 128.82 this week until 4 October, and EUR 450.86 until your next payday on 15 October. Your balance covers upcoming bills and groceries, so you're in a comfortable position. A good next step is to keep an eye on everyday spending as the week goes on.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.25
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00063",
+   "case": "safe_this_week_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Voit turvallisesti käyttää tällä viikolla 128,82 euroa jokapäiväisiin menoihin. Se on 32,20 euroa päivässä neljälle jäljellä olevalle päivälle.\n\nPalkkapäiväsi on 15. lokakuuta, ja siihen asti turvallinen käyttövara on 450,86 euroa. Jos haluat, voin tarkistaa, mahtuuko jokin tieto hankinta tähän varaan.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.53
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00063",
+   "case": "dining_minus_20",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You could save EUR 4.25 a month, or EUR 51.02 over a year, by cutting dining out by 20%. Your spending on restaurants would drop from EUR 21.26 to EUR 17.01 per month.\n\nA concrete next step: try one fewer restaurant visit per month.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Restaurants",
+      "change_pct": -20
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.54
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00063",
+   "case": "entertainment_halved",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Halving your entertainment spending would save you EUR 2.66 a month, or EUR 31.92 over a year. Your monthly money left over would rise from EUR 327.90 to EUR 330.56.\n\nA concrete next step: pick one entertainment subscription or outing to skip each month.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Entertainment",
+      "change_pct": -50,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.58
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00063",
+   "case": "spender_type",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You're a Month-End Stretcher — your money often runs out before the month does. Over the past year you had 33 days below zero and spent more than you earned in 4 months.\n\nYou still left 16.1% of your income unspent each month on average, which is better than most peers your age. Your essentials take 76.4% of spending, everyday spending 19.9%, and unexpected necessities 3.7%.\n\nOne concrete next step: line your bills up right after payday and keep a small buffer for the last week of the month.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spender_profile",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 7.83
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00063",
+   "case": "where_did_money_go",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Over the last three months your money went mostly to regular essentials — EUR 3,457.01, about 86% of your spending. Housing alone was EUR 2,170.68. Everyday spending was EUR 473.98, and unexpected necessities were EUR 74.70. You had EUR 925.48 left over after spending and savings.\n\nA concrete next step: look at the small everyday purchases under EUR 15 — they added up to EUR 104.66 over the period.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {
+      "period": "last_3_months"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 3.05
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00063",
+   "case": "peers_restaurants",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "No — you spend less on restaurants than most people your age. Your monthly average is EUR 38.54, while the median for customers aged 35–44 is EUR 183.25. You spend less than 7% of your peers on restaurants.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "compare_with_peers",
+     "arguments": {
+      "target": "Restaurants",
+      "peer_group": "age"
+     }
+    }
+   ],
+   "rewritten": true,
+   "seconds": 3.46
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00063",
+   "case": "mortgage_250k",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Based on your situation, a 250,000 euro home is not within reach right now. Your income supports a loan of about 102,000 euros, and with your savings of 6,535 euros you could look at homes up to about 108,600 euros. You'd also need more savings for the typical 15% down payment and to cover the collateral gap.\n\nThis is guidance, not a credit decision. A concrete next step would be to build your savings buffer before applying.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_mortgage_readiness",
+     "arguments": {
+      "property_price": 250000
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.76
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00063",
+   "case": "biggest_payment",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Your single biggest payment last month was EUR 71.60 at a supermarket on 8 August.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "list_transactions",
+     "arguments": {
+      "period": "last_month",
+      "sort": "amount",
+      "limit": 1
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.13
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00063",
+   "case": "more_than_earned",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "On average over the last six months, EUR 1,850.11 came in and EUR 1,522.21 went out each month. That left EUR 327.90 on average, though in three of those six months spending was higher than income.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_cashflow",
+     "arguments": {
+      "months": 6
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.31
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00076",
+   "case": "taxis_last_month",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You spent EUR 0.00 on taxis last month (August 2026).",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "subcategory": "Taxis"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.19
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00076",
+   "case": "groceries_last_month_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Käytit ruokaostoksiin elokuussa 480,16 euroa. Se on 67,42 euroa enemmän kuin heinäkuussa.\n\nSeuraavaksi voit tarkistaa, mahtuuko ruokabudjetti turvallisesti viikon menoihin.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "last_month",
+      "category": "Groceries"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.8
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00076",
+   "case": "restaurants_this_year_sv",
+   "lang": "sv",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Du har lagt 3 624,70 euro på restauranger i år hittills, fördelat på 70 besök. Det är i genomsnitt 404,13 euro i månaden.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spending",
+     "arguments": {
+      "period": "this_year",
+      "category": "Restaurants"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.21
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00076",
+   "case": "safe_this_week",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You can spend 40.24 euros this week until 4 October. That's your safe everyday budget after salary, bills, groceries, transport, savings and your buffer for unexpected costs. Your balance is 9423.96 euros, but most of it is already committed before payday on 15 October.\n\nA concrete next step: track your everyday spending this week so you stay within the 40.24 euros.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.7
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00076",
+   "case": "safe_this_week_fi",
+   "lang": "fi",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Tällä viikolla turvallisesti käytettävissä on 40,24 euroa sunnuntaihin 4.10. mennessä. Se on alle puolet tavanomaisesta viikkomenostasi, joka on ollut 169,51 euroa. Palkkapäivään asti turvallinen kokonaissumma on 140,85 euroa.\n\nKannattaa pitää kiinni viikkorajasta, jotta rahat riittävät palkkapäivään saakka.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_safe_to_spend",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.66
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00076",
+   "case": "dining_minus_20",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You could save EUR 69.59 a month, EUR 835.10 over a year, by cutting dining out by 20%. Your monthly spending on restaurants would drop from EUR 347.96 to EUR 278.37.\n\nA concrete next step: try cooking one extra meal at home each week instead of eating out.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Restaurants",
+      "change_pct": -20,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.62
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00076",
+   "case": "entertainment_halved",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Halving entertainment spending would save you EUR 85 per month, about EUR 1,020 over a year. Your monthly balance would move from EUR -72.98 to EUR 12.02 left over, and your savings rate would go from -1.8% to 0.3%.\n\nA concrete next step: look at your entertainment payments from the last six months and pick the ones you could skip or replace with a cheaper option.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "simulate_change",
+     "arguments": {
+      "target": "Entertainment",
+      "change_pct": -50,
+      "months": 12
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.83
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00076",
+   "case": "spender_type",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "You're a Big-Ticket Spender. Your everyday spending is driven by a few large purchases rather than small ones — 42% of your everyday spending comes from purchases of EUR 300 or more.\n\nOver the last 12 months you spent EUR 4,194.99 against income of EUR 4,086.45, so you spent EUR 108.54 more than you earned on average each month. Skipping coffees won't change your picture; planning the two or three big purchases a year will.\n\nA concrete next step: before any purchase over EUR 300, wait a few days and check whether it fits your budget for the rest of the month.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_spender_profile",
+     "arguments": {}
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.66
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00076",
+   "case": "where_did_money_go",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Over the last three months your money went mainly to regular essentials — EUR 8,209.08 (61% of spending), with housing payments the biggest part at EUR 3,966.49. Everyday spending came to EUR 3,886.87 (29%), including a single book store purchase of EUR 1,389.43 and EUR 920.08 on restaurants. Unexpected necessities were EUR 1,287.64 (10%), mostly medical services and doctors. You spent EUR 498.24 more than you earned in this period.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_baskets",
+     "arguments": {
+      "period": "last_3_months"
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 45.35
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00076",
+   "case": "peers_restaurants",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Yes — you spend EUR 362 a month on restaurants on average, which is EUR 179 more than the median person your age (EUR 183). You spend more than about 81% of people aged 35–44.\n\nA concrete next step: try cutting restaurant spending and see what that would save you over a year.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "compare_with_peers",
+     "arguments": {
+      "target": "Restaurants",
+      "peer_group": "age"
+     }
+    }
+   ],
+   "rewritten": true,
+   "seconds": 3.83
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00076",
+   "case": "mortgage_250k",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Based on your situation, a 250,000 euro home is not within reach right now. Your income supports a loan of about 221,986 euros, and with your savings of 9,424 euros, homes up to about 231,410 euros fit better.\n\nThe biggest gaps are your own money (you have 4% of the price, while approved buyers typically put in 15%) and collateral (the home would cover about 75% of the loan, while approved applications usually need about 85%). Your monthly budget is currently 109 euros short, so there is no surplus to pay a loan yet.\n\nA concrete next step: build up your savings buffer first, and look at homes in the 231,410 euro range instead. Connecting any account you hold at another bank would give a fuller picture of your finances.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_mortgage_readiness",
+     "arguments": {
+      "property_price": 250000
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 4.24
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00076",
+   "case": "biggest_payment",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "Your single biggest payment last month was EUR 1,275.28 on 3 August, a housing payment (rent or mortgage).",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "list_transactions",
+     "arguments": {
+      "period": "last_month",
+      "sort": "amount",
+      "limit": 1
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.23
+  },
+  {
+   "system": "model-checked",
+   "customer_id": "CUST00076",
+   "case": "more_than_earned",
+   "lang": "en",
+   "tool": true,
+   "args": true,
+   "answer": true,
+   "grounded": true,
+   "text": "On average over the last six months, EUR 4,048.17 came in and EUR 4,121.15 went out each month. That means spending was EUR 72.98 more than income on average, and in three of those six months you spent more than you earned.",
+   "mode": "nemotron",
+   "calls": [
+    {
+     "name": "get_cashflow",
+     "arguments": {
+      "months": 6
+     }
+    }
+   ],
+   "rewritten": false,
+   "seconds": 2.3
+  }
+ ]
+}

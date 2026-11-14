@@ -1,0 +1,27 @@
+# Secrets
+.env
+
+# Data: download with scripts/fetch_data.py
+data/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Team notes and reference material: not part of the public repository
+notes/
+
+# Third-party brand assets (logo, licensed fonts): supplied by the brand owner, never committed
+web/brand/*
+!web/brand/README.md
+
+# Private idea notes: kept on our own machines, not in the repository
+IDEAS.md

@@ -1,0 +1,28 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light">
+<meta name="description" content="Money Mentor demo: a money trainer built into a bank app. Made-up data, nothing to sign in to.">
+<title>S-mobiili · Money Mentor demo</title>
+<link rel="icon" type="image/svg+xml" href="/assets/brand/logo.svg">
+<script>
+  // Before first paint: inside the demo page's phone the launch screen is green from the start.
+  if (/[?&]embed=1(&|$)/.test(location.search)) document.documentElement.classList.add('embed');
+</script>
+<link rel="stylesheet" href="/assets/fonts/fonts.css">
+<!-- The bank's own typefaces, when web/brand/ holds them. Without the file the stand-in fonts above are used. -->
+<link rel="stylesheet" href="/assets/brand/brand.css">
+<link rel="stylesheet" href="/assets/styles.css">
+<link rel="modulepreload" href="/assets/vendor/preact-htm.js">
+</head>
+<body>
+<div id="app" class="app">
+  <div class="boot" role="status" aria-label="Opening"></div>
+</div>
+<noscript><p style="padding:24px;font-family:system-ui,sans-serif">This demo needs JavaScript.</p></noscript>
+<script type="module" src="/assets/app.js"></script>
+</body>
+</html>
