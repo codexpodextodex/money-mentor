@@ -9,9 +9,10 @@ import {
   DataTable, TxList, Timeline, BasketRules, spendRows, ChangeLine, catName, subName,
 } from './parts.js';
 import { SAFE_STATUS } from './host.js';
+import { planCard, outlookCard, noticeText } from './plan.js';
 
 const SUGGESTIONS = ['fastfood', 'clothes', 'safe', 'where', 'dining', 'jacket', 'type', 'mortgage'].map((k) => 'ask.q.' + k);
-const EXTRA_QUESTIONS = ['ask.q.unseen', 'ask.q.photo'];
+const EXTRA_QUESTIONS = ['ask.q.unseen', 'ask.q.photo', 'plan.ask_q', 'outlook.ask_q'];
 
 /** Without the AI model only the English keyword router answers: hand it the English question. */
 function forRouter(text) {
@@ -213,9 +214,12 @@ const CARDS = {
     return {
       period: r.month,
       body: list.length
-        ? html`<ul class="tx">${list.map((n) => html`<li key=${n.kind}>
-            <span class="tx__what"><strong class="wrap">${nice(n.title)}</strong><small class="wrap">${nice(n.detail)}</small></span>
-          </li>`)}</ul>`
+        ? html`<ul class="tx">${list.map((n) => {
+            const text = noticeText(n);
+            return html`<li key=${n.kind}>
+              <span class="tx__what"><strong class="wrap">${text.title}</strong><small class="wrap">${text.detail}</small></span>
+            </li>`;
+          })}</ul>`
         : html`<${Empty} icon="check" title=${t('ans.nothing_unusual')}>${t('trainer.notices_none')}<//>`,
     };
   },
@@ -283,6 +287,13 @@ const CARDS = {
   },
   explain_baskets(r) {
     return { body: html`<${BasketRules} data=${r} />` };
+  },
+  // The next salary, split and ready to accept; and the weeks ahead (both drawn in plan.js).
+  get_payday_plan(r, ui) {
+    return planCard(r, ui);
+  },
+  get_balance_outlook(r, ui) {
+    return outlookCard(r, ui);
   },
 };
 

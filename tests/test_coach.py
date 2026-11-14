@@ -216,12 +216,16 @@ def test_only_the_size_rule_gets_a_second_reading():
 
 def test_an_over_budget_customer_is_not_told_a_plain_yes():
     """CUST00086 has already used this pay period's everyday budget."""
-    assert engine.safe_to_spend("CUST00086")["status"] == "over_budget"
+    safe = engine.safe_to_spend("CUST00086")
+    assert safe["status"] == "over_budget"
+    cover = safe["balance_check"]["balance_can_cover"]
+    # With the rent still to come before payday, 349 euros is more than the balance can carry.
     got = engine.can_afford("CUST00086", 349, "headphones", "Home & Tech")
-    assert got["fits"] == "tight"
-    assert got["if_it_is_a_treat"]["fits"] == "not_from_this_budget"
-    said = offline.describe("check_affordability", got)
-    assert said.startswith("It fits, but it is tight.") and "If it is a treat" in said
+    assert cover < 349 and got["fits"] == "no" and "if_it_is_a_treat" not in got
+    assert offline.describe("check_affordability", got).startswith("Not right now.")
+    # Something the balance does carry is still not a plain yes for someone over budget.
+    small = engine.can_afford("CUST00086", 40, "a shirt", "Lifestyle")
+    assert cover >= 40 and small["fits"] == "not_from_this_budget"
 
 
 def test_a_filtered_total_carries_the_payments_it_counted():

@@ -15,6 +15,7 @@ import { Explore } from './ui/explore.js';
 import { Loan } from './ui/loan.js';
 import { Replay } from './ui/replay.js';
 import { BasketQuiz } from './ui/quiz.js';
+import { Plan } from './ui/plan.js';
 
 const params = new URLSearchParams(window.location.search);
 const EMBED = params.get('embed') === '1';
@@ -36,6 +37,7 @@ const ROUTES = {
   messages: { view: Messages, title: 'messages.title' },
   account: { view: Account, text: 'S-Tili' },
   trainer: { view: Trainer, title: 'trainer.title' },
+  plan: { view: Plan, title: 'plan.title', parent: 'trainer' },
   replay: { view: Wrapped(Replay), title: 'replay.title', parent: 'trainer' },
   ask: { view: Chat, title: 'ask.title', parent: 'trainer', fixed: true },
   find: { view: Find, title: 'find.title', parent: 'trainer' },
@@ -237,6 +239,7 @@ function App() {
   const [sheet, setSheet] = useState(null);
   const [question, setQuestion] = useState(null);
   const [preset, setPreset] = useState(null);
+  const [focus, setFocus] = useState(null);
   const [toast, setToast] = useState(null);
   const [ring, setRing] = useState(null);
   const [splash, setSplash] = useState(EMBED ? { n: 1, phase: 'in' } : null);
@@ -275,6 +278,8 @@ function App() {
   const go = (id, extra) => {
     if (!ROUTES[id]) return;
     if (id === 'loan' && extra) setPreset({ ...extra, n: ++counter.current });
+    // Open a screen at one of its sections: { focus: 'plan-outlook' } names a data-tour element.
+    if (extra && typeof extra.focus === 'string') setFocus({ route: id, name: extra.focus, n: ++counter.current });
     setRing(null);
     const { stack } = live.current.nav;
     if (ROUTES[id].tab) { move([id]); return; }
@@ -319,6 +324,7 @@ function App() {
     setSheet(null);
     setQuestion(null);
     setPreset(null);
+    setFocus(null);
     setRing(null);
     if (stay) {
       const { stack } = live.current.nav;
@@ -474,6 +480,7 @@ function App() {
     health: health.data,
     question,
     preset,
+    focus,
     lang,
     route,
     embed: EMBED,

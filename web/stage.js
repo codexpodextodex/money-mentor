@@ -264,8 +264,26 @@ function ensureFrame() {
   el.screen.prepend(frame);
   setTimeout(wake, READY_TIMEOUT); // reveal anyway if the app never says it is ready
   // Get the phone-glass rules in as soon as the app's document exists, not only once it has loaded.
+  // And wake the phone as soon as the app has painted its green launch screen, which it does when
+  // its stylesheet is in, well before its scripts have loaded. Otherwise the glass stays black for
+  // as long as the scripts take to arrive, which on a slow first load looks broken.
   let tries = 0;
-  const early = setInterval(() => { if (dressFrame() || ++tries > 160) clearInterval(early); }, 25);
+  const early = setInterval(() => {
+    const dressed = dressFrame();
+    if (dressed && launchScreenPainted()) {
+      el.device.dataset.tone = 'light'; // white status bar over the green, until the app says otherwise
+      wake();
+      clearInterval(early);
+    } else if (++tries > 320) clearInterval(early);
+  }, 25);
+}
+
+function launchScreenPainted() {
+  try {
+    const doc = frame.contentDocument;
+    const boot = doc && doc.querySelector('.boot, .splash');
+    return Boolean(boot) && getComputedStyle(boot).backgroundColor !== 'rgba(0, 0, 0, 0)';
+  } catch (err) { return false; }
 }
 
 // A phone never shows a desktop scrollbar. On a laptop the browser would draw one inside the

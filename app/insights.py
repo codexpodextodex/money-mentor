@@ -9,7 +9,7 @@ from __future__ import annotations
 import datetime as dt
 from functools import lru_cache
 
-from . import baskets, db, periods
+from . import baskets, db, periods, plan
 from .engine import EngineError, _pct, _r, customer, other_accounts, resolve_target, safe_to_spend
 
 # Each type is a plain rule over a customer's own numbers. The first rule
@@ -318,8 +318,51 @@ def notices(customer_id: str, limit: int = 4) -> dict:
     f = _features(cid)
     found: list[dict] = []
 
-    def add(kind: str, title: str, detail: str, ask: str, basket: str | None = None, tone: str = "neutral") -> None:
-        found.append({"kind": kind, "title": title, "detail": detail, "ask": ask, "basket": basket, "tone": tone})
+    def add(kind: str, title: str, detail: str, ask: str, basket: str | None = None, tone: str = "neutral", data: dict | None = None) -> None:
+        notice = {"kind": kind, "title": title, "detail": detail, "ask": ask, "basket": basket, "tone": tone}
+        if data:
+            notice["data"] = data  # the same facts as numbers and dates, so the app can say it in any language
+        found.append(notice)
+
+    def day_month(iso: str) -> str:
+        d = dt.date.fromisoformat(iso)
+        return f"{d.day} {d.strftime('%B')}"
+
+    # Before trouble: where the balance is heading if the next weeks go like the usual ones.
+    ahead = plan.outlook(cid)
+    warned = ahead.get("heads_up")
+    if warned:
+        bill = warned.get("biggest_bill_before")
+        fix = warned.get("fix")
+        detail = ""
+        if bill:
+            detail += f"Your {bill['what'].lower()} of about EUR {bill['amount']:,.0f} is expected around {day_month(bill['date'])}. "
+        detail += (
+            f"If the next weeks go like your usual ones, you would be about EUR {warned['short_by']:,.0f} below zero "
+            f"by {day_month(warned['deepest_point']['date'])}."
+        )
+        if fix:
+            detail += (
+                f" Holding everyday spending to about EUR {fix['a_week']:,.0f} a week instead of "
+                f"EUR {fix['instead_of_a_week']:,.0f} keeps you above zero."
+            )
+        add(
+            "heads_up",
+            f"At your usual pace, your balance runs out around {day_month(warned['below_zero_from'])}",
+            detail,
+            "How do I avoid running short before payday?",
+            tone="warning",
+            data={
+                "balance_today": ahead["balance_today"],
+                "already_below_zero": ahead["balance_today"] < 0,
+                "below_zero_from": warned["below_zero_from"],
+                "in_days": warned["in_days"],
+                "short_by": warned["short_by"],
+                "deepest_date": warned["deepest_point"]["date"],
+                "bill": bill,
+                "fix": fix,
+            },
+        )
 
     check = safe["balance_check"]
     if safe["status"] == "short":

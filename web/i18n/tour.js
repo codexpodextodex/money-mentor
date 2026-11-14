@@ -5,17 +5,18 @@
 // What each tour step shows in the phone. Index-aligned with `steps` in every language.
 // `seconds` is how long the step stays up when the tour advances by itself.
 export const STEPS = [
-  { route: 'home', highlight: 'home-trainer', seconds: 6 },
-  { route: 'bank', highlight: 'bank-trainer', seconds: 5 },
-  { route: 'trainer', highlight: 'trainer-hero', seconds: 7 },
-  { route: 'trainer', highlight: 'trainer-notices', seconds: 5 },
+  { route: 'home', highlight: 'home-trainer', seconds: 5 },
+  { route: 'bank', highlight: 'bank-trainer', seconds: 4 },
+  { route: 'trainer', highlight: 'trainer-hero', seconds: 6 },
+  { route: 'trainer', highlight: 'trainer-notices', seconds: 4 },
+  { route: 'plan', highlight: 'plan-outlook', seconds: 7 },
   { route: 'replay', highlight: 'replay-chart', seconds: 7 },
-  { route: 'replay', highlight: 'replay-levers', seconds: 6 },
+  { route: 'replay', highlight: 'replay-levers', seconds: 5 },
   { route: 'ask', highlight: 'ask-trust', seconds: 9, ask: true },
   { route: 'find', highlight: 'find-bar', seconds: 5 },
   // `photo`: the app sends its built-in sample price tag, so the model reads a photo live.
-  { route: 'ask', highlight: 'ask-answer', seconds: 11, photo: true },
-  { route: 'loan', highlight: 'loan-pillars', seconds: 6 },
+  { route: 'ask', highlight: 'ask-answer', seconds: 10, photo: true },
+  { route: 'loan', highlight: 'loan-pillars', seconds: 5 },
 ];
 
 const en = {
@@ -68,6 +69,10 @@ const en = {
     {
       title: 'The trainer comes to you',
       text: 'Most people never think of a question to ask. So the trainer points out what stands out.',
+    },
+    {
+      title: 'A heads-up before trouble',
+      text: 'The trainer lays your usual month over the weeks ahead and marks the day the balance would run out. Then it offers a plan for the next salary, to accept with one tap.',
     },
     {
       title: 'Your own year, replayed',
@@ -154,6 +159,10 @@ const fi = {
     {
       title: 'Valmentaja tulee luoksesi',
       text: 'Useimmat eivät keksi, mitä kysyä. Siksi valmentaja nostaa itse esiin sen, mikä erottuu.',
+    },
+    {
+      title: 'Varoitus ennen kuin on myöhäistä',
+      text: 'Valmentaja asettaa tavallisen kuukautesi tulevien viikkojen päälle ja näyttää päivän, jona saldo loppuisi. Sitten se ehdottaa suunnitelman seuraavalle palkalle, jonka hyväksyt yhdellä napautuksella.',
     },
     {
       title: 'Oma vuotesi uusintana',
@@ -249,6 +258,10 @@ const sv = {
     {
       title: 'Tränaren kommer till dig',
       text: 'De flesta kommer aldrig på en fråga. Därför lyfter tränaren själv fram det som sticker ut.',
+    },
+    {
+      title: 'En förvarning innan det blir knapert',
+      text: 'Tränaren lägger din vanliga månad över veckorna framåt och visar dagen då saldot skulle ta slut. Sedan föreslår den en plan för nästa lön, som du godkänner med ett tryck.',
     },
     {
       title: 'Ditt eget år i repris',

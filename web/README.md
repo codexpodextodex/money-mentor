@@ -38,13 +38,15 @@ In embed mode (`?embed=1`) the app keeps 54px free at the top and 34px at the bo
 ## Routes
 
 Host app tabs: `home`, `card`, `bank`, `me`. Host sub-screens: `messages` (message centre), `account`.
-Trainer: `trainer` (landing), `replay`, `ask`, `find`, `explore`, `loan`, `quiz`.
+Trainer: `trainer` (landing), `plan`, `replay`, `ask`, `find`, `explore`, `loan`, `quiz`.
+
+`plan` (in `ui/plan.js`) is the payday plan: the next salary split into essentials, a buffer for the unexpected, savings and everyday spending (`GET /payday-plan`), with a savings-goal slider, the last pay period next to it and one "Accept the plan" button; under it "The weeks ahead", the balance projected day by day (`GET /outlook`). Accepting is a demo: it is kept in `localStorage` under `money-mentor.payday-plan.<customer id>` as `{ from, to, goal }` for that pay period, and nothing is moved. Inside the app a screen can be opened at one of its sections with `ui.go(route, { focus: '<data-tour name>' })`: the heads-up notice in "Worth a look" opens `plan` at `plan-outlook` this way. `ui/plan.js` also holds the entry card on the trainer, the heads-up notice (written from the notice's `data`, so it reads the same in all three languages) and the chat's cards for `get_payday_plan` and `get_balance_outlook`.
 
 `ui/replay.js` and `ui/quiz.js` are self-contained screens: each carries its own strings (en, fi, sv) and styles, reads the language from `document.documentElement.lang`, and uses only `ui.who.id`, `ui.ask(text)` and `ui.go(route)` from the `UI` context.
 
 ## Tour anchors (`data-tour`)
 
-`home-trainer` (trainer slide or tile on Home), `bank-trainer` (trainer card on the Bank tab), `assistant-entry` (assistant row in the message centre), `trainer-hero`, `trainer-notices`, `trainer-baskets`, `trainer-quiz`, `replay-chart`, `replay-levers`, `replay-honesty`, `ask-answer`, `ask-trust`, `ask-camera`, `find-bar`, `loan-pillars`.
+`home-trainer` (trainer slide or tile on Home), `bank-trainer` (trainer card on the Bank tab), `assistant-entry` (assistant row in the message centre), `trainer-hero`, `trainer-notices`, `trainer-plan` (the payday card on the trainer landing), `trainer-baskets`, `trainer-quiz`, `plan-split` (the salary split), `plan-accept` (the accept area), `plan-outlook` (the weeks-ahead chart), `replay-chart`, `replay-levers`, `replay-honesty`, `ask-answer`, `ask-trust`, `ask-camera`, `find-bar`, `loan-pillars`.
 
 ## Languages
 

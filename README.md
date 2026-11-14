@@ -20,7 +20,7 @@ Open http://localhost:8000. The first run downloads S-Pankki's dataset from GitH
 Without a model key the chat still works, through a built-in keyword router. To use Nemotron, copy `.env.example` to `.env` and add a key from https://build.nvidia.com (free, self-serve).
 
 ```bash
-python -m pytest -q             # 141 tests
+python -m pytest -q             # 175 tests
 python scripts/evaluate.py      # accuracy table, see Evaluation below
 ```
 
@@ -32,6 +32,7 @@ python scripts/evaluate.py      # accuracy table, see Evaluation below
 | Ask | Chat with your money, or send a photo of a price tag, receipt or bill and ask "can I afford this?". A large purchase gets two honest answers, one if you need it and one if it is a treat, because the price alone cannot tell. Each answer shows the figures as a card, how many numbers were checked, and how it was worked out |
 | Explore | Build your own view with taps (period, basket, category, break down by), drill in, or write SQL over your own rows |
 | Replay | Your own last 12 months replayed with one habit changed: what would have been left, how many days below zero avoided, and your three biggest levers ranked |
+| Payday plan | A split of the next salary into the three baskets and savings, next to what the last pay period really looked like, to accept with one tap. With it, the weeks ahead: the balance day by day until the payday after next, and a heads-up if it would go below zero |
 | Basket quiz | Six of your own payments to sort into the three baskets, with the rule behind each answer |
 | Home loan | How ready you are for a mortgage, learned from 200 real application outcomes in the data |
 
@@ -63,6 +64,15 @@ expected salary
 
 The result is capped by what the balance can cover once the bills due before payday are paid, so it never points into overdraft. "Safe to save" comes from the same figures.
 
+A bill that comes once a month, such as the housing payment, is planned for every month at its usual amount and on its usual day, also after a month in which it was missed. In the data 84% of customers paid housing in all of the last six months, 8% in five and 3% in four.
+
+### Payday plan and the weeks ahead
+
+The same budget, turned into an action and into a look ahead (`app/plan.py`):
+
+- **Payday plan.** Before the next salary arrives, the app proposes how to split it: regular essentials first, then the buffer for the unexpected, then savings (to Säästäjä, S-Pankki's own saving service), and everyday spending is what is left, per week and per day. When the salary does not stretch, everyday spending and savings give way first and the plan says so. Accepting is one tap. In this demo that only saves the plan: the assistant never moves money.
+- **The weeks ahead.** The balance day by day until the payday after next, if the coming weeks go like the customer's usual ones: salary on its usual day, monthly bills on theirs, shopping at the pace of the last 90 days. If the balance would go below zero, the customer gets a heads-up before it happens, with the bill that comes first and the level of everyday spending that avoids it. In the data 13% of customers would get one today. It is the usual pattern projected forward, not a forecast, and the screen says so.
+
 ### Your year, replayed
 
 Advice like "spend 20% less" is easy to give and hard to believe. So the trainer tests each habit on the customer's own history: it takes their real payments for the last 12 months, applies one rule, and replays the balance day by day. Five levers are tried and ranked by what they would have left on the account, so the one a customer sees first is the one that mattered most in their own year. For one demo customer the biggest lever is the handful of heavy weeks; for another it is the purchases under EUR 15.
@@ -92,7 +102,7 @@ The dataset includes 200 mortgage applications (150 approved, 50 rejected) linke
 
 Design decisions:
 
-- **The model never calculates.** It picks one of 16 tools and explains the result. Tools take no customer id: the server injects the signed-in customer, so the model cannot ask for anyone else's data.
+- **The model never calculates.** It picks among 18 tools and explains the result. Tools take no customer id: the server injects the signed-in customer, so the model cannot ask for anyone else's data.
 - **Every number is checked.** After the model answers, each number in the text is looked up among the numbers the tools returned. A number found nowhere triggers one rewrite, and if it survives, the app shows a warning next to the answer.
 - **MyData explore mode is safe by construction.** Free SQL runs in a separate in-memory database that holds only that customer's rows, with file and network access switched off, a row limit and a time limit. Safety does not depend on inspecting the query text.
 - **It always works.** With no model, or when the model is unreachable, a keyword router answers the common questions from the same tools.
@@ -129,12 +139,12 @@ Run on 14 Nov 2026 against the model we host on Verda, 65 questions per system (
 
 | System | Right tool | Right arguments | Right number in answer | Every number traceable | Finnish and Swedish right | Median time |
 |---|---|---|---|---|---|---|
-| Keyword router, no model (baseline) | 69% | 62% | 54% | 100% | 0% | 0.01 s |
-| Nemotron, bare prompt, no number check | 100% | 100% | 100% | 91% | 100% | 2.2 s |
-| Nemotron, coach prompt, no number check | 100% | 100% | 100% | 95% | 100% | 1.9 s |
-| Nemotron, coach prompt and number check (what the app runs) | 100% | 100% | 98.5% | 100% | 100% | 1.9 s |
+| Keyword router, no model (baseline) | 69% | 62% | 58% | 100% | 20% | 0.01 s |
+| Nemotron, bare prompt, no number check | 100% | 100% | 100% | 94% | 100% | 2.3 s |
+| Nemotron, coach prompt, no number check | 100% | 100% | 100% | 94% | 100% | 2.2 s |
+| Nemotron, coach prompt and number check (what the app runs) | 100% | 100% | 100% | 100% | 100% | 2.3 s |
 
-Nemotron chose the right tool and arguments every time. What the bare model gets wrong is not the lookup but the telling: in 6 answers of 65 it added a figure of its own (a rounded total, a percentage it worked out). The number check caught those: three answers were rewritten, and one of the rewrites dropped the figure the question asked for, which is the 98.5%. The sample is small, so read the percentages as a direction, not a benchmark. The raw rows are in `eval/results.json`.
+Nemotron chose the right tool and arguments every time, among 18 tools. What the model gets wrong without the check is not the lookup but the telling: in 4 answers of 65 it added a figure of its own (a rounded total, a percentage it worked out). With the number check three answers were rewritten and all 65 ended with every number traceable. Each run draws five customers at random, so the figures move a little from run to run: an earlier run the same morning had one rewrite that dropped the figure the question asked for (98.5% in that column). The sample is small, so read the percentages as a direction, not a benchmark. The raw rows are in `eval/results.json`.
 
 An earlier run on the same day through NVIDIA's hosted API (3 customers, 39 questions, an earlier prompt) is kept in `eval/results-nvidia-api.md`: the same pattern, with a median of 2.7 seconds.
 

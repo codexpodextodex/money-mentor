@@ -1,4 +1,4 @@
-// The money trainer's landing page: safe to spend, what stands out, the tools,
+// The money trainer's landing page: safe to spend, what stands out, the payday plan, the tools,
 // the three baskets, month by month, safe to save and the spender type.
 import {
   html, useState, useContext, useApi, useDebounced, cust,
@@ -9,6 +9,7 @@ import {
   BasketBar, BasketLegend, BarList, Waterfall, BalanceCheck, Columns, PeerBars, RulesBody, catName, subName,
 } from './parts.js';
 import { SAFE_STATUS } from './host.js';
+import { PlanEntry, HeadsUpNotice } from './plan.js';
 
 const nDays = (n) => t('n_days', { n: Number(n), count: num(n, 0) });
 
@@ -48,7 +49,7 @@ function SafeCard({ safe, stale, goal, onGoal, error }) {
       <dl class="thero__stats">
         <div><dt>${t('trainer.a_day')}</dt><dd>${eur(safe.safe_per_day)}</dd></div>
         <div><dt>${t('trainer.until_payday')}</dt><dd>${eur(safe.safe_to_spend_until_payday, 'whole')}</dd></div>
-        <div><dt>${t('trainer.next_payday')}</dt><dd>${fmtDate(pay.next_payday)}${Number.isFinite(Number(pay.days_left)) ? html`<small>${t('trainer.in_days', { days: nDays(pay.days_left) })}</small>` : null}</dd></div>
+        <div><dt>${t('trainer.next_payday')}</dt><dd>${fmtDate(pay.next_payday)}${Number.isFinite(Number(pay.payday_in_days ?? pay.days_left)) ? html`<small>${t('trainer.in_days', { days: nDays(pay.payday_in_days ?? pay.days_left) })}</small>` : null}</dd></div>
       </dl>
     </div>
     <div class="goal">
@@ -90,6 +91,8 @@ function NoticesSection({ id }) {
       ${req.data && !list.length ? html`<div class="row"><span class="row__icon"><${Icon} name="check" size=${28} stroke=${1.400} /></span>
         <span class="row__text"><span class="row__title">${t('home.notice_none')}</span><span class="row__sub">${t('trainer.notices_none')}</span></span></div>` : null}
       ${list.map((n) => {
+        // The heads-up is said from its numbers, and opens the weeks ahead instead of the chat.
+        if (n.kind === 'heads_up' && n.data) return html`<${HeadsUpNotice} key=${n.kind} notice=${n} />`;
         const b = basketOf(n.basket);
         const tone = NOTICE_TONE[n.tone] || 'plain';
         return html`<button type="button" key=${n.kind} class=${`row row--tap notice notice--${tone}${b ? ` b-${b.id}` : ''}`} onClick=${() => ui.ask(nice(n.ask))}>
@@ -364,6 +367,7 @@ export function Trainer() {
       ? html`<${SafeCard} safe=${safe} stale=${stale} goal=${goal} onGoal=${setGoal} error=${goalQ !== null ? tuned.error : null} />`
       : html`<div class="card" data-tour="trainer-hero"><${Empty} icon="gauge" title=${t('trainer.no_safe_title')}>${t('trainer.no_safe_text')}<//></div>`}
     <${NoticesSection} id=${id} />
+    <${PlanEntry} id=${id} />
     <${Tools} />
     <${OtherBankCard} other=${o.other_accounts} />
     <${BasketsSection} id=${id} />

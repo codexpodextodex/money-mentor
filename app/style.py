@@ -57,6 +57,20 @@ def answer_language(text: str, fallback: str = "en") -> str:
     return best
 
 
+_READ = {"en": "I read:", "fi": "Luin kuvasta:", "sv": "Jag läste på bilden:"}
+_READ_ANY = re.compile(r"^\s*(I read:|Luin kuvasta:|Jag läste på bilden:)")
+
+
+def lead_in(text: str, lang: str) -> str:
+    """A photo answer opens with "I read: ...". Keep that opening in the answer's own language.
+
+    A Finnish price tag can pull the model into "Luin kuvasta:" in an English answer.
+    """
+    if not text or lang not in _READ:
+        return text
+    return _READ_ANY.sub(_READ[lang], text, count=1)
+
+
 def _write(whole: str, cents: str | None, lang: str) -> str:
     digits = re.sub(r"\D", "", whole)
     if lang == "en":

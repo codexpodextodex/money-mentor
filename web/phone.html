@@ -16,7 +16,25 @@
 <!-- The bank's own typefaces, when web/brand/ holds them. Without the file the stand-in fonts above are used. -->
 <link rel="stylesheet" href="/assets/brand/brand.css">
 <link rel="stylesheet" href="/assets/styles.css">
+<!-- Fetch the whole module graph at once instead of one import at a time: a quicker first load. -->
 <link rel="modulepreload" href="/assets/vendor/preact-htm.js">
+<link rel="modulepreload" href="/assets/app.js">
+<link rel="modulepreload" href="/assets/ui/lib.js">
+<link rel="modulepreload" href="/assets/ui/parts.js">
+<link rel="modulepreload" href="/assets/ui/phrases.js">
+<link rel="modulepreload" href="/assets/ui/host.js">
+<link rel="modulepreload" href="/assets/ui/trainer.js">
+<link rel="modulepreload" href="/assets/ui/plan.js">
+<link rel="modulepreload" href="/assets/ui/chat.js">
+<link rel="modulepreload" href="/assets/ui/find.js">
+<link rel="modulepreload" href="/assets/ui/explore.js">
+<link rel="modulepreload" href="/assets/ui/loan.js">
+<link rel="modulepreload" href="/assets/ui/picker.js">
+<link rel="modulepreload" href="/assets/ui/replay.js">
+<link rel="modulepreload" href="/assets/ui/quiz.js">
+<link rel="modulepreload" href="/assets/i18n/en.js">
+<link rel="modulepreload" href="/assets/i18n/fi.js">
+<link rel="modulepreload" href="/assets/i18n/sv.js">
 </head>
 <body>
 <div id="app" class="app">

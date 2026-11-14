@@ -94,6 +94,18 @@ SUBCATEGORY_ALIASES = {
     "clothes": ["Family clothing", "Clothing stores"],
     "clothing": ["Family clothing", "Clothing stores"],
     "clothes shops": ["Family clothing", "Clothing stores"],
+    # The data has one kind of bill, "Utility bills": it does not say which utility.
+    "electricity": ["Utility bills"],
+    "electricity bill": ["Utility bills"],
+    "power": ["Utility bills"],
+    "water": ["Utility bills"],
+    "internet": ["Utility bills"],
+    "phone bill": ["Utility bills"],
+    "utilities": ["Utility bills"],
+    "sähkö": ["Utility bills"],
+    "sähkölasku": ["Utility bills"],
+    "el": ["Utility bills"],
+    "elräkning": ["Utility bills"],
     "burgers": ["Fast food"],
     "burger": ["Fast food"],
     "takeaway": ["Fast food"],
@@ -396,12 +408,14 @@ def transactions(
         f"SELECT tx_date, category, subcategory, basket, -amount AS amount, merchant_id {base} ORDER BY {order} LIMIT {limit}",
         args,
     )
-    count = db.scalar(f"SELECT count(*) {base}", args)
+    totals = db.row(f"SELECT count(*) AS n, coalesce(-sum(amount), 0) AS total {base}", args)
+    count = totals["n"]
     return {
         "customer_id": cid,
         "period": p.as_dict(),
         "filters": shown,
         "matching_transactions": count,
+        "total": _r(totals["total"]),
         "shown": len(found),
         "sorted_by": "amount" if order.startswith("-amount") else "date",
         "transactions": [
@@ -623,6 +637,74 @@ DEFAULT_SAVINGS_GOAL_PCT = 10.0
 CUSHION_MONTHS = 3
 
 
+def bill_habits(cid: str, today: dt.date) -> dict[str, dict]:
+    """How each kind of bill behaves, read from the last six complete months.
+
+    A bill that comes about once a month (housing, a regular investment deposit, a regular
+    transfer) and was paid in at least four of the six months is "monthly": it has a usual day
+    and a usual amount (both medians), and it is planned for every month, also after a month in
+    which it was missed. Anything else (utilities: several bills a month on changing days) is
+    "spread": a monthly average with no dates.
+    """
+    ref = periods.complete_months(today, 6)
+    found = db.rows(
+        """
+        SELECT tx_type, tx_date, -amount AS amount FROM tx
+        WHERE customer_id = ? AND tx_type IN ('housing_payment', 'utilities_payment', 'investment_deposit', 'salary_sweep')
+          AND tx_date BETWEEN ? AND ?
+        ORDER BY tx_date
+        """,
+        [cid, ref.start, today],
+    )
+    habits: dict[str, dict] = {}
+    for tx_type in COMMITTED_TYPES:
+        mine = [r for r in found if r["tx_type"] == tx_type]
+        in_ref = [r for r in mine if r["tx_date"] <= ref.end]
+        if not in_ref:
+            continue
+        months_seen = len({(r["tx_date"].year, r["tx_date"].month) for r in in_ref})
+        monthly = len(in_ref) / 6.0 <= 1.5 and months_seen >= 4
+        total = sum(r["amount"] for r in in_ref)
+        habits[tx_type] = {
+            "monthly": monthly,
+            "a_month": statistics.median(r["amount"] for r in in_ref) if monthly else total / 6.0,
+            "usual_day": int(round(statistics.median(r["tx_date"].day for r in in_ref))) if monthly else None,
+            "months_seen": months_seen,
+            "paid_months": {(r["tx_date"].year, r["tx_date"].month) for r in mine},
+            "a_day": None if monthly else total / ref.days,
+        }
+    return habits
+
+
+def expected_bills(cid: str, today: dt.date, start: dt.date, end: dt.date) -> dict:
+    """The bills to expect between two dates.
+
+    A monthly bill (see bill_habits) is expected once in every month that has not had one yet,
+    on its usual day at its usual amount. If the usual day has passed and it has not been paid,
+    it is expected at once. Spread bills cannot be dated, so they come as a daily rate.
+    """
+    dated: list[dict] = []
+    per_day: dict[str, float] = {}
+    for tx_type, habit in bill_habits(cid, today).items():
+        if not habit["monthly"]:
+            per_day[tx_type] = habit["a_day"]
+            continue
+        year, month = start.year, start.month
+        while (year, month) <= (end.year, end.month):
+            if (year, month) not in habit["paid_months"]:
+                due = dt.date(year, month, min(habit["usual_day"], calendar.monthrange(year, month)[1]))
+                late = due < start
+                if late:
+                    due = start
+                if due <= end:
+                    dated.append({"date": due, "tx_type": tx_type, "what": COMMITTED_TYPES[tx_type], "amount": habit["a_month"], "late": late})
+            month += 1
+            if month > 12:
+                year, month = year + 1, 1
+    dated.sort(key=lambda b: b["date"])
+    return {"dated": dated, "per_day": per_day, "per_day_total": sum(per_day.values())}
+
+
 def safe_to_spend(customer_id: str, savings_goal_pct: float = DEFAULT_SAVINGS_GOAL_PCT) -> dict:
     """How much can go to everyday spending before the next payday.
 
@@ -666,20 +748,9 @@ def safe_to_spend(customer_id: str, savings_goal_pct: float = DEFAULT_SAVINGS_GO
     window_end = next_payday - dt.timedelta(days=1)
     days = max((window_end - window_start).days + 1, 1)
 
-    ref = periods.complete_months(today, 6)
-    committed = {
-        r["tx_type"]: r["monthly"]
-        for r in db.rows(
-            """
-            SELECT tx_type, -sum(amount) / 6.0 AS monthly
-            FROM tx
-            WHERE customer_id = ? AND tx_type IN ('housing_payment', 'utilities_payment', 'investment_deposit', 'salary_sweep')
-              AND tx_date BETWEEN ? AND ?
-            GROUP BY 1
-            """,
-            [cid, ref.start, ref.end],
-        )
-    }
+    # A monthly bill is budgeted at its usual amount for every month, also after a month in which
+    # it was missed; other bills at their six-month average (see bill_habits).
+    committed = {tx_type: habit["a_month"] for tx_type, habit in bill_habits(cid, today).items()}
     pace = db.row(
         """
         SELECT
@@ -725,19 +796,10 @@ def safe_to_spend(customer_id: str, savings_goal_pct: float = DEFAULT_SAVINGS_GO
     remaining = everyday_budget - spent
     budget_lines.append({"label": "Left for everyday spending until payday", "amount": _r(remaining), "basket": "everyday", "total": True})
 
-    # What the balance can cover: bills that normally fall on the remaining
-    # days of the pay period (same days of the month, last 6 months).
-    days_of_month = sorted({(window_start + dt.timedelta(days=i)).day for i in range(days)})
-    marks = ", ".join(str(d) for d in days_of_month)
-    due = db.scalar(
-        f"""
-        SELECT coalesce(-sum(amount), 0) / 6.0
-        FROM tx
-        WHERE customer_id = ? AND tx_type IN ('housing_payment', 'utilities_payment', 'investment_deposit', 'salary_sweep')
-          AND tx_date BETWEEN ? AND ? AND day(tx_date) IN ({marks})
-        """,
-        [cid, ref.start, ref.end],
-    ) or 0.0
+    # What the balance can cover: the bills still expected before payday. A monthly bill that
+    # has not been paid yet this month counts in full, on its usual day (see expected_bills).
+    coming = expected_bills(cid, today, window_start, window_end)
+    due = sum(b["amount"] for b in coming["dated"]) + coming["per_day_total"] * days
     essentials_window = pace["essentials_per_day"] * days
     liquidity = balance + incoming - due - essentials_window
 
@@ -771,6 +833,7 @@ def safe_to_spend(customer_id: str, savings_goal_pct: float = DEFAULT_SAVINGS_GO
         "pay_period": {
             "from": cycle_start.isoformat(),
             "next_payday": next_payday.isoformat(),
+            "payday_in_days": (next_payday - today).days,
             "days_left": days,
             "expected_salary": _r(income),
         },
@@ -791,6 +854,10 @@ def safe_to_spend(customer_id: str, savings_goal_pct: float = DEFAULT_SAVINGS_GO
             "balance_today": _r(balance),
             "salary_expected_tomorrow": _r(incoming),
             "bills_due_before_payday": _r(due),
+            "bills_expected": [
+                {"what": b["what"], "date": b["date"].isoformat(), "amount": _r(b["amount"]), "overdue": b["late"]}
+                for b in coming["dated"]
+            ],
             "groceries_and_transport_before_payday": _r(essentials_window),
             "balance_can_cover": _r(liquidity),
         },

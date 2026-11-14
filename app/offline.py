@@ -93,6 +93,10 @@ def route(message: str) -> tuple[str, dict]:
         pct = next((n for n in numbers if 0 < n <= 100), 20.0)
         sign = 1 if re.search(r"\b(more|increase|raise)\b", text) else -1
         return "simulate_change", {"target": target, "change_pct": sign * pct}
+    if re.search(r"payday plan|plan (for )?my (salary|pay|payday)|split my (salary|pay)|make me a budget|budget for (the )?next", text):
+        return "get_payday_plan", {}
+    if re.search(r"run(ning|s)? (short|out)|last until payday|money last|bills? (are )?(coming|due)|heads.?up|go(es)? below zero|when is my rent", text):
+        return "get_balance_outlook", {}
     if re.search(r"afford|can i buy|should i buy|ok to buy", text):
         price = next((n for n in numbers if n >= 1), None)
         if price:
@@ -156,7 +160,44 @@ def describe(name: str, r: dict) -> str:
             text += f" That is {eur(abs(prev['change']))} {direction} than the period before."
         return text
     if name == "list_transactions":
-        return f"Here are {r['shown']} of {r['matching_transactions']} matching payments in {r['period']['label']}."
+        return (
+            f"There are {r['matching_transactions']} matching payments in {r['period']['label']}, "
+            f"{eur(r['total'])} in all. The list shows {r['shown']} of them."
+        )
+    if name == "get_payday_plan":
+        parts = {row["key"]: row for row in r["split"]}
+        text = (
+            f"For your salary of {eur(r['payday']['expected_salary'])} on {r['payday']['date']}: "
+            f"{eur(parts['essentials']['amount'])} for regular essentials, {eur(parts['unexpected']['amount'])} set aside for the unexpected, "
+            f"{eur(parts['savings']['amount'])} to savings and {eur(parts['everyday']['amount'])} for everyday spending, "
+            f"which is {eur(parts['everyday']['a_week'])} a week."
+        )
+        last = r.get("last_pay_period")
+        if last:
+            text += f" In your last pay period everyday spending was {eur(last['everyday'])}."
+        return text
+    if name == "get_balance_outlook":
+        low = r["lowest_point"]
+        h = r.get("heads_up")
+        if not h:
+            return (
+                f"If the next weeks go like your usual ones, your balance stays above zero until {r['until']}. "
+                f"Its lowest point would be {eur(low['balance'])} on {low['date']}."
+            )
+        text = (
+            f"If the next weeks go like your usual ones, your balance goes below zero on {h['below_zero_from']} "
+            f"and would be {eur(h['short_by'])} short at its lowest, on {h['deepest_point']['date']}."
+        )
+        bill = h.get("biggest_bill_before")
+        if bill:
+            text += f" Your {bill['what'].lower()} of about {eur(bill['amount'])} is expected around {bill['date']}."
+        fix = h.get("fix")
+        if fix:
+            text += (
+                f" Holding everyday spending to {eur(fix['a_week'])} a week instead of your usual {eur(fix['instead_of_a_week'])} "
+                "would keep you above zero."
+            )
+        return text + " This is your usual pattern projected forward, not a forecast."
     if name == "get_baskets":
         e, u, d = r["baskets"]
         return (

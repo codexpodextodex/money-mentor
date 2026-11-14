@@ -31,6 +31,10 @@ export const RULES = [
   { key: 'q_keep', re: /^What would I save in a year if I kept (.+) at this level\?$/, g: ['name'] },
   { key: 'q_save', re: /^How much is safe for me to save\?$/, g: [] },
   { key: 'q_unseen', re: /^What can you not see about my money\?$/, g: [] },
+  { key: 'q_short', re: /^How do I avoid running short before payday\?$/, g: [] },
+
+  // the payday plan
+  { key: 'no_salary', re: /^There is no regular salary in the data, so there is no payday to plan for\.$/, g: [] },
 
   // budget lines
   { key: 'b_salary', re: /^Expected salary this pay period$/, g: [] },

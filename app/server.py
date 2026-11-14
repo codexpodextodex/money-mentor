@@ -14,7 +14,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from . import agent, config, db, engine, explore, insights, mortgage, quiz, replay, tools
+from . import agent, config, db, engine, explore, insights, mortgage, plan, quiz, replay, tools
 from .engine import EngineError
 
 
@@ -72,6 +72,18 @@ def profile(customer_id: str) -> dict:
 @app.get("/api/customers/{customer_id}/replay")
 def replay_year(customer_id: str, lever: str | None = None) -> dict:
     return _guard(replay.replay, customer_id, lever)
+
+
+@app.get("/api/customers/{customer_id}/payday-plan")
+def payday_plan(customer_id: str, savings_goal_pct: float = engine.DEFAULT_SAVINGS_GOAL_PCT) -> dict:
+    """A split of the next salary into the three baskets and savings, ready to accept."""
+    return _guard(plan.payday_plan, customer_id, savings_goal_pct)
+
+
+@app.get("/api/customers/{customer_id}/outlook")
+def outlook(customer_id: str) -> dict:
+    """The balance day by day until the payday after next, if the coming weeks go like the usual ones."""
+    return _guard(plan.outlook, customer_id)
 
 
 @app.get("/api/customers/{customer_id}/quiz")

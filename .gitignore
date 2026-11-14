@@ -25,3 +25,8 @@ web/brand/*
 
 # Private idea notes: kept on our own machines, not in the repository
 IDEAS.md
+
+# The pitch film: sources live in video/, rendered frames and files do not belong in git
+video/out/
+video/frames/
+video/node_modules/

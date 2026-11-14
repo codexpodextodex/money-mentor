@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Any, Callable
 
-from . import baskets, engine, explore, insights, mortgage, periods, replay
+from . import baskets, engine, explore, insights, mortgage, periods, plan, replay
 from .engine import EngineError
 
 PERIOD_DOC = (
@@ -68,7 +68,8 @@ TOOL_SPECS = [
     ),
     _fn(
         "list_transactions",
-        "List individual payments (date, amount, what), newest first or largest first.",
+        "List individual payments (date, amount, what), newest first or largest first, with their count and "
+        "total. The app shows the list itself, so do not write the payments out in your answer.",
         {
             **_FILTERS,
             "sort": {"type": "string", "enum": ["date", "amount"]},
@@ -135,6 +136,24 @@ TOOL_SPECS = [
                 "description": "Which habit to change. Leave empty to show the one that would have kept the most.",
             }
         },
+    ),
+    _fn(
+        "get_payday_plan",
+        "A plan for the next salary: how to split it into regular essentials, a buffer for the unexpected, "
+        "savings and everyday spending, next to what the last pay period really looked like. Use for 'how "
+        "should I split my salary', 'make me a budget', 'plan my payday', 'how much should I save each month'. "
+        "The customer accepts the plan in the app; you never move money.",
+        {"savings_goal_pct": {"type": "number", "description": "Share of salary to save. Default 10."}},
+    ),
+    _fn(
+        "get_balance_outlook",
+        "Looks ahead: the balance day by day until the payday after next if the coming weeks go like the "
+        "customer's usual ones (salary and monthly bills on their usual days, shopping at the usual pace). "
+        "Says whether and when the balance would go below zero, which bill comes before that, and the level "
+        "of everyday spending that avoids it. Use for 'will my money last until payday', 'am I going to run "
+        "short', 'which bills are coming', 'when is my rent due'. It is the usual pattern projected forward, "
+        "not a forecast: say so.",
+        {},
     ),
     _fn(
         "get_spender_profile",
@@ -207,6 +226,8 @@ _HANDLERS: dict[str, Callable[..., dict]] = {
     "check_affordability": engine.can_afford,
     "simulate_change": engine.what_if,
     "replay_year": replay.replay,
+    "get_payday_plan": plan.payday_plan,
+    "get_balance_outlook": plan.outlook,
     "get_spender_profile": insights.spender_profile,
     "compare_with_peers": insights.benchmark,
     "get_highlights": insights.notices,

@@ -44,6 +44,15 @@ def test_the_euro_sign_of_one_amount_is_not_the_start_of_the_next_number():
     assert "leaves €152 for the 14 days" in en and "3 payments of €20 each" in en
 
 
+def test_a_photo_answer_opens_in_its_own_language():
+    english = "Luin kuvasta: Nordwave Q7 Wireless, €349.00.\n\nNot right now. Your balance covers €179.27 before payday."
+    lang = style.answer_language(style._READ_ANY.sub("", english))
+    assert lang == "en" and style.lead_in(english, lang).startswith("I read: Nordwave Q7 Wireless")
+    finnish = "I read: kengät, 89,90 €.\n\nKyllä. Saldo riittää ja tilillesi jää rahaa ennen palkkapäivää."
+    assert style.lead_in(finnish, "fi").startswith("Luin kuvasta: kengät")
+    assert style.lead_in("Yes. It fits.", "en") == "Yes. It fits."
+
+
 def test_other_numbers_are_left_alone():
     said = "You made 12 purchases on 15 October, 10% more than usual, and a 120 euro jacket fits."
     assert style.money(said) == said
