@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "Money Mentor",
+    "slug": "money-mentor-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#ffffff",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0fc348"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.wicflow.moneymentor"
+    },
+    "android": {
+      "package": "com.wicflow.moneymentor",
+      "adaptiveIcon": {
+        "backgroundColor": "#0fc348",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": ["android.permission.CAMERA", "android.permission.INTERNET"],
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-status-bar"
+    ]
+  }
+}
