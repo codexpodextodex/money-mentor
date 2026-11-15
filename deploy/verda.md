@@ -2,20 +2,41 @@
 
 Two parts, both on Verda's infrastructure in Finland: the model, and the app.
 
-**Status on 14 Nov 2026, morning: the model and the app both run on Verda.** Nemotron 3.5 Super VL is served by vLLM in a Verda serverless container on one ordinary RTX PRO 6000, and the app asks it first, with NVIDIA's hosted API as the fallback. The app is on a small Verda CPU machine at https://95-216-229-240.sslip.io. A first attempt on a confidential-computing machine failed; all three are described below.
+**Status on 14 Nov 2026, midday: the model runs on a Verda confidential-computing GPU, and the app on a Verda CPU machine.** Nemotron 3.5 Super VL is served by vLLM on a confidential RTX PRO 6000 machine (memory encrypted with AMD SEV-SNP, GPU in confidential mode). The app asks it first, then the same model in a Verda serverless container on an ordinary RTX PRO 6000, then NVIDIA's hosted API. The app is at https://95-216-229-240.sslip.io. The first attempt on a confidential machine failed in the morning; the cause and the fix are described below.
 
 | What | Verda product | Price | Started |
 |---|---|---|---|
-| The model | Serverless container `money-mentor-nemotron`, RTX PRO 6000 x1, 1 replica | $3.09 an hour | 14 Nov, 05:34 |
+| The model, first host | Instance `money-mentor-cc`, `1RTXPRO6000.30V.CC`, FIN-03, 200 GB disk, at `https://95-133-254-8.sslip.io/v1` | EUR 2.62 an hour | 14 Nov, 11:29 |
+| The model, second host | Serverless container `money-mentor-nemotron`, RTX PRO 6000 x1, 1 replica | $3.09 an hour | 14 Nov, 05:34 |
 | The app | Instance `money-mentor-app`, `CPU.4V.16G`, FIN-01, Ubuntu 24.04 | $0.048 an hour | 14 Nov, 06:15 |
 
-Both keep charging until they are deleted:
+All three keep charging until they are deleted:
 
 ```bash
 python scripts/verda.py delete-deployment money-mentor-nemotron
-python scripts/verda.py instances          # shows the id of money-mentor-app
+python scripts/verda.py instances          # shows the ids of money-mentor-cc and money-mentor-app
 python scripts/verda.py action <id> delete
 ```
+
+## The model on the confidential machine
+
+How it was set up, 10 minutes from ordering the machine to a healthy model:
+
+1. `python scripts/verda.py create money-mentor-cc 1RTXPRO6000.30V.CC 24.04.cuda13.4.cc FIN-03 <ssh-key-id> 200`. The 200 is the disk in GB: the default 50 GB is filled by the vLLM image alone.
+2. On the machine: a systemd unit (`mm-gpu-ready.service`) runs `nvidia-smi conf-compute -srs 1` at every boot, before Docker. Then `apt-get install docker.io nvidia-container-toolkit caddy`, pull `vllm/vllm-openai:v0.32.0`, and download the weights to `/root/hf` (70 GB in 3 minutes).
+3. `/root/money-mentor/.env` holds one line, `LLM_API_KEY=<key>`, readable by root only. `RESTART=always bash deploy/start_model.sh` starts vLLM on 127.0.0.1:8001 with that key. On a confidential machine the script sets the GPU ready and adds `VLLM_USE_V2_MODEL_RUNNER=0` by itself.
+4. Caddy serves `https://95-133-254-8.sslip.io` and passes on only `/v1/*` and `/health`. Without the key the API answers 401.
+5. In the app's `.env`: `VERDA_CC_LLM_BASE_URL=https://95-133-254-8.sslip.io/v1` and `VERDA_CC_LLM_KEY=<key>`, next to `MM_MODEL_HOST=verda`.
+
+Checked on 14 Nov 2026:
+
+- The same 65 evaluation questions on both hosts at the same time: the full system is right on all 65 on both; median 2.27 seconds on the confidential machine against 2.08 on the serverless container (`eval/results-verda-confidential.md`).
+- The public demo answered six questions (English, Finnish, Swedish, the outlook, and the price-tag photo twice) from the confidential machine in 1.8 to 3.5 seconds.
+- With the confidential address broken on purpose, the serverless container answered: in 2.3 seconds when the address returned an error, and in 7.2 seconds for the first question when it did not answer at all (5 seconds to give up, then it is left alone for two minutes).
+
+Not checked: a reboot of the machine. The unit and the restart policy are there for it, but nobody has watched it come back.
+
+What "confidential" means here, and what it does not: the machine's memory and the GPU's memory are encrypted, and the HTTPS connection ends inside the machine. We switched the GPU to its ready state by hand and did not run an attestation, so we have not proved to a third party what is running in it.
 
 ## The app on a CPU machine
 
@@ -29,7 +50,7 @@ After a change on the laptop: `deploy/push_app.sh 95.216.229.240` copies the pro
 
 Checked from outside on 14 Nov 2026: the pages and brand files load over HTTPS, a chat question was answered by the Verda model in 1.4 seconds, and the Finnish walkthrough ran through the fast-food question (1.2 seconds) and the price-tag photo (3.2 seconds).
 
-## What runs now: a serverless container
+## The second host: a serverless container
 
 Created with `python scripts/verda.py deploy-model money-mentor-nemotron "RTX PRO 6000"`, which sends this to Verda's API:
 
@@ -59,7 +80,7 @@ VERDA_LLM_BASE_URL=https://containers.datacrunch.io/money-mentor-nemotron/v1
 MM_MODEL_HOST=verda
 ```
 
-With `MM_MODEL_HOST=verda` the app asks the Verda model first and gives it 30 seconds. If it does not answer (asleep, starting, or the request is too long for its context), the app asks the `LLM_*` host instead and leaves Verda alone for two minutes. Every answer records which host wrote it (`served_by`), and the app shows it under "How was this worked out?".
+With `MM_MODEL_HOST=verda` the app asks the Verda hosts in order (the confidential machine when `VERDA_CC_LLM_*` is set, then this container) and gives each 30 seconds, of which 5 to connect. A host that does not answer (asleep, starting, gone, or the request is too long for its context) is left alone for two minutes and the next one is asked; the `LLM_*` host is the last. Every answer records which host wrote it (`served_by`), and the app shows it under "How was this worked out?".
 
 To stop the charge: `python scripts/verda.py delete-deployment money-mentor-nemotron`. To start again: the `deploy-model` command above, then wait about 12 minutes.
 
@@ -80,7 +101,15 @@ What did not work:
 - The same vLLM image gives junk for the small Qwen model too, also with `--enforce-eager` and with the Triton attention backend. So the fault is not Nemotron, the 4-bit weights or our settings: it is vLLM's serving path on this machine. We did not find which part.
 - Separately, with speculative decoding on, the second request killed the server with an assertion in `async_scheduler.py` (`num_output_placeholders >= 0`).
 
-What we do not know: whether the cause is the confidential mode or this GPU model, because no ordinary RTX PRO 6000 was free to compare.
+**The cause, found and confirmed later the same morning.** It is a known vLLM bug under GPU confidential computing ([vllm-project/vllm#57224](https://github.com/vllm-project/vllm/issues/57224)): the default (V2) model runner lets the GPU read each request through a mapped view of host memory, and on a confidential GPU that view goes stale, so the model runs correctly on old input. On a second `1RTXPRO6000.30V.CC` machine we reproduced the stale view without any model, and then:
+
+- Qwen2.5-0.5B: junk by default, "The capital of Finland is Helsinki." with `-e VLLM_USE_V2_MODEL_RUNNER=0`.
+- Nemotron with the recipe above: junk by default, correct text, tool calls and image input with the same switch. Healthy 5.5 minutes after the container started.
+- Our evaluation against it: the same quality as the serverless container at 2.08 seconds median against 2.02 (`eval/results-verda-confidential.md`).
+
+`deploy/start_model.sh` now sets the switch by itself on a confidential machine. The fix is merged upstream (PR #59981, 9 Nov 2026) and is in no version up to 0.32.0. The full write-up for Verda is `deploy/verda-confidential-gpu-report.md`.
+
+Two practical notes: the confidential image has no Docker, and its default 50 GB disk is filled by the vLLM image alone, so order at least 150 GB (`create ... 200`) or enlarge the volume through the API, which works on a running machine.
 
 Billing note: on Verda a shut-down machine is still charged in full. Only deleting it stops the charge. We deleted the machine through the API without naming its disk; the disk was listed as attached for a few minutes and was gone from the account half an hour later, so do not count on a disk surviving a delete.
 

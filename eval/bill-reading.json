@@ -1,0 +1,596 @@
+{
+ "summary": {
+  "bills": 1000,
+  "answered_by_the_model": 1000,
+  "a_draft_was_prepared": 1000,
+  "ready_to_confirm": 984,
+  "ready_and_every_payment_field_right": 984,
+  "ready_with_a_wrong_payment_field": 0,
+  "held_back_for_the_customer_to_check": 16,
+  "of_those_held_back_were_in_fact_right": 15,
+  "needed_a_second_look_at_the_photo": 49,
+  "per_field_right": {
+   "payee": 886,
+   "iban": 999,
+   "reference": 1000,
+   "amount": 1000,
+   "due_date": 1000
+  },
+  "answers_with_every_number_checked": 1000,
+  "errors": 0,
+  "median_seconds": 9.7,
+  "answered_by": {
+   "NVIDIA API": 233,
+   "Verda, Finland": 767
+  },
+  "by_language_ready_and_right": {
+   "fi": "590/600",
+   "sv": "213/214",
+   "en": "181/186"
+  }
+ },
+ "ready_with_a_wrong_field": [],
+ "held_back": [
+  {
+   "n": 93,
+   "lang": "fi",
+   "mode": "nemotron",
+   "host": "Verda, Finland",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Esimerkki Vakuutus Osk",
+    "account_number": "FI17 9987 8131 9874 32",
+    "reference": "13338 52174 50157 67925",
+    "amount": 2690.46,
+    "due_date": "2026-11-03"
+   },
+   "ok": {
+    "payee": true,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 52.3
+  },
+  {
+   "n": 132,
+   "lang": "fi",
+   "mode": "nemotron",
+   "host": "NVIDIA API",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Malli Isännointi Oyj",
+    "account_number": "FI04 9949 6191 2283 69",
+    "reference": "RF14 3162 0762 876",
+    "amount": 65.69,
+    "due_date": "2026-12-10"
+   },
+   "ok": {
+    "payee": false,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 86.2
+  },
+  {
+   "n": 176,
+   "lang": "fi",
+   "mode": "nemotron",
+   "host": "NVIDIA API",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Esimerkki Vakuutus Oyj",
+    "account_number": "FI32 9995 5147 8164 96",
+    "reference": "756 67291 48942",
+    "amount": 427.83,
+    "due_date": "2026-12-25"
+   },
+   "ok": {
+    "payee": true,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 85.9
+  },
+  {
+   "n": 222,
+   "lang": "sv",
+   "mode": "nemotron",
+   "host": "Verda, Finland",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Malli Försäkring Ab",
+    "account_number": "FI1399910672767708",
+    "reference": "989 37542 49257",
+    "amount": 71.35,
+    "due_date": "2027-01-03"
+   },
+   "ok": {
+    "payee": true,
+    "iban": false,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "does_not_check_out",
+    "reference": "checks_out",
+    "amount": "read_twice_same",
+    "due_date": "read_twice_same"
+   },
+   "seconds": 16.4
+  },
+  {
+   "n": 233,
+   "lang": "fi",
+   "mode": "nemotron",
+   "host": "Verda, Finland",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Kuvitteellinen Lämpö Oy",
+    "account_number": "FI45 9937 0126 0471 39",
+    "reference": "2 79666",
+    "amount": 119.04,
+    "due_date": "2027-01-05"
+   },
+   "ok": {
+    "payee": false,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 67.7
+  },
+  {
+   "n": 393,
+   "lang": "fi",
+   "mode": "nemotron",
+   "host": "Verda, Finland",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Demo Kuntokali Oy",
+    "account_number": "FI54 9950 0440 4009 33",
+    "reference": "37401 04826 34722 15755",
+    "amount": 75.47,
+    "due_date": "2026-12-24"
+   },
+   "ok": {
+    "payee": false,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 49.9
+  },
+  {
+   "n": 403,
+   "lang": "en",
+   "mode": "nemotron",
+   "host": "NVIDIA API",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Exempel Dental Ltd",
+    "account_number": "FI35 9970 1760 4865 84",
+    "reference": "2 00320 70655 69591",
+    "amount": 274.91,
+    "due_date": "2026-12-25"
+   },
+   "ok": {
+    "payee": true,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 82.6
+  },
+  {
+   "n": 467,
+   "lang": "fi",
+   "mode": "nemotron",
+   "host": "NVIDIA API",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Kuvitteellinen Sähkö Oy",
+    "account_number": "FI10 9939 8750 2288 19",
+    "reference": "2 84819 96394 13702",
+    "amount": 10.55,
+    "due_date": "2026-10-08"
+   },
+   "ok": {
+    "payee": false,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 82.3
+  },
+  {
+   "n": 553,
+   "lang": "en",
+   "mode": "nemotron",
+   "host": "NVIDIA API",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Testi Insurance Ltd",
+    "account_number": "FI24 9950 7965 5732 03",
+    "reference": "RF92 8486 6955 3891",
+    "amount": 26.66,
+    "due_date": "2026-12-22"
+   },
+   "ok": {
+    "payee": true,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 48.2
+  },
+  {
+   "n": 569,
+   "lang": "fi",
+   "mode": "nemotron",
+   "host": "NVIDIA API",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Kuvitteellinen Vesi Oy",
+    "account_number": "FI02 9931 5626 6025 69",
+    "reference": "8001 00080 18062",
+    "amount": 852.47,
+    "due_date": "2026-12-10"
+   },
+   "ok": {
+    "payee": false,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 82.8
+  },
+  {
+   "n": 595,
+   "lang": "fi",
+   "mode": "nemotron",
+   "host": "Verda, Finland",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Kuvitteellinen Lämpö Oy",
+    "account_number": "FI47 9930 8826 6750 70",
+    "reference": "700 32180 80016",
+    "amount": 2719.9,
+    "due_date": "2026-10-21"
+   },
+   "ok": {
+    "payee": false,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 60.2
+  },
+  {
+   "n": 682,
+   "lang": "en",
+   "mode": "nemotron",
+   "host": "Verda, Finland",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Esimerkki Dental Oy",
+    "account_number": "FI37 9988 3900 6749 45",
+    "reference": "3798 88587 22942",
+    "amount": 42.02,
+    "due_date": "2026-11-25"
+   },
+   "ok": {
+    "payee": true,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 59.7
+  },
+  {
+   "n": 887,
+   "lang": "en",
+   "mode": "nemotron",
+   "host": "NVIDIA API",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Testi Insurance Oy",
+    "account_number": "FI78 9956 8646 5999 16",
+    "reference": "9 83130",
+    "amount": 872.47,
+    "due_date": "2026-11-23"
+   },
+   "ok": {
+    "payee": true,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 49.8
+  },
+  {
+   "n": 943,
+   "lang": "fi",
+   "mode": "nemotron",
+   "host": "Verda, Finland",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Malli Lämpö Oy",
+    "account_number": "FI90 9907 6222 0950 55",
+    "reference": "27 24211 91672",
+    "amount": 106.67,
+    "due_date": "2026-11-14"
+   },
+   "ok": {
+    "payee": false,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 39.3
+  },
+  {
+   "n": 950,
+   "lang": "fi",
+   "mode": "nemotron",
+   "host": "Verda, Finland",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Kuvitteellinen Vesi Oy",
+    "account_number": "FI09 9995 8388 2068 64",
+    "reference": "54227 85270 69422 03725",
+    "amount": 294.65,
+    "due_date": "2026-11-06"
+   },
+   "ok": {
+    "payee": false,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 59.5
+  },
+  {
+   "n": 966,
+   "lang": "en",
+   "mode": "nemotron",
+   "host": "Verda, Finland",
+   "tools": [
+    "prepare_payment",
+    "prepare_payment"
+   ],
+   "numbers_checked": true,
+   "attempts": 2,
+   "shown": {
+    "payee": "Testi Heating Ltd",
+    "account_number": "FI19 9953 8899 3888 48",
+    "reference": "6979 74830 15884 13027",
+    "amount": 90.49,
+    "due_date": "2026-11-22"
+   },
+   "ok": {
+    "payee": true,
+    "iban": true,
+    "reference": true,
+    "amount": true,
+    "due_date": true
+   },
+   "ready": false,
+   "first_ready": false,
+   "checks": {
+    "account_number": "checks_out",
+    "reference": "checks_out",
+    "amount": "not_read_twice",
+    "due_date": "read_once"
+   },
+   "seconds": 43.7
+  }
+ ],
+ "no_draft": []
+}

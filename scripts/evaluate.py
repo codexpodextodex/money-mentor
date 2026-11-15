@@ -168,6 +168,7 @@ def cases_for(cid: str) -> list[dict]:
 _ZERO_IN_WORDS = (
     "nothing", "no spending", "did not spend", "didn't spend", "not spent", "would not change",
     "et käyttänyt", "ei mitään", "ei lainkaan", "ei ollut", "ei muuttaisi",
+    "ei tallentunut", "ei ole tallennettu", "ei tullut menoja",
     "ingenting", "inget", "inte lagt", "inte spenderat", "inga ",
 )
 
@@ -217,6 +218,7 @@ def ask(system: str, cid: str, question: str) -> dict:
     return {
         "text": answer.get("text", ""),
         "mode": answer.get("mode"),
+        "host": answer.get("served_by"),  # which model host wrote the answer
         "calls": [{"name": c["name"], "arguments": c["arguments"]} for c in calls],
         "grounded": grounding.check(answer.get("text", ""), results, question)["ok"],
         "rewritten": bool(answer.get("grounding", {}).get("rewritten")),
@@ -240,6 +242,8 @@ def main() -> None:
     parser.add_argument("--customers", type=int, default=3, help="how many held-out customers to test")
     parser.add_argument("--systems", nargs="+", choices=SYSTEMS, help="which systems to run")
     parser.add_argument("--pause", type=float, default=0.0, help="seconds to wait between model questions (rate limits)")
+    parser.add_argument("--ids", nargs="+", help="test exactly these customers, to compare two model hosts on the same questions")
+    parser.add_argument("--name", default="results", help="name of the files written in eval/ (default: results)")
     args = parser.parse_args()
 
     db.init()
@@ -252,7 +256,7 @@ def main() -> None:
 
     # Held-out customers: a fixed random sample, none of them a demo persona.
     demo = {p["customer_id"] for p in insights.personas()}
-    sample = [
+    sample = args.ids or [
         r["customer_id"]
         for r in db.rows("SELECT customer_id FROM cust_features USING SAMPLE 40 ROWS (reservoir, 2026) ORDER BY 1")
         if r["customer_id"] not in demo
@@ -286,6 +290,7 @@ def main() -> None:
                 ),
                 "answers_rewritten": sum(r["rewritten"] for r in mine),
                 "fell_back_to_router": sum(1 for r in mine if system != "router" and r["mode"] == "offline"),
+                "answered_by": sorted({r["host"] for r in mine if r.get("host")}),
                 "median_seconds": sorted(r["seconds"] for r in mine)[n // 2],
             }
         )
@@ -293,7 +298,7 @@ def main() -> None:
     out = ROOT / "eval"
     out.mkdir(exist_ok=True)
     meta = {"model": config.LLM_MODEL or None, "base_url": config.LLM_BASE_URL if config.llm_configured() else None, "customers": sample, "as_of": db.today().isoformat()}
-    (out / "results.json").write_text(json.dumps({"meta": meta, "summary": summary, "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
+    (out / f"{args.name}.json").write_text(json.dumps({"meta": meta, "summary": summary, "rows": rows}, indent=1, ensure_ascii=False), encoding="utf-8")
 
     header = "| System | Questions | Right tool | Right arguments | Right number in answer | Every number traceable | Finnish/Swedish right | Median time |"
     lines = [header, "|---|---|---|---|---|---|---|---|"]
@@ -308,7 +313,7 @@ def main() -> None:
         + "\n".join(lines)
         + "\n\nProduced by `python scripts/evaluate.py`. Expected tools, arguments and numbers come from calling the engine directly.\n"
     )
-    (out / "results.md").write_text(text, encoding="utf-8")
+    (out / f"{args.name}.md").write_text(text, encoding="utf-8")
     print("\n" + "\n".join(lines))
 
 

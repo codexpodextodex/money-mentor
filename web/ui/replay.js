@@ -112,6 +112,21 @@ const pageLang = () => {
   const v = (document.documentElement.lang || 'en').slice(0, 2).toLowerCase();
   return TEXT[v] ? v : 'en';
 };
+const euros = (lang, v, digits = 0) => new Intl.NumberFormat(LOCALE[lang], { style: 'currency', currency: 'EUR', maximumFractionDigits: digits, minimumFractionDigits: digits }).format(Number(v) || 0);
+
+/**
+ * A habit's name as this screen says it, from the lever's key and the two figures that fill it
+ * (`normal_busy_week`, `biggest_everyday_category`). Other screens that mention a habit borrow it,
+ * so there is one set of names: the chat's "when it could fit" does. '' for a lever without a name here.
+ */
+export function habitName(lever, data, lang = pageLang()) {
+  const text = TEXT[lang] || TEXT.en;
+  const pair = text.L[lever];
+  if (!pair) return '';
+  const d = data || {};
+  const category = d.biggest_everyday_category ? (text.C[d.biggest_everyday_category] || d.biggest_everyday_category) : '';
+  return fill(pair[0], { amount: euros(lang, d.normal_busy_week), category });
+}
 
 /** Follow the page language, so the screen re-renders when the app switches it. */
 function useLang() {
@@ -250,7 +265,7 @@ export function Replay() {
   });
   const req = useApi(id ? cust(id, `/replay${lever ? `?lever=${encodeURIComponent(lever)}` : ''}`) : null);
 
-  const money = (v, digits = 0) => new Intl.NumberFormat(LOCALE[lang], { style: 'currency', currency: 'EUR', maximumFractionDigits: digits, minimumFractionDigits: digits }).format(Number(v) || 0);
+  const money = (v, digits = 0) => euros(lang, v, digits);
   const day = (iso) => new Date(`${iso}T00:00:00`).toLocaleDateString(LOCALE[lang], { month: 'short', year: 'numeric' });
   const leverText = (entry, d) => {
     const pair = t.L[entry.lever] || [entry.title, entry.how];

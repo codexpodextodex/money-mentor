@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Any, Callable
 
-from . import baskets, engine, explore, insights, mortgage, periods, plan, replay
+from . import baskets, bills, engine, explore, insights, mortgage, periods, plan, replay
 from .engine import EngineError
 
 PERIOD_DOC = (
@@ -103,11 +103,53 @@ TOOL_SPECS = [
         "balance. Use for 'can I afford this?', also when the customer sends a photo of a price tag, a product, "
         "a receipt or a bill: read the price from the photo and pass it as amount. A large Home & Tech or "
         "transport purchase comes back with two readings: as a necessity (fits, why) and as a treat "
-        "(if_it_is_a_treat), because the price alone cannot tell which it is.",
+        "(if_it_is_a_treat), because the price alone cannot tell which it is. When it does not fit now, the result "
+        "also says when it could ('when'): from the next payday, or by changing one habit. So use this for 'when can I "
+        "afford it', 'how long do I have to wait' and 'how could I make it fit' too, with the same amount.",
         {
             "amount": {"type": "number", "description": "The price in euros."},
-            "what": {"type": "string", "description": "A few words for the item, e.g. 'running shoes'."},
-            "category": {"type": "string", "description": "The spending category of the item. " + CATEGORY_DOC},
+            "what": {
+                "type": "string",
+                "description": "A few words for the item, e.g. 'running shoes'. From a photo: the item's name exactly as written on it, not translated.",
+            },
+            "category": {
+                "type": "string",
+                "description": "The spending category of the item. " + CATEGORY_DOC + " Clothes, shoes, books and sports "
+                "gear are Lifestyle; electronics, furniture and tools are Home & Tech.",
+            },
+        },
+        ["amount"],
+    ),
+    _fn(
+        "prepare_payment",
+        "Prepare a payment from a bill or an invoice the customer photographed: pass what is printed on it, and the "
+        "result is a draft for the customer to check. It recalculates the check digits inside the account number "
+        "(IBAN) and the reference number, so a misread digit is caught, and says whether the balance covers the "
+        "bill. Use when the photo is a bill to pay (it names a payee and an account number). You never pay: the "
+        "customer confirms the draft in the app.",
+        {
+            "amount": {
+                "type": "number",
+                "description": "The total to pay in euros: the figure printed next to the words for the total (Maksettava yhteensä, "
+                "Yhteensä, Att betala, Amount due). Never one line of the bill.",
+            },
+            "payee": {"type": "string", "description": "Who the bill is from, exactly as printed."},
+            "iban": {
+                "type": "string",
+                "description": "The payee's account number (IBAN), copied character by character. Never correct, complete or guess a character.",
+            },
+            "reference": {"type": "string", "description": "The reference number, copied digit by digit. Leave it out if the bill has none."},
+            "due_date": {
+                "type": "string",
+                "description": "The due date exactly as the bill prints it, for example 10.12.2026 or 24 December 2026. Do not convert it "
+                "to another format: the app reads it.",
+            },
+            "bill_date": {
+                "type": "string",
+                "description": "The bill's own date (when it was written: Laskun päivämäärä, Fakturadatum, Invoice date), exactly as printed. "
+                "It is not the due date.",
+            },
+            "category": {"type": "string", "description": "What kind of bill it is, if clear: an electricity, water, phone or internet bill is Utilities. " + CATEGORY_DOC},
         },
         ["amount"],
     ),
@@ -223,7 +265,8 @@ _HANDLERS: dict[str, Callable[..., dict]] = {
     "get_baskets": engine.basket_summary,
     "get_cashflow": engine.cashflow,
     "get_safe_to_spend": engine.safe_to_spend,
-    "check_affordability": engine.can_afford,
+    "check_affordability": plan.can_afford,
+    "prepare_payment": bills.payment_draft,
     "simulate_change": engine.what_if,
     "replay_year": replay.replay,
     "get_payday_plan": plan.payday_plan,
@@ -246,8 +289,12 @@ def _allowed_args(name: str) -> set[str]:
     return set(spec["function"]["parameters"]["properties"])
 
 
-def call(customer_id: str, name: str, arguments: dict[str, Any] | None) -> dict:
-    """Run a tool for a customer. Problems come back as {"error": ...} so the model can correct itself."""
+def call(customer_id: str, name: str, arguments: dict[str, Any] | None, extra: dict[str, Any] | None = None) -> dict:
+    """Run a tool for a customer. Problems come back as {"error": ...} so the model can correct itself.
+
+    extra is what the app itself adds to a call. The model cannot pass it: its arguments are
+    checked against the tool's own list first.
+    """
     if name not in _HANDLERS:
         return {"error": f"Unknown tool '{name}'. Available: {', '.join(TOOL_NAMES)}."}
     args = {k: v for k, v in (arguments or {}).items() if v is not None and v != ""}
@@ -255,7 +302,7 @@ def call(customer_id: str, name: str, arguments: dict[str, Any] | None) -> dict:
     if unknown:
         return {"error": f"Unknown argument(s) for {name}: {', '.join(sorted(unknown))}."}
     try:
-        return _HANDLERS[name](customer_id, **args)
+        return _HANDLERS[name](customer_id, **args, **(extra or {}))
     except EngineError as exc:
         return {"error": str(exc)}
     except (TypeError, ValueError) as exc:

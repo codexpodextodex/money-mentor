@@ -23,7 +23,7 @@ Demo page to app:
 | `lang` | `lang` | Switch language. |
 | `who` | `id`, `label` | Switch demo customer. |
 | `splash` | | Play the launch screen again. |
-| `ask` | `text`, `photo?` | Open the chat and send this question. `photo: 'sample'` sends the built-in sample price tag (`img/sample-price-tag.jpg`, a made-up brand) with it; with no text the chat asks "Can I afford this?". |
+| `ask` | `text`, `photo?` | Open the chat and send this question. `photo: 'sample'` sends the built-in sample price tag (`img/sample-price-tag.jpg`, a made-up brand) with it; with no text the chat asks "Can I afford this?". `photo: 'bill'` sends the built-in sample bill (`img/sample-bill.jpg`, a made-up company, customer and account); with no text the chat asks "Get this bill ready to pay". |
 
 App to demo page:
 
@@ -43,6 +43,10 @@ Trainer: `trainer` (landing), `plan`, `replay`, `ask`, `find`, `explore`, `loan`
 `plan` (in `ui/plan.js`) is the payday plan: the next salary split into essentials, a buffer for the unexpected, savings and everyday spending (`GET /payday-plan`), with a savings-goal slider, the last pay period next to it and one "Accept the plan" button; under it "The weeks ahead", the balance projected day by day (`GET /outlook`). Accepting is a demo: it is kept in `localStorage` under `money-mentor.payday-plan.<customer id>` as `{ from, to, goal }` for that pay period, and nothing is moved. Inside the app a screen can be opened at one of its sections with `ui.go(route, { focus: '<data-tour name>' })`: the heads-up notice in "Worth a look" opens `plan` at `plan-outlook` this way. `ui/plan.js` also holds the entry card on the trainer, the heads-up notice (written from the notice's `data`, so it reads the same in all three languages) and the chat's cards for `get_payday_plan` and `get_balance_outlook`.
 
 `ui/replay.js` and `ui/quiz.js` are self-contained screens: each carries its own strings (en, fi, sv) and styles, reads the language from `document.documentElement.lang`, and uses only `ui.who.id`, `ui.ask(text)` and `ui.go(route)` from the `UI` context.
+
+The chat's affordability card (`check_affordability` in `ui/chat.js`) ends with a "When it could fit" block whenever the tool's result has `when` with a `route`: from the next payday (`next_pay_period`), or in about N months with one habit changed (`one_habit`). Without a route it shows nothing, and an answer without `when` looks as it always did. Its words are the `ans.when_*` strings; the habit's name comes from `habitName()` in `ui/replay.js`, so the card and the replay screen share one set of names.
+
+The chat's payment draft card (`prepare_payment` in `ui/chat.js`, `PaymentDraft`) is a bill from a photo laid out as a payment form: payee, amount, due date, the account number and the reference number each with the engine's check (`checks_out`, `does_not_check_out`, `missing`), whether the balance covers it, and the basket. The "Confirm the payment" button is there only when the tool's `ready_to_confirm` is true, and pressing it pays nothing: the card shows "Nothing was paid" in the demo's own colour. When a check fails the field is flagged, the card says what to do, and there is no button. Its words are the `pay.*` strings, written from the tool's statuses and not from its English `problems`. The ways in: the sample bill under the sample price tag on the chat's first screen, and "A bill? Get it ready to pay" under a photo attached with the camera button; both send the question `ask.q.bill`.
 
 ## Tour anchors (`data-tour`)
 
@@ -64,4 +68,14 @@ Tokens are at the top of `styles.css`. Light theme only, like the real app.
 
 Every screen carries a small "Demo" mark (top bar, the S-Etukortti header, the launch screen), and nothing asks for credentials. Inert parts of the host app answer with a "Not part of this demo" toast.
 
-`/app?tour=1` runs the walkthrough inside the app for a visitor on a real phone: a caption card docked above the tab bar, driven by the steps and captions in `i18n/tour.js`.
+`/app?tour=1` runs the walkthrough inside the app for a visitor on a real phone: a caption card docked above the tab bar, driven by the steps and captions in `i18n/tour.js`. While that card is up (`html.in-tour`) the chat hides its composer and suggestion chips, so a long answer and its card have the whole screen above the caption; they are back when the card is closed.
+
+## The walkthrough
+
+`i18n/tour.js` holds the twelve steps (`STEPS`: what the phone shows) and their captions in three languages (`steps`, index-aligned with `STEPS`). Both the demo page (`stage.js`) and the card in the app (`TourCard` in `app.js`) read them.
+
+A step is `{ route, highlight, seconds }`, plus `ask: true` (send that step's own `ask` question) or `photo: true` (send the sample price tag). On the demo page a step stays up for `seconds` and then the tour moves on by itself.
+
+The last step is the closing one: `{ route, highlight, closing: true, icons }` with no `seconds`. A step without `seconds` rests: no timer, no pause button, its bar segment full, and the tour stays there until the visitor moves on. Its caption is a title and a list, `proof: [{ figure?, lead, text }]`, instead of a `text` paragraph. A row with a `figure` shows it; a row without one shows the icon named at the same index in `icons` (`#i-<name>` in the sprite of `index.html`, and the icon of the same name in `ui/parts.js`). The primary button reads `tryIt` and leads to the closing panel as before. On the demo page, if the visitor skipped ahead and the tour has asked nothing yet, the closing step asks the question of the first `ask` step, so the phone shows an answer with its evidence line ringed and not an empty chat.
+
+The two figures on the closing step are measured (`eval/results.md`). If the evaluation is run again, change them in all three languages.

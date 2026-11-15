@@ -289,6 +289,23 @@ body {
 .tour__title { margin: 0; color: var(--green-deep); font-weight: 700; font-size: 28px; line-height: 34px; letter-spacing: -0.01em; text-wrap: balance; }
 .tour__text { margin: 12px 0 0; font-size: 17px; line-height: 1.55; text-wrap: pretty; }
 
+/* The closing step: four short proofs in place of the paragraph. The figure or icon on the left is
+   what a glance takes away, the bold line beside it says what it stands for. */
+.proof { list-style: none; margin: 20px 0 0; padding: 0; }
+.proof__row { display: grid; grid-template-columns: 72px minmax(0, 1fr); column-gap: 16px; align-items: start; }
+.proof__row + .proof__row { margin-top: 16px; }
+.proof__token {
+  display: grid; place-items: center; height: 44px;
+  border-radius: 12px; background: var(--surface-2); color: var(--green-deep);
+}
+.proof__token--figure { font-weight: 700; font-size: 20px; line-height: 1; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.proof__token .ico { width: 24px; height: 24px; }
+.proof__body { margin: 0; min-width: 0; align-self: center; text-wrap: pretty; } /* centred only where it is shorter than its token */
+.proof__lead { display: block; font-weight: 700; font-size: 17px; line-height: 24px; }
+.proof__text { display: block; color: var(--ink-2); font-size: 15px; line-height: 22px; }
+/* This is the tallest caption. In a window too small for it, it grows downward, never up under the header. */
+.stage.is-closing .stage__inner { align-items: safe center; }
+
 .tour__controls { display: flex; align-items: center; gap: 12px; margin-top: var(--gap); }
 .tour__controls #tour-toggle { margin-left: auto; }
 #tour-toggle .ico--play { display: none; }
@@ -415,6 +432,14 @@ body {
   .tour__copy { min-height: 176px; }
   .note, .label, .disclaimer, .tour__count, .tour__keys { font-size: 14px; }
   .ask { font-size: 16px; min-height: 52px; }
+  .proof { margin-top: 24px; }
+  .proof__row { grid-template-columns: 84px minmax(0, 1fr); column-gap: 20px; }
+  .proof__row + .proof__row { margin-top: 20px; }
+  .proof__token { height: 52px; border-radius: 14px; }
+  .proof__token--figure { font-size: 23px; }
+  .proof__token .ico { width: 28px; height: 28px; }
+  .proof__lead { font-size: 19px; line-height: 26px; }
+  .proof__text { font-size: 17px; line-height: 26px; }
 }
 
 /* ---------- Short laptop screens: the same page, a little tighter ---------- */
@@ -439,6 +464,34 @@ body {
   /* The closing panel is the tallest: there the chosen customer shows as one line. */
   .stage[data-mode="end"] .picker__btn .picker__blurb, .stage[data-mode="free"] .picker__btn .picker__blurb { display: none; }
   .stage[data-mode="end"] .avatar, .stage[data-mode="free"] .avatar { width: 32px; height: 32px; }
+}
+
+/* The closing step is the tallest caption. On a shorter window it keeps every word and steps its
+   type down instead: the same pairs of sizes the page already uses, one step at a time. */
+@media (min-width: 700px) and (max-height: 820px) {
+  .proof { margin-top: 16px; }
+  .proof__row + .proof__row { margin-top: 12px; }
+  .proof__lead { font-size: 16px; line-height: 22px; }
+  .proof__text { font-size: 14px; line-height: 20px; }
+}
+@media (min-width: 700px) and (max-height: 740px) {
+  .proof__token { height: 40px; }
+  .proof__lead { font-size: 15px; line-height: 20px; }
+  .proof__text { font-size: 13px; line-height: 18px; }
+  .stage.is-closing .tour__foot { margin-top: 16px; }
+}
+/* A very short window: each proof becomes one run of text beside its figure. */
+@media (min-width: 700px) and (max-height: 699px) {
+  .stage.is-closing .tour__title { font-size: 24px; line-height: 30px; }
+  .stage.is-closing .tour__foot { margin-top: 12px; padding-top: 8px; }
+  .proof { margin-top: 12px; }
+  .proof__row { grid-template-columns: 64px minmax(0, 1fr); column-gap: 12px; }
+  .proof__token { height: 36px; border-radius: 10px; }
+  .proof__token--figure { font-size: 17px; }
+  .proof__token .ico { width: 20px; height: 20px; }
+  .proof__body, .proof__lead, .proof__text { font-size: 13px; line-height: 18px; }
+  .proof__lead, .proof__text { display: inline; }
+  .proof__lead { margin-right: 0.3em; }
 }
 
 /* ---------- Narrower laptops and tablets ---------- */

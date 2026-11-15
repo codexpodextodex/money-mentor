@@ -30,3 +30,7 @@ IDEAS.md
 video/out/
 video/frames/
 video/node_modules/
+
+# The bill reading test: rendered bills and raw results stay out of git
+eval/bills/
+eval/bills-*/

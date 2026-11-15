@@ -11,6 +11,8 @@
 #     this card but answer in garbage. Use the recipe for the card you have.
 #   - On a confidential-computing machine the GPU refuses work ("Error 802: system not yet
 #     initialized") until it is switched to the ready state, after every boot.
+#   - On a confidential-computing machine vLLM 0.32.0 must use its older model runner
+#     (VLLM_USE_V2_MODEL_RUNNER=0), or every answer is junk. This script sets both.
 #
 # The weights were downloaded beforehand with
 #   HF_HOME=/root/hf hf download nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4
@@ -27,9 +29,13 @@ DRAFT_TOKENS="${DRAFT_TOKENS:-5}"   # 0 switches the model's built-in draft head
 umask 077
 grep '^LLM_API_KEY=' "$APP_DIR/.env" | sed 's/^LLM_API_KEY=/VLLM_API_KEY=/' > "$APP_DIR/vllm.env"
 
+RUNNER=()
 if nvidia-smi conf-compute -f 2>/dev/null | grep -q 'CC status: ON'; then
   nvidia-smi conf-compute -srs 1 >/dev/null
   nvidia-smi conf-compute -grs
+  # vLLM up to 0.33 answers in junk on a confidential GPU with its default (V2) model runner:
+  # the GPU reads stale input (vllm-project/vllm#57224). The older runner is correct.
+  RUNNER=(-e VLLM_USE_V2_MODEL_RUNNER=0)
 fi
 
 EXTRA=()
@@ -41,10 +47,11 @@ fi
 if [ -n "${EXTRA_ARGS:-}" ]; then EXTRA+=(${EXTRA_ARGS}); fi
 
 docker rm -f nemotron >/dev/null 2>&1 || true
-docker run -d --name nemotron --gpus all --privileged --ipc=host --restart "${RESTART:-no}" \
+docker run -d --name nemotron --gpus all --ipc=host --restart "${RESTART:-no}" \
   -p 127.0.0.1:8001:8000 \
   -v "$HF_DIR":/root/.cache/huggingface \
   -e HF_HUB_OFFLINE=1 \
+  "${RUNNER[@]}" \
   --env-file "$APP_DIR/vllm.env" \
   "$IMAGE" \
   nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4 \

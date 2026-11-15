@@ -124,11 +124,12 @@ def _rank_feature(column: str, value, cond: str, params: list) -> dict:
         f"""
         SELECT count(*) AS peers, median({column}) AS median,
                quantile_cont({column}, 0.25) AS p25, quantile_cont({column}, 0.75) AS p75,
-               avg(CASE WHEN {column} < ? THEN 1.0 ELSE 0.0 END) AS below
+               avg(CASE WHEN {column} < ? THEN 1.0 ELSE 0.0 END) AS below,
+               avg(CASE WHEN {column} > ? THEN 1.0 ELSE 0.0 END) AS above
         FROM cust_features JOIN customers USING (customer_id)
         WHERE {cond} AND {column} IS NOT NULL
         """,
-        [value, *params],
+        [value, value, *params],
     )
     return found
 
@@ -250,6 +251,7 @@ def benchmark(customer_id: str, target: str | None = None, peer_group: str = "ag
             "peer_median": _r((r["median"] or 0) * scale, 1 if unit != "eur" else 2),
             "peer_middle_half": [_r((r["p25"] or 0) * scale, 1), _r((r["p75"] or 0) * scale, 1)],
             "higher_than_pct_of_peers": _r(100 * r["below"], 0),
+            "lower_than_pct_of_peers": _r(100 * r["above"], 0),
             "peers": r["peers"],
         }
 
@@ -273,7 +275,8 @@ def benchmark(customer_id: str, target: str | None = None, peer_group: str = "ag
             )
             SELECT (SELECT monthly FROM me) AS you, count(*) AS peers, median(monthly) AS median,
                    quantile_cont(monthly, 0.25) AS p25, quantile_cont(monthly, 0.75) AS p75,
-                   avg(CASE WHEN monthly < (SELECT monthly FROM me) THEN 1.0 ELSE 0.0 END) AS below
+                   avg(CASE WHEN monthly < (SELECT monthly FROM me) THEN 1.0 ELSE 0.0 END) AS below,
+                   avg(CASE WHEN monthly > (SELECT monthly FROM me) THEN 1.0 ELSE 0.0 END) AS above
             FROM per
             """,
             [*resolved["values"], start, end, *params, cid, *resolved["values"], start, end],
@@ -286,6 +289,7 @@ def benchmark(customer_id: str, target: str | None = None, peer_group: str = "ag
             "peer_middle_half": [_r(found["p25"]), _r(found["p75"])],
             "difference_to_median": _r(found["you"] - found["median"]),
             "higher_than_pct_of_peers": _r(100 * found["below"], 0),
+            "lower_than_pct_of_peers": _r(100 * found["above"], 0),
             "peers": found["peers"],
         }
 

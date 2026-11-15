@@ -304,6 +304,30 @@ html.embed .boot { background: var(--splash); }
 .tourcard__body { animation: fade-in 200ms ease both; }
 .tourcard__body h2 { font-size: 18px; line-height: 1.25; color: var(--accent); }
 .tourcard__body p { margin-top: 4px; font-size: 14.5px; line-height: 1.4; color: var(--ink-2); }
+/* the closing step: four short proofs, each one run of text beside its figure or icon */
+.tourproof { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.tourproof li { display: grid; grid-template-columns: 52px minmax(0, 1fr); column-gap: 10px; align-items: start; }
+.tourproof__token {
+  display: grid; place-items: center; height: 34px; border-radius: 8px;
+  background: var(--accent-soft); color: var(--green-900);
+}
+.tourproof__token--figure { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tourcard__body .tourproof p { margin-top: 0; font-size: 13.5px; line-height: 17px; text-wrap: pretty; }
+.tourproof strong { margin-right: 0.2em; color: var(--ink); }
+/* on a short screen the closing card tightens, so some of the app still shows above it */
+@media (max-height: 700px) {
+  .tourcard--proof { padding-bottom: 8px; }
+  .tourcard--proof .tourcard__top { min-height: 36px; }
+  .tourcard--proof .tourcard__body h2 { font-size: 17px; line-height: 1.2; }
+  .tourcard--proof .tourcard__nav { margin-top: 8px; }
+  .tourproof { gap: 6px; margin-top: 6px; }
+  .tourproof li { grid-template-columns: 46px minmax(0, 1fr); column-gap: 8px; }
+  .tourproof__token { height: 32px; }
+  .tourproof__token--figure { font-size: 13.5px; }
+  .tourcard__body .tourproof p { font-size: 13px; line-height: 16px; }
+}
+/* while the card is up the chat shows the conversation only: its composer returns when the card is closed */
+html.in-tour .chat__dock { display: none; }
 .tourcard__nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
 .tourcard__nav .btn { min-height: 44px; margin: 0; padding: 0 18px; }
 .tourcard__nav .btn--small { font-size: 15px; padding-left: 12px; }
@@ -1152,6 +1176,67 @@ input[type="range"]:focus-visible::-moz-range-thumb { outline: 2px solid var(--g
 .readings__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .readings__head strong { font-size: 15.5px; }
 .readings p { margin-top: 4px; font-size: 14.5px; color: var(--ink-2); }
+/* when a "no" could become a yes: one calm block at the foot of the affordability card */
+.whenfit .whenfit__lead { margin-top: 3px; font-size: 18px; font-weight: 700; line-height: 1.25; letter-spacing: -0.005em; color: var(--ink); text-wrap: balance; }
+.whenfit .whenfit__text { margin-top: 3px; font-size: 14.5px; color: var(--ink-2); }
+.whenfit__habit { margin-top: 10px; padding: 10px 12px; border-radius: var(--r-md); background: var(--surface); }
+.whenfit .whenfit__habit p { margin-top: 0; font-size: 14.5px; color: var(--ink-2); }
+.whenfit .whenfit__habit .whenfit__name { margin-bottom: 3px; font-size: 15px; font-weight: 500; line-height: 1.3; color: var(--ink); }
+.whenfit__pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.whenfit__pair div { display: flex; flex-direction: column; justify-content: space-between; gap: 2px; min-width: 0; padding: 10px; border-radius: var(--r-md); background: var(--surface); }
+.whenfit__pair dt { font-size: 12.5px; line-height: 1.25; color: var(--ink-2); }
+.whenfit__pair dd { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.whenfit .whenfit__note { margin-top: 10px; font-size: 13px; color: var(--ink-2); }
+.whenfit__link {
+  position: relative; display: inline-flex; align-items: center; gap: 2px; margin-top: 6px;
+  color: var(--accent); font-size: 14.5px; font-weight: 500; text-align: left;
+  transition: opacity 120ms ease;
+}
+.whenfit__link::after { content: ""; position: absolute; inset: -12px -8px; } /* 44px touch target */
+.whenfit__link:active { opacity: 0.6; }
+/* a payment prepared from a photographed bill: a form the bank filled in, for the customer to look over */
+.pay__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.pay__to { min-width: 0; display: flex; flex-direction: column; }
+.pay__to span { font-size: 13px; line-height: 1.3; color: var(--ink-2); }
+.pay__to strong { font-size: 18px; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
+.pay__badge {
+  flex: none; display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: 5px;
+  border: 1px solid var(--warn-line); background: var(--warn-soft); color: #5c461d;
+  font-size: 12.5px; font-weight: 700; white-space: nowrap;
+}
+.pay__amount { margin-top: 10px; font-size: 42px; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.pay__due { display: flex; align-items: flex-start; gap: 7px; margin-top: 6px; font-size: 15px; color: var(--ink-2); }
+.pay__due .ico { flex: none; margin-top: 2px; color: var(--green-500); }
+.pay__due b { font-weight: 700; color: var(--ink); }
+.pay__due b.is-bad { color: var(--bad); }
+.pay__fields { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.payfield { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 10px; min-width: 0; padding: 10px 12px 11px; border-radius: var(--r-md); background: var(--surface-2); }
+.payfield dt { font-size: 13px; color: var(--ink-2); }
+.payfield dd { grid-column: 1 / -1; font-size: 18px; font-weight: 500; line-height: 1.25; letter-spacing: 0.01em; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.payfield.is-bad { background: var(--bad-soft); box-shadow: inset 0 0 0 1.5px var(--bad); }
+.payfield.is-bad .pill { background: var(--bad); color: #fff; }
+.pay__how { display: flex; align-items: flex-start; gap: 7px; margin-top: 8px; padding: 0 2px; font-size: 13.5px; line-height: 1.4; color: var(--ink-3); }
+.pay__how .ico { flex: none; margin-top: 2px; }
+.pay__how--ok .ico { color: var(--good); }
+.pay__fix { display: flex; align-items: flex-start; gap: 10px; margin-top: 10px; padding: 12px 14px; border-radius: var(--r-md); background: var(--warn-soft); color: var(--warn); box-shadow: inset 0 0 0 1px var(--warn-line); }
+.pay__fix .ico { flex: none; margin-top: 1px; }
+.pay__fix strong { display: block; font-size: 15.5px; color: var(--ink); }
+.pay__fix p { margin-top: 3px; font-size: 14.5px; color: var(--ink); }
+.pay__facts { display: flex; flex-direction: column; margin-top: 12px; }
+.pay__facts li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 2px; border-top: 1px solid var(--line-2); font-size: 15px; }
+.pay__facts .ico { flex: none; margin-top: 2px; }
+.pay__facts .dot { margin: 6px 4px 0; }
+.pay__facts span { min-width: 0; display: flex; flex-direction: column; }
+.pay__facts strong { font-weight: 500; }
+.pay__facts small { font-size: 13.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.pay__facts .is-good .ico { color: var(--good); }
+.pay__facts .is-bad .ico, .pay__facts .is-bad strong { color: var(--bad); }
+.toolcard .btn--wide { margin-top: 6px; }
+.pay__note { margin-top: 8px; font-size: 13px; line-height: 1.4; color: var(--ink-3); text-align: center; text-wrap: balance; }
+/* after the button: plainly not a receipt. The demo's own colour, no tick, no green. */
+.pay__done { margin-top: 6px; padding: 14px; border-radius: var(--r-md); background: var(--warn-soft); box-shadow: inset 0 0 0 1px var(--warn-line); animation: fade-in 200ms ease; }
+.pay__done strong { display: block; margin-top: 8px; font-size: 18px; line-height: 1.25; }
+.pay__done p { margin-top: 4px; font-size: 14.5px; color: var(--ink); }
 
 .trust { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; font-weight: 500; padding: 2px 2px; border-radius: 6px; }
 .trust .ico { margin-top: 0; }
@@ -1212,6 +1297,9 @@ input[type="range"]:focus-visible::-moz-range-thumb { outline: 2px solid var(--g
 .attached strong { font-size: 14.5px; }
 .attached span { font-size: 13.5px; color: var(--ink-2); }
 .attached--error { padding: 10px 12px; background: var(--bad-soft); color: var(--bad); font-size: 14px; }
+.attached__bill { position: relative; align-self: flex-start; display: inline-flex; align-items: center; gap: 2px; margin-top: 4px; color: var(--accent); font-size: 14.5px; font-weight: 700; text-align: left; }
+.attached__bill::after { content: ""; position: absolute; inset: -8px -6px; } /* a taller touch target */
+.attached__bill:disabled { opacity: 0.5; }
 .msg__photo {
   max-width: 62%; max-height: 220px; border-radius: 16px 16px 4px 16px; object-fit: cover;
   outline: 1px solid var(--line); outline-offset: -1px;

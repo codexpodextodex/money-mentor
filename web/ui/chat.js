@@ -4,15 +4,16 @@ import {
   eur, eurSigned, num, pct, fmtDate, nice, said, words, basketOf, t, tv, has, english, getLang, periodLabel, reducedMotion,
 } from './lib.js';
 import {
-  UI, Icon, Logo, Empty, Disclosure, Chip, KeyValue, StatusPill,
+  UI, Icon, Logo, Empty, Disclosure, Chip, KeyValue, StatusPill, Amount,
   BasketBar, BasketLegend, BarList, Waterfall, Columns, PeerBars, PillarMeter, Pillars,
   DataTable, TxList, Timeline, BasketRules, spendRows, ChangeLine, catName, subName,
 } from './parts.js';
 import { SAFE_STATUS } from './host.js';
 import { planCard, outlookCard, noticeText } from './plan.js';
+import { habitName } from './replay.js';
 
 const SUGGESTIONS = ['fastfood', 'clothes', 'safe', 'where', 'dining', 'jacket', 'type', 'mortgage'].map((k) => 'ask.q.' + k);
-const EXTRA_QUESTIONS = ['ask.q.unseen', 'ask.q.photo', 'plan.ask_q', 'outlook.ask_q'];
+const EXTRA_QUESTIONS = ['ask.q.unseen', 'ask.q.photo', 'ask.q.bill', 'plan.ask_q', 'outlook.ask_q'];
 
 /** Without the AI model only the English keyword router answers: hand it the English question. */
 function forRouter(text) {
@@ -43,11 +44,17 @@ const FITS = {
 };
 
 const SAMPLE_PHOTO = '/assets/img/sample-price-tag.jpg';
+// A made-up bill (scripts/make_sample_bill.py): the company, the customer and the account are invented.
+const SAMPLE_BILL = '/assets/img/sample-bill.jpg';
 
 /** The model's id as the server reports it, as a name people recognise. */
 const modelName = (id) => (!id ? t('chat.the_model') : /nemotron/i.test(id) ? 'NVIDIA Nemotron 3.5 Super VL' : id);
 /** Where the model ran: our own container on Verda in Finland, or NVIDIA's hosted API as the fallback. */
-const hostName = (host) => (/verda/i.test(host) ? t('host.verda') : /nvidia/i.test(host) ? t('host.nvidia') : host);
+const hostName = (host) => (
+  /confidential/i.test(host) ? t('host.verda_cc')
+    : /verda/i.test(host) ? t('host.verda')
+      : /nvidia/i.test(host) ? t('host.nvidia') : host
+);
 
 /** Shrink a photo in the browser, so only a small JPEG ever leaves the phone. */
 function readPhoto(file, max = 1280) {
@@ -101,6 +108,145 @@ function Counted({ counted }) {
     </ul>
     ${more > 0 ? html`<p class="footnote">${t('ans.counted_more', { n: more, count: num(more, 0) })}</p>` : null}
   </div>`;
+}
+
+/**
+ * When a purchase that does not fit now could fit (the tool's `when`): from the next payday, or in
+ * about N months with one habit changed. Nothing when the tool gives no route. Every figure is the tool's.
+ */
+function whenItFits(when, ui) {
+  const w = when && typeof when === 'object' ? when : {};
+  const p = w.next_pay_period && typeof w.next_pay_period === 'object' ? w.next_pay_period : {};
+  const h = w.one_habit && typeof w.one_habit === 'object' ? w.one_habit : {};
+  const some = (v) => v !== null && v !== undefined && Number.isFinite(Number(v));
+
+  if (w.route === 'next_pay_period') {
+    const date = w.earliest || p.starts_on_payday;
+    if (!date) return null;
+    return html`<div class="tip whenfit">
+      <strong>${t('ans.when_title')}</strong>
+      <p class="whenfit__lead">${t('ans.when_from', { date: fmtDate(date) })}</p>
+      <p class="whenfit__text">${t('ans.when_room')}</p>
+      ${some(p.left_for_everything_else_a_week) && some(p.your_usual_everyday_spending_a_week) ? html`<dl class="whenfit__pair">
+        <div><dt>${t('ans.when_left_week')}</dt><dd>${eur(p.left_for_everything_else_a_week, 'whole')}</dd></div>
+        <div><dt>${t('ans.when_usual_week')}</dt><dd>${eur(p.your_usual_everyday_spending_a_week, 'whole')}</dd></div>
+      </dl>` : null}
+    </div>`;
+  }
+
+  if (w.route === 'one_habit') {
+    const months = Number(h.months_for_this_price);
+    if (!(months > 0)) return null;
+    // The habit by the name the replay screen gives it; the tool's own words for one that screen does not know.
+    const name = habitName(h.lever, h, getLang()) || nice(h.habit);
+    return html`<div class="tip whenfit">
+      <strong>${t('ans.when_title')}</strong>
+      <p class="whenfit__lead">${t('ans.when_habit', { n: months, count: num(months, 0) })}</p>
+      ${p.has_room_for_it === false ? html`<p class="whenfit__text">${t('ans.when_not_next')}</p>` : null}
+      <div class="whenfit__habit">
+        ${name ? html`<p class="whenfit__name">${name}</p>` : null}
+        ${some(h.would_have_kept_a_month) ? html`<p>${t('ans.when_kept', { amount: eur(h.would_have_kept_a_month, 'whole') })}</p>` : null}
+      </div>
+      <p class="whenfit__note">${t('ans.when_past')}</p>
+      ${ui && ui.go ? html`<button type="button" class="whenfit__link" onClick=${() => ui.go('replay')}>${t('ans.when_replay')}<${Icon} name="right" size=${16} /></button>` : null}
+    </div>`;
+  }
+
+  return null;
+}
+
+/* ---------- a payment prepared from a photographed bill ---------- */
+
+// What the engine found when it recalculated a number's check digits.
+const CHECKED = {
+  checks_out: { key: 'pay.ok', tone: 'good', icon: 'check' },
+  does_not_check_out: { key: 'pay.bad', tone: 'bad', icon: 'alert' },
+  missing: { key: 'pay.missing', tone: 'bad', icon: 'alert' },
+};
+const inDays = (n) => (n <= 0 ? t('plan.in_today') : n === 1 ? t('plan.in_tomorrow') : t('plan.in_days', { count: num(n, 0) }));
+
+// An account number that failed its check comes back as it was read, unspaced: set it in fours, as a bill prints it, to compare.
+const fours = (v) => (v && !/\s/.test(String(v)) ? String(v).replace(/(.{4})(?=.)/g, '$1 ') : v);
+
+/** One line of the form: the number as read, and whether its check digits agree. */
+function PayField({ label, value, status, quiet }) {
+  const flagged = !quiet && status !== 'checks_out';
+  return html`<div class=${'payfield' + (flagged ? ' is-bad' : '')}>
+    <dt>${label}</dt>
+    ${quiet ? null : html`<${StatusPill} status=${status} map=${CHECKED} />`}
+    <dd>${value || '–'}</dd>
+  </div>`;
+}
+
+/**
+ * The draft, laid out as a payment form the bank filled in. Every figure is the tool's. The button
+ * is there only when the engine says the draft is ready, and pressing it pays nothing: this is a demo.
+ */
+function PaymentDraft({ r }) {
+  const [pressed, setPressed] = useState(false);
+  const done = useRef(null);
+  // The note that replaces the button is taller than the button: bring all of it into view.
+  useEffect(() => {
+    if (pressed && done.current) done.current.scrollIntoView({ block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth' });
+  }, [pressed]);
+  const d = r.draft && typeof r.draft === 'object' ? r.draft : {};
+  const c = r.checks && typeof r.checks === 'object' ? r.checks : {};
+  const bal = r.balance && typeof r.balance === 'object' ? r.balance : null;
+  const basket = r.basket && typeof r.basket === 'object' ? r.basket : null;
+  const b = basket ? basketOf(basket.name) : null;
+  const ready = r.ready_to_confirm === true;
+  const days = Number(d.due_in_days);
+  const noRef = c.reference === 'missing';
+  const differs = [c.amount, c.due_date].includes('readings_differ') || c.due_date === 'not_after_the_bill_date'
+    || ['smaller_than_another_amount', 'not_read_twice'].includes(c.amount);
+  const twice = c.amount === 'read_twice_same' && (c.due_date === 'read_twice_same' || c.due_date === 'missing');
+  const wrong = differs || [c.account_number, c.reference].includes('does_not_check_out');
+  // What stops the draft, said from the statuses (the tool's own sentences are in English, for the model).
+  const stops = [
+    c.account_number === 'does_not_check_out' ? t('pay.fix_account') : c.account_number === 'missing' ? t('pay.fix_account_missing') : null,
+    c.reference === 'does_not_check_out' ? t('pay.fix_reference') : null,
+    c.amount === 'readings_differ' ? t('pay.fix_amount') : c.amount === 'smaller_than_another_amount' ? t('pay.fix_amount_larger')
+      : c.amount === 'not_read_twice' ? t('pay.fix_amount_once') : null,
+    c.due_date === 'readings_differ' ? t('pay.fix_due') : c.due_date === 'not_after_the_bill_date' ? t('pay.fix_due_order') : null,
+  ].filter(Boolean);
+  return html`
+    <div class="pay__top">
+      <p class="pay__to"><span>${t('pay.payee')}</span><strong>${d.payee || t('pay.payee_missing')}</strong></p>
+      <span class="pay__badge">${t(pressed ? 'pay.badge_done' : 'pay.badge')}</span>
+    </div>
+    <p class="pay__amount"><${Amount} value=${d.amount} mode="cents" /></p>
+    <p class="pay__due"><${Icon} name="calendar" size=${18} />${d.due_date
+      ? html`<span>${t('pay.due', { date: fmtDate(d.due_date, { year: true }) })}${Number.isFinite(days) && d.due_in_days !== null
+        ? html` · <b class=${d.overdue ? 'is-bad' : ''}>${d.overdue ? t('pay.overdue', { days: nDays(Math.abs(days)) }) : inDays(days)}</b>` : null}</span>`
+      : html`<span>${t('pay.no_due')}</span>`}</p>
+    <dl class="pay__fields">
+      <${PayField} label=${t('pay.account')} value=${fours(d.account_number)} status=${c.account_number} />
+      <${PayField} label=${t('pay.reference')} value=${d.reference} status=${c.reference} quiet=${noRef} />
+    </dl>
+    ${noRef ? html`<p class="pay__how"><${Icon} name="info" size=${16} /><span>${t('pay.ref_none')}</span></p>` : null}
+    ${ready ? html`<p class="pay__how pay__how--ok"><${Icon} name="shield" size=${16} /><span>${t(noRef ? 'pay.how_one' : 'pay.how')}${twice ? ' ' + t('pay.how_twice') : ''}</span></p>` : null}
+    ${ready ? null : html`<div class="pay__fix" role="alert">
+      <${Icon} name="alert" size=${20} />
+      <div><strong>${t('pay.fix_title')}</strong>
+        ${stops.map((line, i) => html`<p key=${i}>${line}</p>`)}
+        <p>${t(wrong ? 'pay.fix_do' : 'pay.fix_retake')}</p></div>
+    </div>`}
+    <ul class="pay__facts">
+      ${bal ? html`<li class=${bal.covers_it ? 'is-good' : 'is-bad'}>
+        <${Icon} name=${bal.covers_it ? 'check' : 'alert'} size=${18} stroke=${2} />
+        <span><strong>${t(bal.covers_it ? 'pay.covers' : 'pay.covers_not')}</strong>
+          <small>${t('pay.left_after', { amount: eur(bal.left_on_the_account_after, 'cents') })}</small></span>
+      </li>` : null}
+      ${b ? html`<li><i class=${'dot b-' + b.id} aria-hidden="true"></i><span>${b.name}${basket.category ? ` · ${catName(basket.category)}` : ''}</span></li>` : null}
+    </ul>
+    ${ready && !pressed ? html`
+      <button type="button" class="btn btn--primary btn--wide" onClick=${() => setPressed(true)}>${t('pay.confirm')}</button>
+      <p class="pay__note">${t('pay.confirm_note')}</p>` : null}
+    ${ready && pressed ? html`<div class="pay__done" role="status" ref=${done}>
+      <span class="demo">${t('common.demo')}</span>
+      <strong>${t('pay.done_title')}</strong>
+      <p>${t('pay.done_text')}</p>
+    </div>` : null}`;
 }
 
 const CARDS = {
@@ -177,7 +323,7 @@ const CARDS = {
         </dl>`,
     };
   },
-  check_affordability(r) {
+  check_affordability(r, ui) {
     const item = r.item || {};
     const b = basketOf(item.basket);
     const treat = r.if_it_is_a_treat && typeof r.if_it_is_a_treat === 'object' ? r.if_it_is_a_treat : null;
@@ -206,6 +352,7 @@ const CARDS = {
           <div><dt>${t('ans.can_cover')}</dt><dd>${eur(r.balance_can_cover_before_payday, 'whole')}</dd></div>
           <div><dt>${t('ans.left_after')}</dt><dd class=${Number(r.balance_left_after) < 0 ? 'is-bad' : ''}>${eur(r.balance_left_after, 'whole')}</dd></div>
         </dl>` : null}
+        ${whenItFits(r.when, ui)}
         ${said(item.why_this_basket) ? html`<p class="footnote">${said(item.why_this_basket)}</p>` : null}`,
     };
   },
@@ -288,6 +435,10 @@ const CARDS = {
   explain_baskets(r) {
     return { body: html`<${BasketRules} data=${r} />` };
   },
+  // A bill from a photo, as a draft to look over. Nothing is paid.
+  prepare_payment(r) {
+    return { body: html`<${PaymentDraft} r=${r} />` };
+  },
   // The next salary, split and ready to accept; and the weeks ahead (both drawn in plan.js).
   get_payday_plan(r, ui) {
     return planCard(r, ui);
@@ -314,7 +465,8 @@ function ToolCard({ step }) {
     card = { body: html`<${KeyValue} data=${r} />` };
   }
   const period = card.period || r.period;
-  return html`<article class="toolcard">
+  // The walkthrough rings the payment draft itself.
+  return html`<article class="toolcard" data-tour=${step.name === 'prepare_payment' ? 'ask-draft' : undefined}>
     <header><h4>${card.title || toolText(step.name, 'title')}</h4>${period && (period.label || period.start) ? html`<small>${periodLabel(period)}</small>` : null}</header>
     ${card.body}
   </article>`;
@@ -411,7 +563,9 @@ function Working({ steps }) {
 
 function BotMessage({ msg, onRetry, latest }) {
   const a = msg.answer;
-  const cards = msg.steps.filter((s) => s.done && s.result);
+  // A bill that was read again after a failed check shows its last draft only.
+  const lastDraft = msg.steps.map((s) => s.name).lastIndexOf('prepare_payment');
+  const cards = msg.steps.filter((s, i) => s.done && s.result && (s.name !== 'prepare_payment' || i === lastDraft));
   return html`<li class="msg msg--bot" id=${'m-' + msg.id}>
     <span class="msg__who"><${Logo} size=${22} />${t('trainer.title')}</span>
     ${msg.pending ? html`<${Working} steps=${msg.steps} />` : null}
@@ -510,12 +664,12 @@ export function Chat() {
     });
   };
 
-  // The built-in sample photo: a made-up shelf price tag, for anyone without one at hand.
-  const sendSample = (text) => {
+  // The built-in sample photos: a made-up shelf price tag, or a made-up bill, for anyone without one at hand.
+  const sendSample = (text, src = SAMPLE_PHOTO) => {
     if (live.current.busy) return;
     setPhotoError(null);
     setPreparing(true);
-    fetch(SAMPLE_PHOTO)
+    fetch(src)
       .then((r) => (r.ok ? r.blob() : Promise.reject(new Error(t('chat.photo_error')))))
       .then((blob) => readPhoto(blob))
       .then((image) => send(text, image), (err) => setPhotoError((err && err.message) || t('chat.photo_error')))
@@ -527,7 +681,9 @@ export function Chat() {
     const q = ui.question;
     if (q && q.n !== live.current.seen) {
       live.current.seen = q.n;
-      if (q.photo === 'sample') sendSample(q.text); else send(q.text);
+      if (q.photo === 'sample') sendSample(q.text);
+      else if (q.photo === 'bill') sendSample(q.text || t('ask.q.bill'), SAMPLE_BILL);
+      else send(q.text);
     }
   }, [ui.question]);
 
@@ -581,6 +737,10 @@ export function Chat() {
           <img src=${SAMPLE_PHOTO} alt="" width="44" height="33" />
           <span>${t('chat.photo_sample')}</span>
         </button>
+        <button type="button" class="photosample" onClick=${() => sendSample(t('ask.q.bill'), SAMPLE_BILL)}>
+          <img src=${SAMPLE_BILL} alt="" width="44" height="33" />
+          <span>${t('chat.bill_sample')}</span>
+        </button>
         <ul class="suggest">
           ${SUGGESTIONS.map((k) => html`<li key=${k}><button type="button" onClick=${() => send(t(k))}><span>${t(k)}</span><${Icon} name="right" size=${18} /></button></li>`)}
         </ul>
@@ -603,7 +763,8 @@ export function Chat() {
       </div>` : null}
       ${photo ? html`<div class="attached">
         <img src=${photo} alt=${t('chat.photo_alt_send')} />
-        <p><strong>${t('chat.photo_attached')}</strong><span>${t('chat.photo_hint')}</span></p>
+        <p><strong>${t('chat.photo_attached')}</strong><span>${t('chat.photo_hint')}</span>
+          <button type="button" class="attached__bill" disabled=${busy} onClick=${() => send(t('ask.q.bill'), photo)}>${t('chat.photo_bill')}</button></p>
         <button type="button" class="iconbtn" aria-label=${t('chat.photo_remove')} onClick=${() => setPhoto(null)}><${Icon} name="close" size=${18} /></button>
       </div>` : null}
       ${photoError ? html`<p class="attached attached--error" role="alert">${photoError}</p>` : null}

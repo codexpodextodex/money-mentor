@@ -225,6 +225,20 @@ def describe(name: str, r: dict) -> str:
         treat = r.get("if_it_is_a_treat")
         if treat:
             text += f" If it is a treat rather than something you need: {treat['why']}"
+        when = r.get("when") or {}
+        if when.get("route") == "next_pay_period":
+            period = when["next_pay_period"]
+            text += (
+                f" It could fit from your next payday on {when['earliest']}: the everyday budget of that pay period is "
+                f"{eur(period['everyday_budget'])}, and it would leave {eur(period['left_for_everything_else_a_week'])} a week for everything else."
+            )
+        elif when.get("route") == "one_habit":
+            habit = when["one_habit"]
+            text += (
+                f" The next salary has no room for it either. One habit would make room: {habit['habit']} would have kept "
+                f"{eur(habit['would_have_kept_a_month'])} a month over your last 12 months, so the price takes about "
+                f"{habit['months_for_this_price']} months at that rate. That is your past replayed, not a promise."
+            )
         return text
     if name == "get_highlights":
         if not r["notices"]:

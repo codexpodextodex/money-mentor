@@ -53,6 +53,46 @@ def test_a_photo_answer_opens_in_its_own_language():
     assert style.lead_in("Yes. It fits.", "en") == "Yes. It fits."
 
 
+def test_the_app_writes_what_was_read_from_the_photo():
+    # the model left the line out, as it often does in Finnish
+    fi = style.read_from_photo("Ei juuri nyt.\n\nKuulokkeet maksavat 349,00 €.", "fi", "Nordwave Q7 Wireless", 349)
+    assert fi == f"Luin kuvasta: Nordwave Q7 Wireless, 349,00{NBSP}€.\n\nEi juuri nyt.\n\nKuulokkeet maksavat 349,00 €."
+    sv = style.read_from_photo("Ja. Ditt saldo räcker.", "sv", " Nordwave Q7  Wireless. ", 1349.5)
+    assert sv.startswith(f"Jag läste på bilden: Nordwave Q7 Wireless, 1{NBSP}349,50{NBSP}€.\n\nJa.")
+    # the model wrote its own line, in the wrong language and with its own wording: it is replaced, not doubled
+    en = style.read_from_photo("Luin kuvasta: langattomat kuulokkeet, 349,00 €.\n\nNot right now. Wait until payday.", "en", "Nordwave Q7 Wireless", 349.0)
+    assert en == "I read: Nordwave Q7 Wireless, €349.00.\n\nNot right now. Wait until payday."
+    # the model's line and the verdict on one line: only the line about the photo goes
+    same_line = style.read_from_photo("I read: boots, €89.90. Yes. It leaves €40 this week.", "en", "boots", "89.9")
+    assert same_line == "I read: boots, €89.90.\n\nYes. It leaves €40 this week."
+    # no name: the price alone; no usable price: the answer is left as the model wrote it
+    assert style.read_from_photo("Yes.", "en", None, 12) == "I read: €12.00.\n\nYes."
+    assert style.read_from_photo("Yes.", "en", "boots", "about fifty") == "Yes."
+
+
+def test_the_model_s_own_line_about_the_photo_is_found():
+    assert style.without_read_line("I read: boots, €89.90.\n\nYes.") == "Yes."
+    assert style.without_read_line("Luin kuvasta: kengät, 1 234,56 €. Kyllä.") == "Kyllä."
+    assert style.without_read_line("Jag läste på bilden: skor\n\nJa.") == "Ja."
+    assert style.without_read_line("Yes. I read it twice.") == "Yes. I read it twice."
+
+
+def test_the_verdict_is_said_in_the_answer_s_language():
+    assert style.verdict("Ei juuri nyt. After the bills your balance covers €179.27.", "en").startswith("Not right now. After the bills")
+    assert style.verdict("Yes. Saldo riittää.", "fi") == "Kyllä. Saldo riittää."
+    assert style.verdict("It fits, but it is tight. Det lämnar 12,00 €.", "sv").startswith("Det går, men det är tight. Det lämnar")
+    assert style.verdict("Not right now. Wait.", "en") == "Not right now. Wait."
+    assert style.verdict("Jatka samaan malliin.", "en") == "Jatka samaan malliin."
+
+
+def test_a_language_is_only_called_clear_when_it_is():
+    assert style.clear_language("Ei juuri nyt. Palkkapäivää ennen tilisi saldo ei riitä tähän, mutta voit odottaa.") == "fi"
+    assert style.clear_language("Not right now. Your balance would go below zero before payday, but you have options.") == "en"
+    assert style.clear_language("Inte just nu. Du har inte råd med det här före lönedagen.") == "sv"
+    assert style.clear_language("Nordwave Q7 Wireless, 349,00 €") == ""
+    assert style.clear_language("") == ""
+
+
 def test_other_numbers_are_left_alone():
     said = "You made 12 purchases on 15 October, 10% more than usual, and a 120 euro jacket fits."
     assert style.money(said) == said

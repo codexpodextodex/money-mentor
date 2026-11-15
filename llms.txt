@@ -1,0 +1,61 @@
+# Money Mentor
+
+> A money trainer inside a bank's mobile app, built at Junction 2026 (13 to 15 November 2026) by team Moonshot for S-Pankki's challenge "Personal Economic Trainer". It is also entered in NVIDIA's "Best Use of Nemotron" and Verda's "Best use of Verda". This file is a plain summary of the repository for readers that work from text. Every figure in it is measured, and the file that holds it is named.
+
+## What it is
+
+- A web app that embeds in S-mobiili, S-Pankki's mobile bank. The customer asks about their own money in Finnish, Swedish or English, or sends a photo.
+- An open model, NVIDIA Nemotron 3.5 Super VL, decides what to look up among 19 tools and explains the result. It never does arithmetic.
+- A deterministic engine (DuckDB over Parquet) computes every figure from the customer's own payments.
+- Every number in an answer is traced back to a tool result before the customer sees it. A number that cannot be traced triggers one rewrite.
+- Live demo: https://95-216-229-240.sslip.io
+
+## What a customer can do
+
+- See what is safe to spend this week, built on the bank's three baskets: regular essentials, unexpected necessities, everyday spending.
+- Get a heads-up before the balance runs out, and a plan for the next salary.
+- Replay their own last 12 months with one habit changed.
+- Ask anything in their own words and see the payments that were counted.
+- Photograph a price tag and ask "can I afford this?". After a "no", the answer says when the purchase could fit.
+- Photograph a bill and get a payment draft to confirm. Nothing is ever paid by the app.
+- See how ready they are for a home loan, compared with 200 application outcomes in the bank's data.
+
+## Measured results
+
+- 65 questions with known answers, 5 held-out customers, three languages: the full system was right on all 65 (tool, arguments, number, every number traceable). File: eval/results.md
+- A keyword baseline without the model chose the right tool for 69% of the same questions. File: eval/results.md
+- Answers with every number traceable: 94% without the number check, 100% with it. File: eval/results.md
+- Median time for a whole answer: 2.3 seconds on one RTX PRO 6000. File: eval/results.md
+- Bills read from photos, 1,000 made-up bills not seen during tuning: 984 right and ready to confirm, 16 held back for the customer to check, none offered with a wrong account number, reference, amount or due date. File: eval/bill-reading.md
+- 229 automated tests. Command: python -m pytest -q
+
+## How NVIDIA Nemotron is used
+
+- Model: NVIDIA Nemotron 3.5 Super VL, open NVFP4 weights, served with vLLM. It is the only model in the product.
+- It understands the question, chooses tools and arguments, explains the results, and reads photos (price tags and bills).
+- Its reading of a bill is verified by arithmetic: the check digits in the account number and the reference are recalculated, and the amount and due date are read a second time and must agree.
+- Its output was improved step by step, each step measured: tool descriptions and tool errors, the number check, reasoning switched off for tool selection, guards for photos and follow-ups, and four rounds of bill testing.
+- File: NVIDIA.md
+
+## How Verda is used
+
+- The model runs on a Verda GPU instance with confidential computing (RTX PRO 6000, encrypted memory) in Finland. A second copy runs in a Verda serverless container. The app runs on a Verda CPU instance.
+- The reason is the data: a bank cannot send customers' payments to a third-party API, and the payments are in the prompt.
+- On the confidential GPU a known vLLM bug made the server answer in junk while reporting healthy. The team reproduced the cause on Verda's machine, confirmed a workaround and wrote it up for Verda.
+- Files: VERDA.md, deploy/verda.md, deploy/verda-confidential-gpu-report.md
+
+## Limits
+
+- The evaluations are the team's own and small.
+- The test bills are rendered pictures, not phone photos of paper.
+- The confidential machine has not been attested to a third party.
+- No load test was run. Nothing was fine-tuned. The data is synthetic.
+
+## Where things are
+
+- README.md: the overview, how to run it, how it works
+- app/: the engine, the tools, the agent and the number check
+- web/: the phone app and the demo page with its walkthrough
+- eval/: evaluation results
+- tests/: 229 tests
+- deploy/: how it runs on Verda

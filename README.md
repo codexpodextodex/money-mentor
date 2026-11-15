@@ -1,10 +1,74 @@
 # Money Mentor
 
-**Chat with your own money.** A personal economic trainer for a bank's mobile app, built at Junction 2026 for S-Pankki's challenge *Personal Economic Trainer*.
+**Your bank app shows a list of payments. Money Mentor tells you where you stand.** A money trainer inside S-mobiili, S-Pankki's mobile bank: ask anything about your own money, see what is safe to spend this week, get a heads-up before it runs out, and get a bill ready to pay by photographing it. Built at Junction 2026.
 
-You ask in plain language ("How much did I spend on taxis last month?", "What is safe for me to spend this week?", "What if I cut dining out by 20%?"). An open model, NVIDIA Nemotron, decides what to look up and explains the result. It never does the arithmetic: every number comes from a deterministic engine over your own transactions, and every number in an answer is checked against that engine before you see it.
+| | |
+|---|---|
+| Live demo | https://95-216-229-240.sslip.io. Press "Start the walkthrough": 13 steps, about a minute and a half. It works on a phone |
+| Main challenge | S-Pankki: Personal Economic Trainer |
+| Tech tracks | NVIDIA: Best Use of Nemotron ([NVIDIA.md](NVIDIA.md)) and Verda: Best use of Verda ([VERDA.md](VERDA.md)) |
+| Team | Moonshot: Felix Wickholm, Emil Rehn, Robin Wickholm |
+| Licence | MIT. All code was written at the event |
 
-Team Moonshot: Felix Wickholm, Emil Rehn, Robin Wickholm.
+## The idea in five lines
+
+1. The customer asks in their own words, in Finnish, Swedish or English, or sends a photo.
+2. An open model, **NVIDIA Nemotron 3.5 Super VL**, decides what to look up and explains the result. It never does arithmetic.
+3. A deterministic engine computes every figure from the customer's own payments.
+4. Every number in an answer is traced back to the data before the customer sees it.
+5. The model runs on a **Verda confidential-computing GPU in Finland**, and a bank could run the same open weights on its own servers, so payment data does not have to go to an AI provider.
+
+## What was measured
+
+Every figure below can be reproduced or read in the repository.
+
+| What | Result | Where |
+|---|---|---|
+| Questions with known answers, full system | 65 of 65 right: tool, arguments, number, and every number traceable | `eval/results.md`, `python scripts/evaluate.py` |
+| The same questions, keyword baseline without the model | Right tool for 69%, Finnish and Swedish right for 20% | `eval/results.md` |
+| Answers with every number traceable, without and with the number check | 94%, then 100% | `eval/results.md` |
+| Time for a whole answer | Median 2.3 seconds, on one RTX PRO 6000 | `eval/results.md` |
+| Bills read from photos, 1,000 bills not seen during tuning | 984 right and ready to confirm, 16 held back for the customer to check, none offered with a wrong account number, reference, amount or due date | `eval/bill-reading.md`, `python scripts/bill_reading_test.py` |
+| The same evaluation on both of our model hosts | All 65 right on both; 2.27 s median on the confidential GPU, 2.08 s on the serverless container | `eval/results-verda-confidential.md` |
+| Automated tests | 229 | `python -m pytest -q` |
+
+The samples are small and our own: read them as a direction, not a benchmark. What is not done is listed under [Limits](#limits).
+
+## How it meets each challenge
+
+### S-Pankki: Personal Economic Trainer
+
+| Criterion | In Money Mentor |
+|---|---|
+| Impact on financial literacy | Every answer uses the bank's three baskets: essentials first, a buffer for the unexpected, and everyday spending is what is left. "Safe to spend this week" is one number built from them. The customer's own year is replayed with one habit changed |
+| Originality of AI integration | The model never calculates and the app shows its working: the payments that were counted are ticked off, and each answer says how many numbers were checked. A price tag or a bill can be photographed |
+| Clarity of the mobile user experience | It looks and reads like S-mobiili and leads with one number. A 13-step walkthrough shows it in a minute and a half |
+| Feasibility | It is live. 65 of 65 test questions right, answers in about two seconds, 229 tests, an open model on a GPU in Finland |
+| Potential to integrate into S-mobiili | A web app that embeds in the mobile app: one card on the home screen and a place in the Bank tab, no new sign-in, three languages |
+
+On Saturday S-Pankki's team asked what the trainer says after a "no" to "can I afford this?". Since that evening it says when the purchase could fit: from the next payday, or by changing the one habit that mattered most in the customer's own year.
+
+### NVIDIA: Best Use of Nemotron
+
+| Criterion | In Money Mentor |
+|---|---|
+| Meaningful Nemotron usage | Nemotron 3.5 Super VL is the only model in the product. Every chat answer and every photo that is read is its work. Without it the keyword fallback gets 69% of the tools right |
+| Technical execution | Tool calling over 19 tools, three model hosts asked in order with failover, a number check with one rewrite, guards for photos and follow-up questions, 229 tests |
+| Quality of AI output | An evaluation with known answers (65 of 65), and a bill-reading test in four rounds that took wrong drafts from 16 in 481 bills to none in 1,000 unseen bills |
+| Creativity and differentiation | The model reads and explains, arithmetic decides: check digits and a second reading verify what it read from a bill. One model does text, tools and vision, self-hosted from the open weights |
+
+The full write-up is [NVIDIA.md](NVIDIA.md).
+
+### Verda: Best use of Verda
+
+| Criterion | In Money Mentor |
+|---|---|
+| Ambition | A 120-billion-parameter open model (75 GB of weights) answering a bank's customers in about two seconds. It does not fit on a laptop, and a bank cannot use a third-party API for this at all |
+| Fit | Three Verda products, each for a reason: a confidential-computing GPU instance for the model (payments are in the prompt), a serverless container as the second host (it scales with demand), a CPU instance for the app |
+| Working prototype | The public demo is answered by the confidential GPU. The path is documented command by command, including a vLLM bug on confidential GPUs that we traced, reproduced on Verda's machine and wrote up for Verda |
+| Path to scale | The app and the model scale separately, only the chat calls the model (cost follows questions, not customers), and hosts fail over within five seconds |
+
+The full write-up is [VERDA.md](VERDA.md). The commands are in [`deploy/verda.md`](deploy/verda.md) and the bug report in [`deploy/verda-confidential-gpu-report.md`](deploy/verda-confidential-gpu-report.md).
 
 ## Run it
 
@@ -20,7 +84,7 @@ Open http://localhost:8000. The first run downloads S-Pankki's dataset from GitH
 Without a model key the chat still works, through a built-in keyword router. To use Nemotron, copy `.env.example` to `.env` and add a key from https://build.nvidia.com (free, self-serve).
 
 ```bash
-python -m pytest -q             # 175 tests
+python -m pytest -q             # 229 tests
 python scripts/evaluate.py      # accuracy table, see Evaluation below
 ```
 
@@ -30,6 +94,7 @@ python scripts/evaluate.py      # accuracy table, see Evaluation below
 |---|---|
 | Home | What is safe to spend this week, what stands out right now, the three baskets, month-by-month cash flow, what is safe to save |
 | Ask | Chat with your money, or send a photo of a price tag, receipt or bill and ask "can I afford this?". A large purchase gets two honest answers, one if you need it and one if it is a treat, because the price alone cannot tell. Each answer shows the figures as a card, how many numbers were checked, and how it was worked out |
+| A bill, from a photo | Photograph a bill and the payment is prepared: payee, account number, reference, amount, due date. The engine recalculates the check digits and has the amount and the due date read twice, so a misread is caught, and you confirm. In a test of 1,000 bills no draft was offered with a wrong field (`eval/bill-reading.md`). In the demo nothing is paid |
 | Explore | Build your own view with taps (period, basket, category, break down by), drill in, or write SQL over your own rows |
 | Replay | Your own last 12 months replayed with one habit changed: what would have been left, how many days below zero avoided, and your three biggest levers ranked |
 | Payday plan | A split of the next salary into the three baskets and savings, next to what the last pay period really looked like, to accept with one tap. With it, the weeks ahead: the balance day by day until the payday after next, and a heads-up if it would go below zero |
@@ -102,7 +167,7 @@ The dataset includes 200 mortgage applications (150 approved, 50 rejected) linke
 
 Design decisions:
 
-- **The model never calculates.** It picks among 18 tools and explains the result. Tools take no customer id: the server injects the signed-in customer, so the model cannot ask for anyone else's data.
+- **The model never calculates.** It picks among 19 tools and explains the result. Tools take no customer id: the server injects the signed-in customer, so the model cannot ask for anyone else's data.
 - **Every number is checked.** After the model answers, each number in the text is looked up among the numbers the tools returned. A number found nowhere triggers one rewrite, and if it survives, the app shows a warning next to the answer.
 - **MyData explore mode is safe by construction.** Free SQL runs in a separate in-memory database that holds only that customer's rows, with file and network access switched off, a row limit and a time limit. Safety does not depend on inspecting the query text.
 - **It always works.** With no model, or when the model is unreachable, a keyword router answers the common questions from the same tools.
@@ -110,26 +175,52 @@ Design decisions:
 
 "Today" is 30 September 2026, the last day in the data (`MM_TODAY` overrides it).
 
-## The model: NVIDIA Nemotron, in Europe
+## NVIDIA Nemotron: the model behind every answer
 
-The app talks to any OpenAI-compatible endpoint, set in `.env`, and can ask two hosts in order:
+The model is NVIDIA Nemotron 3.5 Super VL, the open NVFP4 weights (`nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4`), served by us with vLLM 0.32. It is the only model in the product.
 
-- **Self-hosted on Verda, in Finland (asked first)**: the open weights (`nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-NVFP4`) served with vLLM in a Verda serverless container on one RTX PRO 6000. A bank's customer data and the model that reads it stay on infrastructure the bank controls. How it was set up, what it costs and what went wrong on the way is in `deploy/verda.md`.
-- **NVIDIA's hosted API (fallback)**: `nvidia/nemotron-3.5-super-vl-120b-a12b`. Used when the Verda replica is asleep or starting.
+What it does here:
 
-Every answer records which host wrote it, and the app shows that under "How was this worked out?".
+- **Understands the question** in Finnish, Swedish or English.
+- **Chooses the tools** and their arguments among 19, several at once when a question needs it (`app/tools.py`), and corrects a call when a tool says what was wrong with it.
+- **Explains the result** in the bank's three-basket way of teaching, with one concrete next step.
+- **Reads photos.** From a price tag it reads the item and the price, and the engine answers "can I afford this?". From a bill it reads the payee, the account number, the reference, the total and the due date, and the engine turns them into a payment draft.
+- **Never calculates.** Every figure comes from the engine, and every number in an answer is checked against the tool results (`app/grounding.py`).
 
-What Nemotron does here: it reads the question in Finnish, Swedish or English, chooses the tools and their arguments (often several at once), reads the JSON results, and explains them in the three-basket frame with one concrete next step. It also uses its vision: from a photo of a price tag, a receipt or a bill it reads the item and the price, and the engine checks that against what is safe to spend.
+Why this model:
 
-After adding a key, `python scripts/check_model.py` confirms that tool calling and image input work.
+- **Open weights.** A bank cannot send customers' payments to somebody else's API. It can run these weights on its own servers.
+- **One model for text, tools and vision.** One thing to host, test and audit, not three.
+- **Fast enough for a conversation.** A complete tool-calling answer takes a median of 2.3 seconds on one RTX PRO 6000.
+- **Tool calling that works as released.** With a bare prompt it already chose the right tool and arguments on all 65 evaluation questions, in three languages. Nothing was fine-tuned.
 
-How we improved its output:
+How its output was improved, each step measured:
 
-1. A coach prompt that fixes the division of labour (tools compute, the model explains) and the answer shape.
-2. Tool descriptions written from the customer's words ("dining out" is the category Restaurants).
-3. Tool errors that say how to fix the call, so the model corrects itself.
-4. The number check with one rewrite.
-5. An evaluation with known answers, below.
+1. Tool descriptions written in the customer's words, and tool errors that say how to fix the call.
+2. A number check with one rewrite: answers with every number traceable went from 94% to 100%.
+3. Reasoning switched off for tool selection: about 10 seconds an answer became about 3, then about 2 on our own GPU.
+4. Guards found by testing: a photo answer must rest on a lookup, and a follow-up question gets a fresh lookup so its numbers can be checked.
+5. Bill reading tested in four rounds on made-up bills: the first version offered 16 wrong drafts in 481 bills, the last none in 1,000 bills it had never seen.
+
+After adding a key, `python scripts/check_model.py` confirms that tool calling and image input work. The details, the evaluation table and the limits are in [NVIDIA.md](NVIDIA.md).
+
+## Verda: where it runs, and why there
+
+A bank's customer data and the model that reads it have to stay on infrastructure the bank controls. So everything runs on Verda, in Finland, on three products:
+
+| What | Verda product | Why this one |
+|---|---|---|
+| The model, asked first | GPU instance with confidential computing (RTX PRO 6000, AMD SEV-SNP, GPU in confidential mode) | The customer's payments are in the prompt, so the memory of the machine and of the GPU is encrypted. This is what a bank would ask for first |
+| The model, asked second | Serverless container on an RTX PRO 6000 | An endpoint with no server to look after, which follows demand (payday peaks) and scales to zero |
+| The app | CPU instance | The engine is SQL over 61 MB of Parquet and needs no GPU |
+
+NVIDIA's hosted API is the last fallback in the demo; a bank would leave it out. A host that does not connect within five seconds is skipped, and every answer records which host wrote it: the app shows that under "How was this worked out?".
+
+What happened on the way: on the confidential GPU, vLLM loaded the model, reported healthy and answered in junk. It is a known vLLM bug under GPU confidential computing. We reproduced the cause on Verda's machine without any model, confirmed a one-setting workaround for Nemotron, and wrote it up for Verda (`deploy/verda-confidential-gpu-report.md`). The same 65 evaluation questions are all right on both hosts.
+
+What it would take to scale: the engine is stateless and the model endpoint is OpenAI-compatible, so they scale separately. Only the chat calls the model: safe to spend, the heads-up, the payday plan, the replay and the home loan view are computed without it, so cost follows the questions asked, not the number of customers.
+
+The process, the prices and what is not done are in [VERDA.md](VERDA.md); every command is in [`deploy/verda.md`](deploy/verda.md).
 
 ## Evaluation
 
@@ -144,9 +235,19 @@ Run on 14 Nov 2026 against the model we host on Verda, 65 questions per system (
 | Nemotron, coach prompt, no number check | 100% | 100% | 100% | 94% | 100% | 2.2 s |
 | Nemotron, coach prompt and number check (what the app runs) | 100% | 100% | 100% | 100% | 100% | 2.3 s |
 
-Nemotron chose the right tool and arguments every time, among 18 tools. What the model gets wrong without the check is not the lookup but the telling: in 4 answers of 65 it added a figure of its own (a rounded total, a percentage it worked out). With the number check three answers were rewritten and all 65 ended with every number traceable. Each run draws five customers at random, so the figures move a little from run to run: an earlier run the same morning had one rewrite that dropped the figure the question asked for (98.5% in that column). The sample is small, so read the percentages as a direction, not a benchmark. The raw rows are in `eval/results.json`.
+Nemotron chose the right tool and arguments every time, among the 18 tools the app had then. With the nineteenth (the bill tool) a rerun was right on all 65 again (`eval/results-after-bills.md`). What the model gets wrong without the check is not the lookup but the telling: in 4 answers of 65 it added a figure of its own (a rounded total, a percentage it worked out). With the number check three answers were rewritten and all 65 ended with every number traceable. Each run draws five customers at random, so the figures move a little from run to run: an earlier run the same morning had one rewrite that dropped the figure the question asked for (98.5% in that column). The sample is small, so read the percentages as a direction, not a benchmark. The raw rows are in `eval/results.json`.
 
 An earlier run on the same day through NVIDIA's hosted API (3 customers, 39 questions, an earlier prompt) is kept in `eval/results-nvidia-api.md`: the same pattern, with a median of 2.7 seconds.
+
+## Limits
+
+- The evaluations are our own and small: 65 questions for five customers, and 1,000 made-up bills. Nobody else has repeated them.
+- The test bills are rendered pictures from one generator, not phone photos of paper. Nobody has tried a real bill. A payee's name has no check digit; it was copied exactly on 886 of the 1,000 drafts.
+- Nothing is ever paid: a bill becomes a draft, and the plan is only saved. The assistant moves no money.
+- The confidential machine has not been attested to a third party, and nobody has watched it come back after a reboot.
+- No load test. With eight bill photos in flight at once an answer took about 10 seconds instead of 5.
+- The model is used as released: nothing was fine-tuned.
+- The data is synthetic, and the demo's "today" is 30 September 2026, the last day in it.
 
 ## Data
 

@@ -124,6 +124,7 @@ def test_every_tool_runs(name):
     args = {
         "simulate_change": {"target": "Restaurants", "change_pct": -20},
         "check_affordability": {"amount": 50},
+        "prepare_payment": {"amount": 84.6, "iban": "FI87 9999 9900 0123 44"},
         "run_sql": {"sql": "SELECT count(*) FROM my_transactions"},
     }.get(name, {})
     assert "error" not in tools.call("CUST00874", name, args)

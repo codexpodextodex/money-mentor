@@ -10,8 +10,9 @@ from __future__ import annotations
 
 import calendar
 import datetime as dt
+import math
 
-from . import baskets, db, engine
+from . import baskets, db, engine, replay
 from .engine import EngineError, _next_day_of_month, _pct, _r
 
 THIN_DAYS = 7  # a lowest point under a week of usual shopping counts as "thin"
@@ -321,4 +322,109 @@ def payday_plan(customer_id: str, savings_goal_pct: float = engine.DEFAULT_SAVIN
             "Regular essentials take almost all of this salary, so the plan has nothing for everyday spending. "
             "Anything you spend on it comes out of the balance you already have."
         )
+    return result
+
+
+# -------------------------------------------------------- when it could fit ---
+
+PAST_NOT_PROMISE = "Your own last 12 months replayed, not a forecast and not a promise."
+
+
+def when_it_fits(customer_id: str, amount: float) -> dict:
+    """When a purchase that does not fit now could fit, from the customer's own figures.
+
+    There are two honest routes, and the result names the one that applies ("route"):
+
+    - "next_pay_period": the everyday budget of the pay period that starts on the next payday
+      has room for the whole price, and the balance is not on course to go below zero first.
+    - "one_habit": the next salary has no room for it either, so the room has to come from a
+      change of habit. The replay of the customer's own last 12 months says what the habit
+      that mattered most would have kept a month, and so how many months the price takes at
+      that rate. That is the past replayed, not a forecast.
+
+    With neither (no regular salary, and no habit that would have kept anything) "route" is None.
+    """
+    cid = engine.customer(customer_id)["customer_id"]
+    amount = float(amount)
+    out: dict = {"route": None}
+
+    try:
+        nxt = payday_plan(cid)
+    except EngineError:
+        nxt = None
+    if nxt:
+        everyday = next(row for row in nxt["split"] if row["key"] == "everyday")
+        budget = float(everyday["amount"])
+        days = nxt["pay_period"]["days"]
+        short = outlook(cid)["status"] == "short"
+        room = budget >= amount and not short
+        period = {
+            "starts_on_payday": nxt["payday"]["date"],
+            "ends": nxt["pay_period"]["to"],
+            "everyday_budget": _r(budget),
+            "everyday_budget_a_week": everyday["a_week"],
+            "your_usual_everyday_spending_a_week": _r(_pattern(cid, db.today())["everyday_per_day"] * 7),
+            "has_room_for_it": room,
+        }
+        if room:
+            period["share_of_that_budget_pct"] = _pct(amount, budget)
+            period["left_for_everything_else"] = _r(budget - amount)
+            period["left_for_everything_else_a_week"] = _r((budget - amount) / days * 7)
+            out["route"] = "next_pay_period"
+            out["in_short"] = f"From your next payday, {nxt['payday']['date']}: that pay period's everyday budget has room for it."
+            day = dt.date.fromisoformat(nxt["payday"]["date"])
+            out["in_short_fi"] = f"Seuraavasta palkkapäivästä alkaen ({day.day}.{day.month}.): sen palkkakauden arjen budjetissa on tilaa."
+            out["in_short_sv"] = f"Från nästa lönedag ({day.day}.{day.month}.): den löneperiodens vardagsbudget har utrymme för det."
+            out["earliest"] = nxt["payday"]["date"]
+        elif budget < 0.005:
+            period["why_not"] = "After essentials, the buffer and savings, the next salary has nothing for everyday spending."
+        elif short:
+            period["why_not"] = "At your usual pace the balance is on course to go below zero before then, so the next salary is already spoken for."
+        else:
+            period["why_not"] = f"The price is more than the whole everyday budget of the next pay period (EUR {budget:,.0f})."
+        out["next_pay_period"] = period
+
+    if out["route"] is None:
+        try:
+            replayed = replay.replay(cid)
+        except EngineError:
+            replayed = {}
+        levers = replayed.get("levers") or []
+        top = levers[0] if levers else None
+        a_month = float(top.get("kept_per_month") or 0.0) if top else 0.0
+        if a_month >= 1:
+            months = math.ceil(amount / a_month)
+            out["one_habit"] = {
+                "lever": top["lever"],
+                "habit": top["title"],
+                "would_have_kept_a_month": _r(a_month),
+                "months_for_this_price": months,
+                "how_to_read": PAST_NOT_PROMISE,
+                # What the app needs to name the habit in the customer's language, as the replay screen does.
+                "normal_busy_week": replayed.get("normal_busy_week"),
+                "biggest_everyday_category": replayed.get("biggest_everyday_category"),
+            }
+            out["route"] = "one_habit"
+            out["in_short"] = (
+                f"Not from the next salary either. With one habit changed, in about {months} month{'s' if months != 1 else ''}."
+            )
+            out["in_short_fi"] = f"Ei seuraavasta palkastakaan. Yhtä tapaa muuttamalla noin {months} kuukaudessa."
+            out["in_short_sv"] = f"Inte från nästa lön heller. Med en ändrad vana på ungefär {months} {'månad' if months == 1 else 'månader'}."
+    if out["route"] is None:
+        out["in_short"] = "The data does not give a date for this."
+    # The summary first, in the three languages of the app: it is what the answer leads with, and
+    # only the route that applies is there to be quoted.
+    lead = {key: out.pop(key) for key in ("route", "in_short", "in_short_fi", "in_short_sv") if key in out}
+    return {**lead, **out}
+
+
+def can_afford(customer_id: str, amount: float, what: str | None = None, category: str | None = None) -> dict:
+    """Whether one purchase fits right now (engine.can_afford), and when it could if it does not."""
+    result = engine.can_afford(customer_id, amount, what, category)
+    if result["fits"] in ("no", "not_from_this_budget"):
+        result["when"] = when_it_fits(result["customer_id"], result["item"]["amount"])
+        if "if_it_is_a_treat" not in result:
+            # With one reading only, the need-or-treat note has nothing to explain, and it made
+            # the model add need-or-treat advice of its own.
+            result["item"].pop("basket_depends_on", None)
     return result

@@ -31,6 +31,8 @@
   <symbol id="i-clock" viewBox="0 0 20 20"><circle cx="10" cy="10" r="6.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 6.4V10l2.4 1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="i-user" viewBox="0 0 20 20"><circle cx="10" cy="7.2" r="3.1" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 16.4c.7-2.7 3.1-4.2 6-4.2s5.3 1.5 6 4.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
   <symbol id="i-ask" viewBox="0 0 20 20"><path d="M4 5.6c0-.9.7-1.6 1.6-1.6h8.8c.9 0 1.6.7 1.6 1.6v6c0 .9-.7 1.6-1.6 1.6H9.2L6 16v-2.8h-.4c-.9 0-1.6-.7-1.6-1.6v-6Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 20 20"><rect x="4.4" y="8.8" width="11.2" height="8" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7 8.8V6.6a3 3 0 0 1 6 0v2.2M10 12v1.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 20 20"><rect x="5.6" y="2.8" width="8.8" height="14.4" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.8 14.4h2.4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
 </svg>
 
 <header class="top">
@@ -64,7 +66,7 @@
         <p class="m-brand m-only"><strong>Money Mentor</strong><span class="brand__demo">Demo</span><span class="m-brand__tag" data-t="tagline">Concept for S-mobiili · Junction 2026</span></p>
         <p class="tag"><span class="tag__dot" aria-hidden="true"></span><span data-t="eyebrow">Demo account · made-up data</span></p>
         <h1 class="headline" id="headline" data-t="headline">A money trainer built into S-mobiili</h1>
-        <p class="lede" data-t="lede">It shows what is safe to spend this week and replays your own year with one habit changed. Every number is checked against your payments before you see it.</p>
+        <p class="lede" data-t="lede">Ask anything about your own money. See what is safe to spend this week, and get a heads-up before it runs out. Every number is checked against your own payments.</p>
 
         <!-- The language of the whole demo, page and phone. Always labelled in all three, so anyone finds it. -->
         <div class="choose" id="choose" role="group" aria-label="Kieli, Language, Språk">
@@ -95,12 +97,14 @@
       <section class="panel tour" id="panel-tour" aria-labelledby="tour-title" hidden>
         <div class="tour__meta">
           <p class="tag"><span class="tag__dot" aria-hidden="true"></span><span data-t="walkthrough">Walkthrough</span></p>
-          <p class="tour__count" id="tour-count">1 of 11</p>
+          <p class="tour__count" id="tour-count">1 of 13</p>
         </div>
-        <div class="tour__bar" id="tour-bar" role="progressbar" aria-valuemin="1" aria-valuemax="11" aria-valuenow="1" aria-label="Walkthrough"></div>
+        <div class="tour__bar" id="tour-bar" role="progressbar" aria-valuemin="1" aria-valuemax="13" aria-valuenow="1" aria-label="Walkthrough"></div>
         <div class="tour__copy" id="tour-copy" aria-live="polite" aria-atomic="true">
           <h2 class="tour__title" id="tour-title"></h2>
           <p class="tour__text" id="tour-text"></p>
+          <!-- The closing step: four short proofs in place of the paragraph. Filled by stage.js. -->
+          <ul class="proof" id="tour-proof" role="list" hidden></ul>
         </div>
         <div class="tour__controls">
           <button type="button" class="btn btn--outline" id="tour-back">

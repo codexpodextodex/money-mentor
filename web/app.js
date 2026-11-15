@@ -208,9 +208,13 @@ function TourCard({ data, lang, at, onStep, onClose }) {
   const steps = Array.isArray(words.steps) ? words.steps : [];
   const total = Math.min(steps.length, data.STEPS.length);
   const step = steps[at] || {};
+  const meta = data.STEPS[at] || {};
   const last = at >= total - 1;
+  // The closing step: four short proofs instead of a paragraph, each with its figure or icon.
+  const proof = Array.isArray(step.proof) ? step.proof : null;
+  const icons = Array.isArray(meta.icons) ? meta.icons : [];
   const fill = (text, vars) => String(text || '').replace(/\{(\w+)\}/g, (m, k) => (vars[k] !== undefined ? vars[k] : m));
-  return html`<aside class="tourcard" aria-label=${words.walkthrough || 'Walkthrough'}>
+  return html`<aside class=${'tourcard' + (proof ? ' tourcard--proof' : '')} aria-label=${words.walkthrough || 'Walkthrough'}>
     <span class="tourcard__bar" aria-hidden="true"><i style=${`transform:scaleX(${(at + 1) / Math.max(total, 1)})`}></i></span>
     <div class="tourcard__top">
       <span class="tourcard__count">${words.walkthrough || 'Walkthrough'} · ${fill(words.of || '{n} / {total}', { n: at + 1, total })}</span>
@@ -218,12 +222,21 @@ function TourCard({ data, lang, at, onStep, onClose }) {
     </div>
     <div class="tourcard__body" aria-live="polite" key=${at}>
       <h2>${step.title}</h2>
-      <p>${step.text}</p>
+      ${proof
+        ? html`<ul class="tourproof" role="list">
+            ${proof.map((row, i) => html`<li key=${i}>
+              <span class=${'tourproof__token' + (row.figure ? ' tourproof__token--figure' : '')}>
+                ${row.figure || html`<${Icon} name=${icons[i] || 'check'} size=${18} />`}
+              </span>
+              <p><strong>${row.lead}</strong> <span>${row.text}</span></p>
+            </li>`)}
+          </ul>`
+        : html`<p>${step.text}</p>`}
     </div>
     <div class="tourcard__nav">
       <button type="button" class="btn btn--small" disabled=${at === 0} onClick=${() => onStep(at - 1)}><${Icon} name="back" size=${18} />${words.back || t('common.back')}</button>
       ${last
-        ? html`<button type="button" class="btn btn--primary" onClick=${onClose}>${words.finish || 'Finish'}<${Icon} name="check" size=${18} /></button>`
+        ? html`<button type="button" class="btn btn--primary" onClick=${onClose}>${meta.closing ? words.tryIt || 'Try it yourself' : words.finish || 'Finish'}<${Icon} name=${meta.closing ? 'right' : 'check'} size=${18} /></button>`
         : html`<button type="button" class="btn btn--primary" onClick=${() => onStep(at + 1)}>${words.next || 'Next'}<${Icon} name="right" size=${18} /></button>`}
     </div>
   </aside>`;
@@ -305,7 +318,8 @@ function App() {
   };
   const ask = (text, fromOutside, photo) => {
     const q = String(text || '').trim();
-    // photo: 'sample' sends the built-in price-tag photo along (the tour uses it to show photo reading).
+    // photo: 'sample' sends the built-in price-tag photo along (the tour uses it to show photo reading),
+    // 'bill' the built-in sample bill.
     if (q || photo) setQuestion({ text: q, photo: photo || null, n: ++counter.current });
     if (fromOutside) jump('ask'); else go('ask');
   };
@@ -369,13 +383,20 @@ function App() {
       now.ask(text, true);
     } else if (step.photo && !asked.current[tourAt]) {
       asked.current[tourAt] = true;
-      now.ask('', true, 'sample');
+      now.ask('', true, step.photo === 'bill' ? 'bill' : 'sample');
     } else {
       now.jump(step.route);
     }
     setRing(step.highlight ? { name: step.highlight, n: ++counter.current } : null);
   }, [tourAt, tourData]);
   const endTour = () => { setTourAt(null); setRing(null); };
+  // While the walkthrough's card is docked, the chat gives its whole height to the conversation,
+  // so a long answer and its card are not squeezed between two docks. The composer is back when the card closes.
+  const touring = tourAt !== null && Boolean(tourData);
+  useEffect(() => {
+    document.documentElement.classList.toggle('in-tour', touring);
+    return () => document.documentElement.classList.remove('in-tour');
+  }, [touring]);
 
   // The slide lasts 220ms; after it the screen that was left goes back to rest.
   useEffect(() => {
@@ -421,7 +442,7 @@ function App() {
         now.playSplash();
       } else if (m.type === 'ask') {
         // The ring, if any, stays: it shows again as soon as its element is on the chat screen.
-        now.ask(typeof m.text === 'string' ? m.text : '', true, m.photo === 'sample' ? 'sample' : null);
+        now.ask(typeof m.text === 'string' ? m.text : '', true, m.photo === 'sample' || m.photo === 'bill' ? m.photo : null);
       }
     };
     window.addEventListener('message', onMessage);

@@ -39,6 +39,7 @@ const state = {
   auto: true,
   asked: false,
   photoAsked: false,
+  photosSent: new Set(), // the steps whose sample photo has gone out in this run
   sawTour: false,
   ready: false,
   route: null,
@@ -57,6 +58,8 @@ const el = {
   pickerPop: $('picker-pop'),
   bar: $('tour-bar'),
   copy: $('tour-copy'),
+  text: $('tour-text'),
+  proof: $('tour-proof'),
   back: $('tour-back'),
   next: $('tour-next'),
   toggle: $('tour-toggle'),
@@ -490,9 +493,13 @@ function stopTimer() {
   timer.running = false;
   if (timer.fill) { timer.fill.cancel(); timer.fill = null; }
 }
+// A step with no `seconds` (the closing step) rests: the tour stays there until the visitor moves on.
+const rests = () => !STEPS[state.step].seconds;
+
 function startTimer() {
   stopTimer();
-  timer.total = timer.left = (STEPS[state.step].seconds || 7) * 1000;
+  timer.total = timer.left = (STEPS[state.step].seconds || 0) * 1000;
+  if (!timer.total) return;
   const bar = el.bar.children[state.step] && el.bar.children[state.step].firstElementChild;
   if (bar && typeof bar.animate === 'function') {
     timer.fill = bar.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: timer.total, easing: 'linear', fill: 'both' });
@@ -524,7 +531,10 @@ function setAuto(on) {
 }
 
 function renderToggle() {
-  el.toggle.hidden = reduceMotion.matches;
+  // Nothing to pause on a step that rests, so the button is not offered there.
+  const hide = reduceMotion.matches || rests();
+  if (hide && document.activeElement === el.toggle) el.next.focus({ preventScroll: true });
+  el.toggle.hidden = hide;
   el.toggle.dataset.auto = state.auto ? 'on' : 'off';
   const label = state.auto ? t('pause') : t('play');
   el.toggle.setAttribute('aria-label', label);
@@ -544,21 +554,69 @@ function renderBar() {
   el.bar.setAttribute('aria-valuetext', t('of', { n: state.step + 1, total: STEPS.length }));
 }
 
+const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
+
+// One row of the closing step: the figure (or an icon) a glance takes away, then what it stands for.
+function proofRow(row, iconName) {
+  const item = make('li', 'proof__row');
+  const token = make('span', row.figure ? 'proof__token proof__token--figure' : 'proof__token', row.figure || null);
+  if (!row.figure && iconName) token.append(icon(`i-${iconName}`));
+  const body = make('p', 'proof__body');
+  body.append(make('strong', 'proof__lead', row.lead), ' ', make('span', 'proof__text', row.text));
+  item.append(token, body);
+  return item;
+}
+
+// The story is centred in the stage, so when the caption changes height (only the closing step is
+// taller) the whole panel moves: what is above the caption goes up, what is below it goes down.
+let parts = null;
+const tops = () => {
+  if (!parts) parts = [...el.panels.tour.children].concat(document.querySelector('.disclaimer') || []);
+  // Where the layout puts each part: `offsetTop` leaves out any animation still in flight.
+  return parts.map((node) => node.offsetTop);
+};
+// Glide each part from where it was to where it is now, instead of letting it jump. The caption
+// travels with the bar above it while it fades in, so the two never cross.
+function glide(before) {
+  tops().forEach((top, i) => {
+    const dy = before[i] - top;
+    if (Math.abs(dy) < 1 || typeof parts[i].animate !== 'function') return;
+    parts[i].animate([{ transform: `translateY(${dy}px)` }, { transform: 'translateY(0)' }], { duration: 360, easing: EASE_OUT });
+  });
+}
+
 function renderStep({ quiet } = {}) {
   const w = words();
+  const step = STEPS[state.step];
   const copy = w.steps[state.step] || tour.en.steps[state.step];
   const last = state.step === STEPS.length - 1;
+  const proof = Array.isArray(copy.proof) ? copy.proof : null;
+  const animate = !quiet && !still && typeof el.copy.animate === 'function';
+  const move = animate && !reduceMotion.matches; // keyboard moves, `?still=1` and reduced motion: nothing moves
+  const before = move ? tops() : null;
   $('tour-count').textContent = t('of', { n: state.step + 1, total: STEPS.length });
   $('tour-title').textContent = copy.title;
-  $('tour-text').textContent = copy.text;
-  $('tour-next-label').textContent = last ? w.finish : w.next;
+  el.text.textContent = proof ? '' : copy.text;
+  el.text.hidden = Boolean(proof);
+  el.proof.replaceChildren(...(proof || []).map((row, i) => proofRow(row, step.icons && step.icons[i])));
+  el.proof.hidden = !proof;
+  el.stage.classList.toggle('is-closing', Boolean(proof));
+  $('tour-next-label').textContent = step.closing ? w.tryIt : last ? w.finish : w.next;
   el.back.setAttribute('aria-disabled', String(state.step === 0));
   renderToggle();
   renderBar();
-  if (!quiet && !still && typeof el.copy.animate === 'function') {
+  if (animate) {
     const from = reduceMotion.matches ? { opacity: 0 } : { opacity: 0, transform: 'translateY(6px)' };
     const to = reduceMotion.matches ? { opacity: 1 } : { opacity: 1, transform: 'translateY(0)' };
-    el.copy.animate([from, to], { duration: reduceMotion.matches ? 160 : 280, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' });
+    el.copy.animate([from, to], { duration: reduceMotion.matches ? 160 : 280, easing: EASE_OUT });
+  }
+  if (move) {
+    glide(before);
+    // The proofs come in one after the other, each a beat behind the one above.
+    [...el.proof.children].forEach((row, i) => {
+      row.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }],
+        { duration: 380, delay: 60 + i * 50, easing: EASE_OUT, fill: 'backwards' });
+    });
   }
 }
 
@@ -577,13 +635,28 @@ function sendStep() {
       post('goto', { route: step.route, highlight: step.highlight });
     }, 450);
   }
-  if (step.photo && !state.photoAsked) {
-    // Once per run as well: the app sends its sample price-tag photo and the model reads it.
+  if (step.photo && !state.photosSent.has(state.step)) {
+    // Once per run as well: the app sends its sample photo (the price tag, or the bill) and the model reads it.
+    const at = state.step;
     timer.askId = setTimeout(() => {
       state.photoAsked = true;
-      post('ask', { photo: 'sample' });
+      state.photosSent.add(at);
+      post('ask', { photo: step.photo === 'bill' ? 'bill' : 'sample' });
       post('goto', { route: step.route, highlight: step.highlight });
     }, 450);
+  }
+  if (step.closing && !state.asked && !state.photoAsked) {
+    // The closing step rings the evidence under the last answer. A visitor who skipped ahead has
+    // asked nothing yet, and the chat would be empty: ask the tour's own question now instead.
+    const at = STEPS.findIndex((s) => s.ask);
+    const text = at >= 0 && (words().steps[at] || tour.en.steps[at]).ask;
+    if (text) {
+      timer.askId = setTimeout(() => {
+        state.asked = true;
+        post('ask', { text });
+        post('goto', { route: step.route, highlight: step.highlight });
+      }, 450);
+    }
   }
 }
 
@@ -608,7 +681,12 @@ function startTour(event) {
   picker.hide(false);
   state.asked = false;
   state.photoAsked = false;
+  state.photosSent.clear();
   state.auto = !reduceMotion.matches;
+  // Lay the first step out while the panel is still hidden: after "Watch again" it would otherwise
+  // enter in the shape of the closing step and then move.
+  state.step = 0;
+  renderStep({ quiet: true });
   setMode('tour', { keyboard });
   showStep(0, { keyboard });
 }
@@ -660,6 +738,7 @@ function setMode(mode, { keyboard } = {}) {
   const previous = state.mode;
   state.mode = mode;
   el.stage.dataset.mode = mode;
+  if (mode !== 'tour') el.stage.classList.remove('is-closing'); // the closing step's layout ends with the tour
   $('story').classList.remove('is-first'); // the first-load entrance is over
   const visible = mode === 'intro' ? 'intro' : mode === 'tour' ? 'tour' : 'end';
   const hadFocus = document.activeElement && document.activeElement !== document.body

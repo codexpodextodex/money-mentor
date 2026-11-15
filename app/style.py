@@ -71,6 +71,86 @@ def lead_in(text: str, lang: str) -> str:
     return _READ_ANY.sub(_READ[lang], text, count=1)
 
 
+def clear_language(text: str) -> str:
+    """'en', 'fi' or 'sv' only when the text is clearly in that language, otherwise ''."""
+    words = re.findall(r"[a-zåäöé]+", (text or "").lower())
+    scores = sorted(((sum(1 for w in words if w in vocab), lang) for lang, vocab in _WORDS.items()), reverse=True)
+    (best, lang), (second, _) = scores[0], scores[1]
+    return lang if best >= 3 and best >= 2 * second else ""
+
+
+# The model's own "I read: <item>, <price>." opening: up to the price when the line goes on, else the whole line.
+_AMOUNT = rf"(?:(?:€|\bEUR)[{_SPACES}]?\d[\d.,{_SPACES}]*|\d[\d.,{_SPACES}]*[{_SPACES}]?€)"
+_READ_LABEL = r"^\s*(?:I read|Luin kuvasta|Jag läste på bilden)\s*:"
+_READ_LINE = re.compile(rf"{_READ_LABEL}[^\n]*?{_AMOUNT}\.?\s*|{_READ_LABEL}[^\n]*\n*")
+
+
+def without_read_line(text: str) -> str:
+    """The answer without the model's own "I read: ..." opening, if it wrote one."""
+    return _READ_LINE.sub("", text or "", count=1).lstrip()
+
+
+def read_from_photo(text: str, lang: str, what: str | None, amount) -> str:
+    """Open a photo answer with what was read from the photo, so the customer can correct it.
+
+    The line is written here, from what the model passed to the tool, because the model leaves it
+    out in about half of its Finnish and Swedish answers. Any opening the model wrote is replaced.
+    """
+    lang = lang if lang in _READ else "en"
+    try:
+        price = money(f"€{float(amount):,.2f}", lang)
+    except (TypeError, ValueError):
+        return lead_in(text, lang)
+    name = " ".join(str(what or "").split()).strip(" .,;:")
+    line = f"{_READ[lang]} {name}, {price}." if name else f"{_READ[lang]} {price}."
+    body = without_read_line(text)
+    return f"{line}\n\n{body}" if body else line
+
+
+# The fixed phrases a "can I afford it" answer opens with (the coach's prompt gives the same ones).
+_VERDICTS = (
+    {"en": "Yes.", "fi": "Kyllä.", "sv": "Ja."},
+    {"en": "It fits, but it is tight.", "fi": "Se sopii, mutta on tiukilla.", "sv": "Det går, men det är tight."},
+    {
+        "en": "Not from this pay period's everyday budget.",
+        "fi": "Ei tämän palkkakauden arjen budjetista.",
+        "sv": "Inte från den här löneperiodens vardagsbudget.",
+    },
+    {"en": "Not right now.", "fi": "Ei juuri nyt.", "sv": "Inte just nu."},
+)
+
+
+def verdict(text: str, lang: str) -> str:
+    """Keep the opening verdict in the answer's language ("Ei juuri nyt." in an English answer becomes "Not right now.")."""
+    if not text or lang not in _READ:
+        return text
+    for phrases in _VERDICTS:
+        for other, phrase in phrases.items():
+            if other != lang and text.startswith(phrase):
+                return phrases[lang] + text[len(phrase) :]
+    return text
+
+
+_FITS = ("yes", "tight", "not_from_this_budget", "no")  # the order of _VERDICTS
+
+
+def verdict_for(text: str, lang: str, fits: str | None) -> str:
+    """Open a "can I afford it" answer with the verdict the tool gave.
+
+    The model sometimes opens with another of the fixed phrases ("Not right now." where the tool
+    says "not from this budget"), or with the right one in the wrong language. Only an answer
+    that opens with one of the fixed phrases is touched: the phrase is swapped, nothing else.
+    """
+    if not text or lang not in _READ or fits not in _FITS:
+        return text
+    right = _VERDICTS[_FITS.index(fits)][lang]
+    for phrases in _VERDICTS:
+        for phrase in phrases.values():
+            if text.startswith(phrase):
+                return right + text[len(phrase) :]
+    return text
+
+
 def _write(whole: str, cents: str | None, lang: str) -> str:
     digits = re.sub(r"\D", "", whole)
     if lang == "en":

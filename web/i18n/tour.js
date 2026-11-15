@@ -16,7 +16,15 @@ export const STEPS = [
   { route: 'find', highlight: 'find-bar', seconds: 5 },
   // `photo`: the app sends its built-in sample price tag, so the model reads a photo live.
   { route: 'ask', highlight: 'ask-answer', seconds: 10, photo: true },
+  // `photo: 'bill'`: the app sends its built-in sample bill, and the ring goes on the payment draft.
+  { route: 'ask', highlight: 'ask-draft', seconds: 14, photo: 'bill' },
   { route: 'loan', highlight: 'loan-pillars', seconds: 5 },
+  // The closing step: no `seconds`, so the tour rests here until the visitor moves on. Its caption
+  // is a list (`proof`) instead of a paragraph. `icons` is index-aligned with `proof`: a row with
+  // no icon shows its own `figure`. The figures are measured (eval/results.md, the full system, and
+  // eval/bill-reading.md for the 1,000 bills, also quoted on the bill step):
+  // if the evaluation is run again, update them in all three languages.
+  { route: 'ask', highlight: 'ask-trust', closing: true, icons: [null, null, 'lock', 'phone'] },
 ];
 
 const en = {
@@ -25,7 +33,7 @@ const en = {
   language: 'Language',
   eyebrow: 'Demo account · made-up data',
   headline: 'A money trainer built into S-mobiili',
-  lede: 'It shows what is safe to spend this week and replays your own year with one habit changed. Every number is checked against your payments before you see it.',
+  lede: 'Ask anything about your own money. See what is safe to spend this week, and get a heads-up before it runs out. Every number is checked against your own payments.',
   start: 'Start the walkthrough',
   startNote: 'About 1 minute. The phone navigates by itself.',
   open: 'Open the app',
@@ -39,6 +47,7 @@ const en = {
   back: 'Back',
   next: 'Next',
   finish: 'Finish',
+  tryIt: 'Try it yourself',
   pause: 'Pause',
   play: 'Play',
   skip: 'Skip to the app',
@@ -93,11 +102,24 @@ const en = {
     },
     {
       title: 'In the shop: can I afford this?',
-      text: 'Photograph a price tag and ask. The trainer reads the price and checks it against what is safe to spend.',
+      text: 'Photograph a price tag and ask. The trainer reads the price and checks it against what is safe to spend. If the answer is no, it says when it could fit.',
+    },
+    {
+      title: 'A bill: photograph it, check, confirm',
+      text: 'The trainer reads the bill and the app checks it, so you only confirm: no account number to type, no virtual barcode. Tested on 1,000 made-up bills: not one wrong payment was offered.',
     },
     {
       title: 'From first salary to first home',
       text: 'Readiness for a home loan, one step at a time. It is learned from the 200 application outcomes in the challenge data.',
+    },
+    {
+      title: 'Why a bank could ship this',
+      proof: [
+        { figure: '65/65', lead: 'Accurate', text: 'Every test question answered correctly, and not one wrong payment offered in 1,000 test bills. The engine does the maths and checks every number.' },
+        { figure: '2.3 s', lead: 'Fast', text: 'Median time to an answer, in Finnish, Swedish and English.' },
+        { lead: 'The bank keeps the data', text: 'NVIDIA Nemotron, an open model the bank can run on its own servers. In this demo it runs on a Verda confidential-computing GPU in Finland.' },
+        { lead: 'Built into S-mobiili', text: 'One card in the app customers already open. No new app, no new sign-in.' },
+      ],
     },
   ],
   questions: [
@@ -115,7 +137,7 @@ const fi = {
   language: 'Kieli',
   eyebrow: 'Demotili · keksityt tiedot',
   headline: 'Talousvalmentaja suoraan S-mobiilissa',
-  lede: 'Se näyttää, paljonko tällä viikolla on turvallista käyttää, ja toistaa oman vuotesi niin, että yksi tapa on muutettu. Jokainen luku tarkistetaan maksuistasi ennen kuin näet sen.',
+  lede: 'Kysy omista rahoistasi mitä tahansa. Näet, paljonko tällä viikolla on turvallista käyttää, ja saat varoituksen ennen kuin rahat loppuvat. Jokainen luku on tarkistettu omista maksuistasi.',
   start: 'Aloita esittely',
   startNote: 'Noin 1 minuutti. Puhelin etenee itsestään.',
   open: 'Avaa sovellus',
@@ -129,6 +151,7 @@ const fi = {
   back: 'Edellinen',
   next: 'Seuraava',
   finish: 'Valmis',
+  tryIt: 'Kokeile itse',
   pause: 'Keskeytä',
   play: 'Jatka',
   skip: 'Siirry sovellukseen',
@@ -183,11 +206,24 @@ const fi = {
     },
     {
       title: 'Kaupassa: onko minulla varaa tähän?',
-      text: 'Kuvaa hintalappu ja kysy. Valmentaja lukee hinnan ja vertaa sitä siihen, mitä on turvallista käyttää.',
+      text: 'Kuvaa hintalappu ja kysy. Valmentaja lukee hinnan ja vertaa sitä siihen, mitä on turvallista käyttää. Jos vastaus on ei, näet, milloin se voisi mahtua.',
+    },
+    {
+      title: 'Lasku: kuvaa, tarkista, vahvista',
+      text: 'Valmentaja lukee laskun ja sovellus tarkistaa sen, joten sinä vain vahvistat: ei tilinumeron näppäilyä, ei virtuaaliviivakoodia. Testattu 1 000 keksityllä laskulla: yhtään väärää maksua ei tarjottu.',
     },
     {
       title: 'Ensimmäisestä palkasta ensimmäiseen kotiin',
       text: 'Valmius asuntolainaan, askel kerrallaan. Se on opittu haasteen aineiston 200 lainahakemuksen lopputuloksesta.',
+    },
+    {
+      title: 'Miksi pankki voisi ottaa tämän käyttöön',
+      proof: [
+        { figure: '65/65', lead: 'Tarkka', text: 'Kaikki testikysymykset oikein, eikä yhtään väärää maksua tarjottu 1 000 testilaskussa. Moottori laskee ja tarkistaa jokaisen luvun.' },
+        { figure: '2,3 s', lead: 'Nopea', text: 'Vastausajan mediaani suomeksi, ruotsiksi ja englanniksi.' },
+        { lead: 'Tiedot pysyvät pankilla', text: 'NVIDIA Nemotron, avoin malli, jota pankki voi ajaa omilla palvelimillaan. Tässä demossa se toimii Verdan luottamuksellisen laskennan GPU-palvelimella Suomessa.' },
+        { lead: 'Osa S-mobiilia', text: 'Yksi kortti sovelluksessa, jonka asiakkaat jo avaavat. Ei uutta sovellusta eikä uutta kirjautumista.' },
+      ],
     },
   ],
   questions: [
@@ -214,7 +250,7 @@ const sv = {
   language: 'Språk',
   eyebrow: 'Demokonto · påhittade uppgifter',
   headline: 'Ekonomitränaren, inbyggd i S-mobil',
-  lede: 'Den visar vad som är tryggt att använda den här veckan och spelar upp ditt eget år med en vana ändrad. Varje siffra kontrolleras mot dina betalningar innan du ser den.',
+  lede: 'Fråga vad som helst om dina egna pengar. Se vad som är tryggt att använda den här veckan och få en förvarning innan pengarna tar slut. Varje siffra är kontrollerad mot dina egna betalningar.',
   start: 'Starta rundturen',
   startNote: 'Ungefär 1 minut. Telefonen navigerar av sig själv.',
   open: 'Öppna appen',
@@ -228,6 +264,7 @@ const sv = {
   back: 'Tillbaka',
   next: 'Nästa',
   finish: 'Klar',
+  tryIt: 'Prova själv',
   pause: 'Pausa',
   play: 'Fortsätt',
   skip: 'Hoppa till appen',
@@ -282,11 +319,24 @@ const sv = {
     },
     {
       title: 'I butiken: har jag råd med det här?',
-      text: 'Fotografera en prislapp och fråga. Tränaren läser priset och jämför det med vad som är tryggt att använda.',
+      text: 'Fotografera en prislapp och fråga. Tränaren läser priset och jämför det med vad som är tryggt att använda. Är svaret nej säger den när det kunde rymmas.',
+    },
+    {
+      title: 'En räkning: fotografera, kontrollera, bekräfta',
+      text: 'Tränaren läser räkningen och appen kontrollerar den, så du bara bekräftar: inget kontonummer att skriva in, ingen virtuell streckkod. Testad med 1 000 påhittade räkningar: inte en enda felaktig betalning föreslogs.',
     },
     {
       title: 'Från första lönen till första hemmet',
       text: 'Beredskap för bolån, ett steg i taget. Den bygger på de 200 ansökningsutfallen i utmaningens data.',
+    },
+    {
+      title: 'Varför en bank kunde ta det här i bruk',
+      proof: [
+        { figure: '65/65', lead: 'Träffsäker', text: 'Alla testfrågor rätt, och inte en enda felaktig betalning föreslogs bland 1 000 testräkningar. Motorn räknar och kontrollerar varje siffra.' },
+        { figure: '2,3 s', lead: 'Snabb', text: 'Mediantid för ett svar, på finska, svenska och engelska.' },
+        { lead: 'Uppgifterna stannar hos banken', text: 'NVIDIA Nemotron, en öppen modell som banken kan köra på egna servrar. I den här demon körs den på Verdas GPU-server med konfidentiell databehandling i Finland.' },
+        { lead: 'En del av S-mobil', text: 'Ett kort i appen som kunderna redan öppnar. Ingen ny app och ingen ny inloggning.' },
+      ],
     },
   ],
   questions: [

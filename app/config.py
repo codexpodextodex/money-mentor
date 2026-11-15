@@ -73,15 +73,28 @@ VERDA_LLM_MODEL = os.environ.get("VERDA_LLM_MODEL", "nemotron-3.5-super-vl")
 VERDA_INFERENCE_KEY = os.environ.get("VERDA_INFERENCE_KEY", "").strip()
 MODEL_HOST = os.environ.get("MM_MODEL_HOST", "").strip().lower()
 
+# The same model on a Verda confidential-computing GPU machine (memory encrypted, AMD SEV-SNP and
+# GPU confidential mode): vLLM behind HTTPS with its own key. When set, it answers before the others.
+VERDA_CC_LLM_BASE_URL = os.environ.get("VERDA_CC_LLM_BASE_URL", "").rstrip("/")
+VERDA_CC_LLM_KEY = os.environ.get("VERDA_CC_LLM_KEY", "").strip()
+CONFIDENTIAL_HOST_NAME = "Verda confidential GPU, Finland"
+
 MODEL_HOSTS = [_host(_host_name(LLM_BASE_URL), LLM_BASE_URL, LLM_API_KEY, LLM_MODEL, LLM_REASONING_EFFORT, LLM_THINKING)]
-if MODEL_HOST == "verda" and VERDA_LLM_BASE_URL and VERDA_INFERENCE_KEY:
-    MODEL_HOSTS.insert(0, _host("Verda, Finland", VERDA_LLM_BASE_URL, VERDA_INFERENCE_KEY, VERDA_LLM_MODEL, "", "off"))
-    # The single-host names describe whoever answers first, so scripts keep working unchanged.
-    LLM_BASE_URL, LLM_API_KEY, LLM_MODEL = VERDA_LLM_BASE_URL, VERDA_INFERENCE_KEY, VERDA_LLM_MODEL
-    LLM_REASONING_EFFORT, LLM_THINKING = "", "off"
+if MODEL_HOST == "verda":
+    for name, base_url, key in (
+        ("Verda, Finland", VERDA_LLM_BASE_URL, VERDA_INFERENCE_KEY),
+        (CONFIDENTIAL_HOST_NAME, VERDA_CC_LLM_BASE_URL, VERDA_CC_LLM_KEY),
+    ):
+        if base_url and key:
+            MODEL_HOSTS.insert(0, _host(name, base_url, key, VERDA_LLM_MODEL, "", "off"))
+            # The single-host names describe whoever answers first, so scripts keep working unchanged.
+            LLM_BASE_URL, LLM_API_KEY, LLM_MODEL = base_url, key, VERDA_LLM_MODEL
+            LLM_REASONING_EFFORT, LLM_THINKING = "", "off"
 MODEL_HOSTS = [h for h in MODEL_HOSTS if h["api_key"] and h["model"]]
-# How long the first host gets before the next one is asked, and how long a host that failed is left alone.
+# How long a host that is not the last gets before the next one is asked (and how long to reach it
+# at all), and how long a host that failed is left alone.
 FIRST_HOST_TIMEOUT_S = float(os.environ.get("LLM_FIRST_HOST_TIMEOUT_S", "30"))
+FIRST_HOST_CONNECT_S = float(os.environ.get("LLM_FIRST_HOST_CONNECT_S", "5"))
 HOST_RETRY_AFTER_S = float(os.environ.get("LLM_HOST_RETRY_AFTER_S", "120"))
 
 # "Today" for the demo. The dataset ends on 2026-09-30, so by default the app
